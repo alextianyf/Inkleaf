@@ -6,12 +6,15 @@ backend/**/__pycache__/
 *.pyo
 
 # Node
+node_modules/
 renderer/node_modules/
 frontend/node_modules/
 
 # Build outputs
 frontend/dist/
 frontend/build/
+release/
+desktop/test/artifacts/
 
 # Temp files
 backend/temp/

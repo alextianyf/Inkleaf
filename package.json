@@ -1,0 +1,69 @@
+{
+  "name": "aldus-desktop",
+  "productName": "Aldus",
+  "version": "0.4.5",
+  "description": "A quiet, local Markdown to PDF companion",
+  "author": "Alex Tian",
+  "private": true,
+  "main": "desktop/main.cjs",
+  "scripts": {
+    "start": "npm run build:ui && electron .",
+    "build:ui": "npm --prefix frontend run build",
+    "pack": "npm run build:ui && electron-builder --dir",
+    "dist:win": "npm run build:ui && electron-builder --win nsis",
+    "test": "node --test desktop/test/*.test.cjs",
+    "test:desktop": "node desktop/test/smoke.cjs",
+    "test:position": "node desktop/test/window-position.cjs",
+    "test:batch": "node desktop/test/batch-smoke.cjs",
+    "test:layout": "node desktop/test/html-layout-smoke.cjs",
+    "test:links": "node desktop/test/links-smoke.cjs",
+    "test:compat": "node desktop/test/compatibility-smoke.cjs",
+    "test:engine": "npm test && npm run test:layout && npm run test:links && npm run test:compat && npm run test:diagnostics",
+    "test:diagnostics": "node desktop/test/diagnostics-smoke.cjs"
+  },
+  "build": {
+    "appId": "com.alextian.aldus",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "desktop/*.cjs",
+      "desktop/*.json",
+      "desktop/diagnostics/**/*.cjs",
+      "frontend/dist/**/*",
+      "backend/themes/*.css",
+      "package.json"
+    ],
+    "win": {
+      "target": "nsis",
+      "signAndEditExecutable": false
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    },
+    "mac": {
+      "target": "dmg",
+      "category": "public.app-category.productivity"
+    },
+    "linux": {
+      "target": "AppImage",
+      "category": "Office"
+    }
+  },
+  "dependencies": {
+    "katex": "^0.18.7",
+    "markdown-it": "^15.0.1",
+    "markdown-it-footnote": "^4.0.0",
+    "markdown-it-task-lists": "^2.1.1",
+    "markdown-it-texmath": "^1.0.0",
+    "sanitize-html": "^2.17.7",
+    "semver": "^7.8.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "electron": "^44.2.0",
+    "electron-builder": "^26.15.3"
+  }
+}

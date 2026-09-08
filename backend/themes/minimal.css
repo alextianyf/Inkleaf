@@ -134,17 +134,17 @@ p { margin: 7px 0; }
 }
 
 /* Banner */
-table[align="center"] {
+table.aldus-banner {
   margin: 0 auto;
   width: auto;
   border: none;
 }
-table[align="center"] td {
+table.aldus-banner td {
   border: none;
   text-align: center;
   padding: 0;
 }
-table[align="center"] pre {
+table.aldus-banner pre {
   display: inline-block;
   text-align: left;
   border: none;

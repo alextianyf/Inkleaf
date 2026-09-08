@@ -2,6 +2,8 @@
 
 > Named after Aldus Manutius, the Renaissance printer who revolutionized how knowledge is shared.
 
+> Desktop prototype update (2026-09-07): the `codex/desktop-spotlight` branch uses Electron with local Markdown-it/KaTeX rendering and preview before export. See [DESKTOP.md](DESKTOP.md) for the implemented architecture and scope. The Tauri and server plans below describe the earlier design.
+
 ---
 
 ## What is Aldus?
