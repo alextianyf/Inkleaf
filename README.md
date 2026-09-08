@@ -163,13 +163,13 @@ If something renders incorrectly, [open an issue](https://github.com/alextianyf/
 To run the desktop version locally, install Node.js 22.12 or newer, then:
 
 ```sh
-git clone --branch desktop-spotlight https://github.com/alextianyf/Inkleaf.git
+git clone https://github.com/alextianyf/Inkleaf.git
 cd Inkleaf
 npm ci
 npm start
 ```
 
-The desktop version lives on `desktop-spotlight`; `main` still contains the earlier app. [Development and builds](docs/development.md) · [Project structure](docs/architecture.md).
+The desktop version is available on `main`. The earlier app is preserved on `aldusV1`. [Development and builds](docs/development.md) · [Project structure](docs/architecture.md).
 
 ---
 

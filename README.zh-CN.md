@@ -163,13 +163,13 @@ Windows 安装包自带运行环境，使用者无需安装 Node.js 或 Python�
 从源码运行桌面版，需要 Node.js 22.12 或更新版本：
 
 ```sh
-git clone --branch desktop-spotlight https://github.com/alextianyf/Inkleaf.git
+git clone https://github.com/alextianyf/Inkleaf.git
 cd Inkleaf
 npm ci
 npm start
 ```
 
-桌面版位于 `desktop-spotlight` 分支，`main` 目前仍是早期版本。[开发与构建](docs/development.md) · [项目结构](docs/architecture.md)。
+桌面版已合并到 `main`，早期版本保存在 `aldusV1` 分支。[开发与构建](docs/development.md) · [项目结构](docs/architecture.md)。
 
 ---
 
