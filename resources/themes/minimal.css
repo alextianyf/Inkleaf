@@ -1,0 +1,204 @@
+@page {
+  size: A4;
+  margin: 22mm 22mm 26mm 22mm;
+}
+
+body {
+  font-family: "Georgia", serif;
+  font-size: 10.5pt;
+  color: #212121;
+  line-height: 1.75;
+  max-width: 100%;
+}
+
+h1 {
+  font-size: 22pt;
+  color: #212121;
+  font-weight: 700;
+  border-bottom: 1px solid #212121;
+  padding-bottom: 8px;
+  margin-bottom: 8px;
+  letter-spacing: -0.5px;
+}
+
+h2 {
+  font-size: 14pt;
+  color: #212121;
+  font-weight: 700;
+  margin-top: 24px;
+  margin-bottom: 6px;
+  border-bottom: 1px solid #e0e0e0;
+  padding-bottom: 4px;
+}
+
+h3 {
+  font-size: 11.5pt;
+  color: #424242;
+  font-weight: 700;
+  margin-top: 16px;
+  margin-bottom: 4px;
+}
+
+h4 {
+  font-size: 10.5pt;
+  color: #424242;
+  font-style: italic;
+  margin-top: 10px;
+  margin-bottom: 4px;
+}
+
+hr {
+  border: none;
+  border-top: 1px solid #e0e0e0;
+  margin: 20px 0;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 12px 0;
+  font-size: 9.5pt;
+  font-family: "Segoe UI", Arial, sans-serif;
+}
+
+th {
+  background-color: #212121;
+  color: white;
+  padding: 6px 10px;
+  text-align: left;
+  font-weight: 600;
+}
+
+td {
+  padding: 5px 10px;
+  border: 1px solid #e0e0e0;
+}
+
+tr:nth-child(even) td {
+  background-color: #fafafa;
+}
+
+code {
+  font-family: "Cascadia Code", "Consolas", monospace;
+  font-size: 8.5pt;
+  background: #f5f5f5;
+  padding: 1px 5px;
+  border-radius: 3px;
+  color: #424242;
+}
+
+pre {
+  font-family: "Cascadia Code", "Consolas", monospace;
+  font-size: 8.5pt;
+  background: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  padding: 10px 14px;
+  margin: 10px 0;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+pre code {
+  background: none;
+  padding: 0;
+  color: #212121;
+  font-size: inherit;
+}
+
+blockquote {
+  border-left: 3px solid #bdbdbd;
+  padding: 4px 14px;
+  margin: 10px 0;
+  color: #757575;
+  font-style: italic;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
+  display: block;
+  margin: 12px auto;
+}
+
+strong {
+  color: #212121;
+}
+
+ul,
+ol {
+  margin: 4px 0 8px 20px;
+}
+
+li {
+  margin-bottom: 4px;
+}
+
+p {
+  margin: 7px 0;
+}
+
+.katex-display {
+  margin: 14px 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Banner */
+table.aldus-banner {
+  margin: 0 auto;
+  width: auto;
+  border: none;
+}
+table.aldus-banner td {
+  border: none;
+  text-align: center;
+  padding: 0;
+}
+table.aldus-banner pre {
+  display: inline-block;
+  text-align: left;
+  border: none;
+  background: none;
+}
+
+/* Table of Contents */
+.toc {
+  border: 1px solid #e0e0e0;
+  background: #fafafa;
+  padding: 10px 18px;
+  margin: 14px 0 20px 0;
+  display: inline-block;
+  min-width: 220px;
+}
+
+.toc ul,
+.toc ol {
+  margin: 2px 0 2px 18px;
+  padding: 0;
+}
+
+.toc li {
+  display: list-item;
+  margin-bottom: 2px;
+  list-style: disc;
+}
+
+.toc a {
+  text-decoration: none;
+  color: #424242;
+}
+
+.toc a:hover {
+  text-decoration: underline;
+}
+
+/* Footer */
+.aldus-footer {
+  text-align: center;
+  color: #9e9e9e;
+  font-size: 8pt;
+  margin-top: 40px;
+  border-top: 1px solid #e0e0e0;
+  padding-top: 8px;
+  font-family: "Segoe UI", Arial, sans-serif;
+}

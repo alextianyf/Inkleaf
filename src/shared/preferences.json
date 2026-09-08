@@ -1,0 +1,27 @@
+{
+  "general": {
+    "languagePreference": "system",
+    "launchAtLogin": false,
+    "shortcut": "CommandOrControl+Shift+Space",
+    "searchWidth": null
+  },
+  "search": { "autoSearch": true, "roots": [], "excludedRoots": [] },
+  "layout": {
+    "theme": "default",
+    "author": "",
+    "authorEnabled": true,
+    "pageNumbers": true,
+    "paperSize": "A4",
+    "orientation": "portrait",
+    "margins": "standard",
+    "fontSize": 10.5,
+    "lineHeight": 1.6
+  },
+  "export": {
+    "exportDestination": "downloads",
+    "exportFolder": "",
+    "askExportLocation": false,
+    "openAfterExport": false,
+    "preserveFolders": true
+  }
+}

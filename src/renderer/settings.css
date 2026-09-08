@@ -1,0 +1,196 @@
+.preferences {
+  height: 100vh;
+  display: flex;
+  flex-direction: column;
+  background: #f5f6f8;
+  border: 1px solid #ffffffb0;
+  border-radius: 10px;
+  overflow: hidden;
+}
+.preferences-titlebar {
+  height: 58px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 20px;
+  -webkit-app-region: drag;
+  border-bottom: 1px solid #30343b0d;
+  flex-shrink: 0;
+}
+.preferences-body {
+  display: flex;
+  flex: 1;
+  min-height: 0;
+}
+.preferences-nav {
+  width: 148px;
+  flex-shrink: 0;
+  padding: 22px 12px;
+  background: #e9ecf16b;
+  border-right: 1px solid #30343b0d;
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+}
+.preferences-nav button {
+  justify-content: flex-start;
+  padding: 9px 12px;
+  font-size: 12px;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-secondary);
+}
+.preferences-nav button[aria-current] {
+  background: #66788a19;
+  color: var(--ink);
+  font-weight: 600;
+}
+.preferences-nav button:hover {
+  background: #66788a0c;
+}
+.preferences-content {
+  flex: 1;
+  min-width: 0;
+  padding: 26px 28px 16px;
+  overflow-y: auto;
+}
+.preferences-heading {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+.preferences-heading h1 {
+  font-size: 19px;
+  font-weight: 600;
+  letter-spacing: -0.4px;
+}
+.preferences-heading > span {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+.preferences .settings-section {
+  margin: 0 0 24px;
+}
+.preferences .setting-row {
+  font-size: 12px;
+  min-height: 30px;
+  margin-top: 16px;
+}
+.preferences .setting-row select,
+.preferences .setting-row input:not([type="checkbox"]) {
+  font-size: 12px;
+  width: 160px;
+  background: #ffffffa0;
+  border-color: #343e4e20;
+}
+.preferences .muted {
+  font-size: 11px;
+  margin-top: 8px;
+}
+.preferences .folder-list {
+  max-height: 130px;
+  margin-top: 10px;
+}
+.preferences .folder-row {
+  font-size: 11px;
+  padding: 3px 0;
+}
+.preferences-reset {
+  padding: 22px 0 6px;
+  border-top: 1px solid #30343b10;
+  margin-top: 22px;
+}
+.preferences .text-button {
+  font-size: 11px;
+}
+.preferences .section-heading h2 {
+  font-size: 12px;
+  font-weight: 600;
+}
+.destination-options {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+.destination-options label {
+  display: flex;
+  gap: 9px;
+  align-items: center;
+  font-size: 12px;
+}
+.destination-options input {
+  accent-color: var(--accent);
+}
+.destination-path {
+  overflow-wrap: anywhere;
+  margin: 10px 0;
+  color: var(--text-secondary);
+  font-size: 11px;
+}
+.layout-sample {
+  display: flex;
+  flex-direction: column;
+  width: 42%;
+  min-width: 250px;
+  border-left: 1px solid #30343b12;
+}
+.sample-heading {
+  display: flex;
+  flex-direction: column;
+  padding: 18px 20px;
+  gap: 4px;
+}
+.sample-heading strong {
+  font-size: 12px;
+  font-weight: 500;
+}
+.sample-heading span {
+  font-size: 10px;
+  color: var(--text-muted);
+}
+.layout-sample .pdf-pages {
+  padding: 20px 22px 0;
+}
+.has-sample .preferences-content {
+  padding: 26px 22px 16px;
+}
+.has-sample .setting-row select,
+.has-sample .setting-row input:not([type="checkbox"]) {
+  width: 120px;
+}
+.preferences-about {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 20px;
+}
+.preferences-about strong {
+  font:
+    32px Georgia,
+    serif;
+}
+.preferences-about .update-controls {
+  align-items: flex-start;
+}
+@media (max-width: 800px) {
+  .has-sample .preferences-nav {
+    width: 112px;
+    padding-inline: 8px;
+  }
+  .has-sample .preferences-content {
+    padding-inline: 14px;
+  }
+  .layout-sample {
+    width: 38%;
+    min-width: 190px;
+  }
+  .has-sample .setting-row {
+    flex-wrap: wrap;
+    gap: 5px;
+  }
+  .has-sample .preferences-heading {
+    flex-wrap: wrap;
+  }
+}

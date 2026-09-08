@@ -1,9 +1,0 @@
-{
-  "name": "aldus-renderer",
-  "version": "1.0.0",
-  "description": "Puppeteer-based HTML to PDF renderer for Aldus",
-  "main": "render.js",
-  "dependencies": {
-    "puppeteer": "^24.0.0"
-  }
-}

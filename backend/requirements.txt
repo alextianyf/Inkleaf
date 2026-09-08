@@ -1,5 +1,0 @@
-fastapi==0.115.0
-uvicorn==0.30.6
-python-multipart==0.0.9
-# The following are inherited from the global Python environment:
-# markdown, matplotlib, pillow

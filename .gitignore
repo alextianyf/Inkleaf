@@ -1,28 +1,16 @@
-# Python
-backend/venv/
-backend/__pycache__/
-backend/**/__pycache__/
-*.pyc
-*.pyo
-
-# Node
+# npm dependencies
 node_modules/
-renderer/node_modules/
-frontend/node_modules/
 
-# Build outputs
-frontend/dist/
-frontend/build/
+# Generated builds, installers and test reports
+dist/
 release/
-desktop/test/artifacts/
+artifacts/
 
-# Temp files
-backend/temp/
-*.tmp.html
-
-# Config (contains user-specific settings)
-backend/config.json
-
-# OS
+# Local OS and temporary files
 .DS_Store
 Thumbs.db
+*.log
+*.tmp
+
+# Python bytecode from the icon tools
+__pycache__/

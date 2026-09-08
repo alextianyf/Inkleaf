@@ -1,25 +1,32 @@
 {
-  "name": "aldus-desktop",
-  "productName": "Aldus",
-  "version": "0.4.5",
+  "name": "inkleaf-desktop",
+  "productName": "Inkleaf",
+  "version": "0.4.10",
   "description": "A quiet, local Markdown to PDF companion",
   "author": "Alex Tian",
   "private": true,
-  "main": "desktop/main.cjs",
+  "main": "src/main/main.cjs",
   "scripts": {
     "start": "npm run build:ui && electron .",
-    "build:ui": "npm --prefix frontend run build",
-    "pack": "npm run build:ui && electron-builder --dir",
-    "dist:win": "npm run build:ui && electron-builder --win nsis",
-    "test": "node --test desktop/test/*.test.cjs",
-    "test:desktop": "node desktop/test/smoke.cjs",
-    "test:position": "node desktop/test/window-position.cjs",
-    "test:batch": "node desktop/test/batch-smoke.cjs",
-    "test:layout": "node desktop/test/html-layout-smoke.cjs",
-    "test:links": "node desktop/test/links-smoke.cjs",
-    "test:compat": "node desktop/test/compatibility-smoke.cjs",
+    "build:ui": "vite build",
+    "lint": "eslint src",
+    "format": "prettier --write src tests resources *.mjs *.json docs README.md",
+    "pack": "npm run build:ui && electron-builder --dir --publish never",
+    "dist:win": "npm run build:ui && electron-builder --win nsis --publish never",
+    "test": "node --test tests/unit/*.test.cjs",
+    "test:desktop": "node tests/integration/smoke.cjs",
+    "test:position": "node tests/integration/window-position.cjs",
+    "test:batch": "node tests/integration/batch-smoke.cjs",
+    "test:layout": "node tests/integration/html-layout-smoke.cjs",
+    "test:links": "node tests/integration/links-smoke.cjs",
+    "test:compat": "node tests/integration/compatibility-smoke.cjs",
+    "test:diagnostics": "node tests/integration/diagnostics-smoke.cjs",
     "test:engine": "npm test && npm run test:layout && npm run test:links && npm run test:compat && npm run test:diagnostics",
-    "test:diagnostics": "node desktop/test/diagnostics-smoke.cjs"
+    "test:all": "npm run lint && npm run build:ui && npm run test:engine && npm run test:desktop && npm run test:position && npm run test:batch && npm run test:updates && npm run test:settings",
+    "benchmark": "node tests/performance/search.cjs",
+    "test:updates": "node tests/integration/updates-smoke.cjs",
+    "test:installed-update": "npm run build:ui && node tests/integration/installed-update.cjs",
+    "test:settings": "node tests/integration/settings-smoke.cjs"
   },
   "build": {
     "appId": "com.alextian.aldus",
@@ -27,16 +34,23 @@
       "output": "release"
     },
     "files": [
-      "desktop/*.cjs",
-      "desktop/*.json",
-      "desktop/diagnostics/**/*.cjs",
-      "frontend/dist/**/*",
-      "backend/themes/*.css",
-      "package.json"
+      "src/main/**/*.cjs",
+      "src/search/**/*.cjs",
+      "src/conversion/**/*.cjs",
+      "src/shared/*.json",
+      "resources/themes/*.css",
+      "dist/renderer/**/*",
+      "package.json",
+      "resources/styles/*.css",
+      "resources/samples/**/*",
+      "resources/icons/*.png",
+      "resources/icons/*.ico"
     ],
     "win": {
       "target": "nsis",
-      "signAndEditExecutable": false
+      "artifactName": "Inkleaf-Setup-${version}.${ext}",
+      "signExecutable": false,
+      "icon": "resources/icons/inkleaf.ico"
     },
     "nsis": {
       "oneClick": false,
@@ -45,25 +59,48 @@
     },
     "mac": {
       "target": "dmg",
-      "category": "public.app-category.productivity"
+      "category": "public.app-category.productivity",
+      "icon": "resources/icons/inkleaf.icns"
     },
     "linux": {
       "target": "AppImage",
-      "category": "Office"
-    }
+      "category": "Office",
+      "icon": "resources/icons/inkleaf-512.png"
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "alextianyf",
+        "repo": "Inkleaf",
+        "releaseType": "draft"
+      }
+    ]
   },
   "dependencies": {
+    "electron-updater": "^6.8.9",
     "katex": "^0.18.7",
     "markdown-it": "^15.0.1",
     "markdown-it-footnote": "^4.0.0",
     "markdown-it-task-lists": "^2.1.1",
     "markdown-it-texmath": "^1.0.0",
-    "sanitize-html": "^2.17.7",
-    "semver": "^7.8.5"
+    "sanitize-html": "^2.17.7"
   },
   "devDependencies": {
+    "@eslint/js": "^9.39.4",
     "@playwright/test": "^1.63.0",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.0.1",
     "electron": "^44.2.0",
-    "electron-builder": "^26.15.3"
+    "electron-builder": "^26.15.3",
+    "eslint": "^9.39.4",
+    "eslint-plugin-react-hooks": "^7.0.1",
+    "eslint-plugin-react-refresh": "^0.5.2",
+    "globals": "^17.4.0",
+    "pdfjs-dist": "^6.3.289",
+    "prettier": "3.6.2",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "vite": "^8.0.1"
   }
 }
