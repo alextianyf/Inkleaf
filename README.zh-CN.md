@@ -104,7 +104,9 @@
 
 ## 获取印页
 
-**目前仅支持 Windows，首个公开版本正在准备中。** 暂无公开安装包；发布后可从 [GitHub Releases](https://github.com/alextianyf/Inkleaf/releases) 获取。也可以先[从源码运行](#技术与开发)。
+**[下载 Windows 安装包（x64）](https://github.com/alextianyf/Inkleaf/releases/download/v0.4.10/Inkleaf-Setup-0.4.10.exe)** · [发布说明](https://github.com/alextianyf/Inkleaf/releases/tag/v0.4.10)
+
+当前正式版本为 **0.4.10**。点击上方链接下载 `.exe` 安装包，也可以[从源码运行](#技术与开发)。发布页中的 `.blockmap` 与 `latest.yml` 供更新器使用，手动安装只需下载 `.exe`。
 
 Windows 安装包自带运行环境，使用者无需安装 Node.js 或 Python。目前不提供 macOS 和 Linux 版本，Windows 构建尚未进行代码签名。
 

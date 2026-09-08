@@ -104,7 +104,9 @@ These are examples of supported content, not a promise of every Markdown dialect
 
 ## Get Inkleaf
 
-**Windows only · first public release in preparation.** There is no public installer to download yet. When one is available, it will appear in [GitHub Releases](https://github.com/alextianyf/Inkleaf/releases). You can also [run from source](#built-with).
+**[Download for Windows (x64)](https://github.com/alextianyf/Inkleaf/releases/download/v0.4.10/Inkleaf-Setup-0.4.10.exe)** · [Release notes](https://github.com/alextianyf/Inkleaf/releases/tag/v0.4.10)
+
+The current stable release is **0.4.10**. Download the `.exe` installer above, or [run from source](#built-with). The `.blockmap` and `latest.yml` files on the release page are used by the updater; manual installation only needs the `.exe`.
 
 The Windows installer includes the runtime; users do not need Node.js or Python. macOS and Linux builds are not currently offered. Current Windows builds are unsigned.
 

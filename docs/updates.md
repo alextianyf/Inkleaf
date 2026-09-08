@@ -56,3 +56,15 @@ Windows 安装包统一使用 `Inkleaf-Setup-版本号.exe`，与更新清单中
 GitHub 仓库已改为 `alextianyf/Inkleaf`，本地 origin、README、反馈链接和新安装包的更新配置均使用新地址。应用 ID 与用户数据目录继续兼容旧版。
 
 旧仓库地址依赖 GitHub 的改名重定向；不要另建同名的 `alextianyf/Aldus` 仓库，以免旧链接失效。参见 [GitHub 仓库改名说明](https://docs.github.com/en/repositories/creating-and-managing-repositories/renaming-a-repository)。
+
+## 首个正式 Release：0.4.10
+
+2026-09-08，已发布 [Inkleaf 0.4.10](https://github.com/alextianyf/Inkleaf/releases/tag/v0.4.10)，不是预发行版本，并已设为 Latest。标签 `v0.4.10` 指向 `main` 的提交 `7dfe7274b317c9c6a1b4862bb91f3817561d7a1f`。发布包含当时的完整功能及已知问题，没有为此次发布修改应用功能。
+
+Windows x64 安装包、对应 blockmap 与 `latest.yml` 来自同一次构建。为避开正在运行的应用目录，本次构建使用 `npm run dist:win -- --config.directories.output=artifacts/publish-0.4.10`。安装包大小为 113,996,764 字节，SHA-256 为 `524ef9d207fc766257fe134dc4e21ec4e046c078a87b2f01dd2959252aa674f3`。
+
+发布验证：完整 `npm run test:all` 通过，打包后的 `test:desktop` 通过；程序内 23 个主进程、搜索、转换及共享源码文件与发布工作区一致。公开下载的更新清单和 blockmap 与本地文件一致。
+
+使用隔离配置启动打包后的 0.4.10，真实连接 GitHub：同版本正确报告无更新；仅在测试进程内将更新器的当前版本模拟为 0.4.9 后，成功检测并下载公开的 0.4.10 安装包，SHA-512 与本地构建一致。此项验证没有执行安装器，不代表在另一台电脑上完成了旧版覆盖安装。此前的实际安装升级验证使用独立测试应用，见上文。
+
+日志与报告保存在忽略目录：`artifacts/release-checks-0.4.10.log`、`artifacts/release-packaged-check-0.4.10.log`、`artifacts/public-update-check-0.4.10.json`。后续发布更高版本时，仍需验证已安装旧版的完整升级；不要替换本次 Release 的既有安装包。
