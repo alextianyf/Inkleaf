@@ -37,8 +37,21 @@ const os = require("node:os");
 <div id="flex" class="flex-row"><span class="layout-box">Flex one</span><span class="layout-box">Flex two</span></div>
 <div id="grid" class="grid-row"><span class="layout-box">Grid one</span><span class="layout-box">Grid two</span></div>
 <ol id="numbered-list" start="5"><li>Fifth item</li></ol>
-<div style="break-before:page"><h2>Explicit page break</h2><p>This section starts on page two.</p></div>`,
+<div style="break-before:page"><h2>Explicit page break</h2><p>This section starts on page two.</p></div>
+<table id="auto-center" align="center"><tr><td><pre id="logo-text">+----------------------------+
+|          INKLEAF           |
++----------------------------+</pre></td></tr></table>
+<table id="auto-left" align="left"><tr><td>Left table</td></tr></table>
+<table id="auto-right" align="right"><tr><td>Right table</td></tr></table>
+<table id="full-width" align="center" width="100%"><tr><td>Explicit full width</td></tr></table>
+<table id="inline-width" align="center" style="width:280px"><tr><td>Inline width</td></tr></table>
+
+| Markdown | Table |
+| --- | --- |
+| Keeps | full width |`,
   );
+  const original = await fs.readFile(file);
+  const before = await fs.stat(file);
   await fs.writeFile(
     path.join(notes, "unsupported-fixture.md"),
     '<link rel="stylesheet" href="https://example.com/theme.css"><script>document.body.textContent="bad"</script><p style="background-image:url(https://example.com/image.png)">Content remains readable.</p>',
@@ -75,7 +88,8 @@ const os = require("node:os");
           await Promise.all(Array.from(document.images, img => img.decode().catch(() => {})));
           if (!document.getElementById('sized-table')) return null;
           const get = id => { const el = document.getElementById(id); const s = getComputedStyle(el); const r = el.getBoundingClientRect(); return { align:s.textAlign, color:s.color, width:r.width, height:r.height, left:r.left, right:r.right, top:r.top, padding:s.paddingLeft, valign:s.verticalAlign, border:s.borderTopWidth, display:s.display, gap:s.gap, columns:s.gridTemplateColumns }; };
-          return Object.fromEntries(['custom-title','badge-row','badge-one','badge-two','right-paragraph','inherited','inline-center','plain-paragraph','sized-image','sized-table','right-header','sized-cell','flex','grid','numbered-list'].map(id => [id,get(id)]));
+          document.querySelector('.aldus-markdown-table').id = 'markdown-table';
+          return Object.fromEntries(['custom-title','badge-row','badge-one','badge-two','right-paragraph','inherited','inline-center','plain-paragraph','sized-image','sized-table','right-header','sized-cell','flex','grid','numbered-list','auto-center','auto-left','auto-right','full-width','inline-width','markdown-table','logo-text'].map(id => [id,get(id)]));
         })()`,
             )
             .then((check) => {
@@ -100,6 +114,7 @@ const os = require("node:os");
           });
           const next = await window.aldus.preview(file);
           return {
+            id: next.id,
             warnings: next.warnings,
             layoutWarnings: next.layoutWarnings,
             data: Array.from(next.data),
@@ -144,6 +159,34 @@ const os = require("node:os");
       assert.equal(check["sized-cell"].padding, "9px");
       assert.equal(check["sized-cell"].valign, "bottom");
       assert.equal(check["sized-cell"].border, "0px");
+      const container = check["plain-paragraph"];
+      const center = (box) => (box.left + box.right) / 2;
+      for (const id of ["auto-center", "auto-left", "auto-right"]) {
+        assert.ok(
+          check[id].width < container.width - 20,
+          `${theme}: aligned HTML table fits its contents`,
+        );
+      }
+      assert.ok(
+        Math.abs(center(check["auto-center"]) - center(container)) < 1,
+        `${theme}: auto-width table is centered`,
+      );
+      assert.ok(Math.abs(check["auto-left"].left - container.left) < 1);
+      assert.ok(Math.abs(check["auto-right"].right - container.right) < 1);
+      assert.ok(
+        !/center|right/.test(check["logo-text"].align),
+        "table alignment must not center individual preformatted lines",
+      );
+      for (const id of ["full-width", "markdown-table"]) {
+        assert.ok(
+          Math.abs(check[id].width - container.width) < 1,
+          `${theme}: explicit and Markdown full-width tables stay full width`,
+        );
+      }
+      assert.equal(check["inline-width"].width, 280);
+      assert.ok(
+        Math.abs(center(check["inline-width"]) - center(container)) < 1,
+      );
       assert.equal(check.flex.display, "flex");
       assert.equal(check.flex.gap, "12px");
       assert.equal(check.grid.display, "grid");
@@ -154,9 +197,18 @@ const os = require("node:os");
         Buffer.from(preview.data).subarray(0, 5).toString(),
         "%PDF-",
       );
-      await fs.writeFile(
-        path.join(artifacts, `html-layout-${theme}.pdf`),
+      const target = path.join(artifacts, `html-layout-${theme}.pdf`);
+      await desktop.evaluate(({ dialog }, target) => {
+        dialog.showSaveDialog = async () => ({
+          canceled: false,
+          filePath: target,
+        });
+      }, target);
+      await page.evaluate((id) => window.aldus.exportPdf(id), preview.id);
+      assert.deepEqual(
+        await fs.readFile(target),
         Buffer.from(preview.data),
+        `${theme}: export matches preview`,
       );
     }
     await page.evaluate(async () =>
@@ -211,11 +263,18 @@ const os = require("node:os");
     await expect(page.locator(".preview-warnings")).toContainText(
       "External stylesheets were not loaded",
     );
+    assert.deepEqual(await fs.readFile(file), original);
+    assert.equal((await fs.stat(file)).mtimeMs, before.mtimeMs);
     console.log(
       "PASS: all three themes preserve source HTML/CSS alignment, image sizing, table layout, flex/grid; unsupported layout dependencies surface in preview.",
     );
   } finally {
     await desktop.close();
+    const relative = path.relative(os.tmpdir(), sandbox);
+    assert.ok(
+      relative.startsWith("aldus-layout-ui-") && !relative.includes(path.sep),
+      "Only remove the isolated layout test profile inside the temp directory",
+    );
     await fs.rm(sandbox, { recursive: true, force: true });
   }
 })().catch((error) => {

@@ -1,8 +1,9 @@
 const listSpacing = require("./markdown/list-spacing.cjs");
+const mathDelimiters = require("./markdown/math-delimiters.cjs");
 
 // Rules operate on source lines in memory. Line numbers always refer to the
 // original document; no rule in this stage may insert/delete a line.
-function checkMarkdown(source, parser, rules = [listSpacing]) {
+function checkMarkdown(source, parser, rules = [listSpacing, mathDelimiters]) {
   const pieces = source.split(/(\r\n|\n|\r)/);
   const lines = Object.freeze(pieces.filter((_, index) => index % 2 === 0));
   const tokens = parser.parse(source, {});

@@ -44,6 +44,11 @@ function layoutHints(tag, attrs, table = {}) {
   )
     add("text-align", align);
   if (tag === "table") {
+    // Themes stretch tables to the page width. An explicitly aligned HTML
+    // table without a width should fit its contents so alignment can take effect.
+    // Authored CSS still wins over these presentation hints.
+    if (["left", "center", "right"].includes(align) && !dimension(attrs.width))
+      add("width", "auto");
     if (align === "center") {
       add("margin-left", "auto");
       add("margin-right", "auto");

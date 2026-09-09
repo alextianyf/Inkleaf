@@ -1,7 +1,7 @@
 {
   "name": "inkleaf-desktop",
   "productName": "Inkleaf",
-  "version": "0.4.10",
+  "version": "0.4.11",
   "description": "A quiet, local Markdown to PDF companion",
   "author": "Alex Tian",
   "private": true,
@@ -21,7 +21,8 @@
     "test:links": "node tests/integration/links-smoke.cjs",
     "test:compat": "node tests/integration/compatibility-smoke.cjs",
     "test:diagnostics": "node tests/integration/diagnostics-smoke.cjs",
-    "test:engine": "npm test && npm run test:layout && npm run test:links && npm run test:compat && npm run test:diagnostics",
+    "test:engine": "npm test && npm run test:layout && npm run test:links && npm run test:compat && npm run test:diagnostics && npm run test:math",
+    "test:math": "node tests/integration/math-delimiters-smoke.cjs",
     "test:all": "npm run lint && npm run build:ui && npm run test:engine && npm run test:desktop && npm run test:position && npm run test:batch && npm run test:updates && npm run test:settings",
     "benchmark": "node tests/performance/search.cjs",
     "test:updates": "node tests/integration/updates-smoke.cjs",
