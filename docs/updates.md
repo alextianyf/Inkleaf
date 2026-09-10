@@ -70,3 +70,15 @@ Windows x64 安装包、对应 blockmap 与 `latest.yml` 来自同一次构建�
 使用隔离配置启动打包后的 0.4.10，真实连接 GitHub：同版本正确报告无更新；仅在测试进程内将更新器的当前版本模拟为 0.4.9 后，成功检测并下载公开的 0.4.10 安装包，SHA-512 与本地构建一致。此项验证没有执行安装器，不代表在另一台电脑上完成了旧版覆盖安装。此前的实际安装升级验证使用独立测试应用，见上文。
 
 日志与报告保存在忽略目录：`artifacts/release-checks-0.4.10.log`、`artifacts/release-packaged-check-0.4.10.log`、`artifacts/public-update-check-0.4.10.json`。后续发布更高版本时，仍需验证已安装旧版的完整升级；不要替换本次 Release 的既有安装包。
+
+## 正式 Release：0.5.0
+
+2026-09-09，已发布 [Inkleaf 0.5.0](https://github.com/alextianyf/Inkleaf/releases/tag/v0.5.0)，为正式版并设为 Latest。[完整更新说明](releases/0.5.0.md)涵盖 Folio、外观模式、设置与高级排版、窗口交互、开发模式和许可。标签 `v0.5.0` 对应代码提交 `2eebf8396bec27b2ddaccd032926388be64aba81`。
+
+从该提交执行 `npm.cmd run dist:win -- --config.directories.output=artifacts/publish-0.5.0`，安装包、blockmap 和 latest.yml 来自同一次构建。安装包大小 114856546 字节，SHA-256：`63d03605bd57a0e13a6a921710aab04054d0c26101d86218ed640eee91f87174`。
+
+`test:all` 覆盖的各项检查及打包后的桌面回归均通过；打包中的源码、PDF 主题、样例、界面资源和 LICENSE 已与发布工作区核对。公开附件的大小与 SHA-256、更新清单的 SHA-512 均完成验证。
+
+使用真实打包的 0.4.11 在隔离配置中连接 GitHub，成功检测并下载 0.5.0，下载文件 SHA-512 与本地安装包相同；0.5.0 自身正确报告没有更新。本次没有运行正式安装器，也没有覆盖用户正在使用的安装；实际旧版覆盖安装的既有隔离测试记录见上文。
+
+验证报告保存在忽略目录 `artifacts/release-checks-0.5.0.log`、`artifacts/release-packaged-check-0.5.0.log`、`artifacts/package-manifest-0.5.0.json` 和 `artifacts/public-update-check-0.5.0.json`。

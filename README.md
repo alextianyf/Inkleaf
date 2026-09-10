@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/alextianyf/Inkleaf/releases/latest"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/download-en-dark.svg"><img src="docs/media/badges/download-en.svg" width="218" height="44" alt="Download for Windows"></picture></a>&nbsp;&nbsp;<a href="#quick-start"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/quick-start-en-dark.svg"><img src="docs/media/badges/quick-start-en.svg" width="122" height="44" alt="Quick start"></picture></a>
+  <a href="https://github.com/alextianyf/Inkleaf/releases/download/v0.5.0/Inkleaf-Setup-0.5.0.exe"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/download-en-dark.svg"><img src="docs/media/badges/download-en.svg" width="218" height="44" alt="Download for Windows"></picture></a>&nbsp;&nbsp;<a href="#quick-start"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/quick-start-en-dark.svg"><img src="docs/media/badges/quick-start-en.svg" width="122" height="44" alt="Quick start"></picture></a>
 </p>
 
 <p align="center">
@@ -35,7 +35,8 @@ Inkleaf is a Windows desktop tool for turning Markdown notes, project READMEs an
 | **Check before saving** | Preview the generated PDF, including page breaks and clickable contents. Export uses those same PDF bytes.                                                   |
 | **Keep the details**    | Render mathematics, tables, images, aligned badges, task lists and footnotes. Missing resources and some unsupported content produce notices.                |
 | **Convert a folder**    | Select Markdown files for batch export and inspect them individually. Preserve subfolders; automatic output adds numbers to avoid overwriting existing PDFs. |
-| **Choose the layout**   | Folio (default), Classic and Minimal themes, A4 or Letter, typography, heading styles, pagination, headers, footers and copyright.                                            |
+| **Choose the layout**   | Folio (default), Classic and Minimal themes, A4 or Letter, typography, heading styles, pagination, headers, footers and copyright.                           |
+| **Set app appearance**  | Choose Light, Dark or System in General. App appearance stays independent of your PDF theme.                                                                 |
 | **Keep it local**       | Convert without changing the Markdown source. Save to Downloads, beside the source, or in a folder you choose.                                               |
 
 ## Why Inkleaf?
@@ -85,11 +86,11 @@ These are examples of supported content, not a promise of every Markdown dialect
 
 ## Get Inkleaf
 
-**[Download for Windows (x64)](https://github.com/alextianyf/Inkleaf/releases/latest)** · [Release notes](https://github.com/alextianyf/Inkleaf/releases/latest)
+**[Download for Windows (x64)](https://github.com/alextianyf/Inkleaf/releases/download/v0.5.0/Inkleaf-Setup-0.5.0.exe)** · [Release notes](https://github.com/alextianyf/Inkleaf/releases/tag/v0.5.0)
 
-The current stable release is **0.4.11**. Download the `.exe` installer above, or [run from source](#development). The `.blockmap` and `latest.yml` files on the release page are used by the updater; manual installation only needs the `.exe`.
+The current stable release is **0.5.0**. Download the `.exe` installer above, or [run from source](#development). The `.blockmap` and `latest.yml` files on the release page are used by the updater; manual installation only needs the `.exe`.
 
-The installer bundles the runtime, so Node.js and Python are not needed. macOS and Linux builds are not currently offered, and Windows builds are unsigned. Some layout and highlighting improvements shown above are only in the current source; the release notes list what is packaged in 0.4.11.
+The installer bundles the runtime, so Node.js and Python are not needed. macOS and Linux builds are not currently offered, and Windows builds are unsigned. Folio, advanced layout settings, code highlighting and Light/Dark/System appearance are included in 0.5.0.
 
 Installed Windows builds check for new stable versions. You choose **Download**, then **Restart and update** when ready. Inkleaf waits for active conversion or export tasks; quitting normally does not install an update. [Update and release details](docs/updates.md).
 
@@ -143,7 +144,7 @@ Inspired by traditional Chinese printing, **印页** brings together the act of 
 
 ## Still taking shape
 
-The conversion workflow is implemented; the desktop experience is still being refined. The current source includes symmetric resizing, a larger layout preview and clear save/change feedback. Further PDF styling and search improvements are on the [roadmap](docs/todo.md).
+The conversion workflow is implemented; the desktop experience is still being refined. Version 0.5.0 includes symmetric resizing, a larger layout preview and clear save/change feedback. Further PDF styling, search, conversion speed and code-maintenance improvements are on the [roadmap](docs/todo.md).
 
 If something renders incorrectly, [open an issue](https://github.com/alextianyf/Inkleaf/issues) with the app version, Windows version, a small Markdown example and the expected result. Remove private information before sharing a sample.
 

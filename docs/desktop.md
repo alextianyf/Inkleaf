@@ -1,4 +1,4 @@
-# Inkleaf desktop prototype
+# Inkleaf desktop
 
 Source-format checks and in-memory repairs are documented in [source-checks.md](source-checks.md). Source files are never rewritten by conversion.
 
@@ -11,16 +11,16 @@ The desktop app runs entirely on the user's computer. It uses Electron, the exis
 Development prerequisites: Node.js 22.12+ and npm.
 
 ```powershell
-npm ci
-npm start
+npm.cmd ci
+npm.cmd run dev
 ```
 
 1. Start typing a filename. Inkleaf automatically discovers Markdown files on local fixed drives, starting with common folders. Existing indexed results work while discovery continues. You can also add a folder or use **打开文件**.
-2. Type part of a filename. The empty search window is a single 62-pixel-high row: Inkleaf text, “搜索 Markdown，转为 PDF / Find Markdown for PDF”, then refresh, add-folder and open-file icons. Whitespace shows no results. Search covers `.md` and `.markdown`, including subfolders. Files and folders have distinct icons; folder counts include indexed descendants. Select with ↑ / ↓ or a mouse click.
+2. Type part of a filename. The empty search window is a single 62-pixel-high row: Inkleaf text, “搜索 Markdown，转为 PDF / Find Markdown for PDF”, then Open file and Settings icons. Folder management and index refresh are available in Settings → Search. Whitespace shows no results. Search covers `.md` and `.markdown`, including subfolders. Files and folders have distinct icons; folder counts include indexed descendants. Select with ↑ / ↓ or a mouse click.
 3. Press **Enter** (or double-click a result) to preview the actual paginated PDF. This creates no PDF beside the source file.
 4. Choose **导出 PDF / Export PDF** to save to Downloads by default. Settings → Export lets you choose the source folder, a custom folder, or a location picker for each export. The saved bytes are exactly the PDF being previewed. To include subsequent source edits, return to search and preview again. Closing settings after a layout change regenerates the current preview before export becomes available.
-5. **Esc** hides the search/preview window, or closes the separate settings window. Clicking another application hides only the search/preview window, preserving its state. Native file/folder pickers and save dialogs keep Inkleaf open. Use the preview's back arrow to return to search.
-6. **Ctrl+Shift+Space** on Windows/Linux, **⌘+Shift+Space** on macOS, toggles the app. Closing the window hides it in the tray. Use the tray menu's **退出** to quit.
+5. **Esc** returns from preview to search, including while a preview is loading; in search it hides the window. The preview back arrow also returns to search. Settings close separately and prompt before discarding an unsaved layout. Clicking another application hides the search/preview window, preserving its state; native file pickers keep it open.
+6. On Windows, **Ctrl+Shift+Space** toggles the installed app; **Ctrl+Alt+Shift+Space** toggles Inkleaf Dev. Use the tray menu's **退出 / Quit** to exit. General provides Light, Dark and System appearance independently of the PDF theme.
 
 The shortcut is active while Inkleaf is running. Launch at login is optional and off by default. Right-click the Inkleaf system tray icon and choose **设置 / Settings**. A separate window groups settings into General, Search, Layout, Export and About & updates. Preferences save automatically. Only Layout displays a fixed bilingual sample, rendered with the same PDF engine; it never reads the active user document. Closing settings returns new layout preferences to the current document preview. A running batch retains its original settings snapshot. Chinese, English and system language are supported. Native dialogs follow the operating system. Settings live in Electron's per-user userData/settings.json. See [Settings behavior](settings.md).
 
@@ -50,12 +50,12 @@ Document-local `<style>` blocks and inline CSS are supported, including flex/gri
 
 ```powershell
 npm run pack       # release/win-unpacked/Inkleaf.exe and companion files
-npm run dist:win   # release/Inkleaf-Setup-0.4.10.exe
+npm run dist:win   # release/Inkleaf-Setup-0.5.0.exe
 ```
 
 Users of the built application do not need Node.js, Python, or this repository. Share the installer, or the entire `win-unpacked` folder as a ZIP; the executable from that folder cannot be shared on its own.
 
-This prototype is unsigned. Windows may show a reputation warning. macOS and Linux packaging targets are configured but have not been validated; macOS signing/notarization is not configured. No store submission or paid service is involved.
+This Windows build is unsigned. Windows may show a reputation warning. macOS and Linux packaging targets are configured but have not been validated; macOS signing/notarization is not configured. No store submission or paid service is involved.
 
 ## Updates and publishing
 
