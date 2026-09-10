@@ -21,12 +21,14 @@ const path = require("node:path");
   );
   const env = { ...process.env, ALDUS_TEST_DIR: sandbox };
   delete env.ELECTRON_RUN_AS_NODE;
-  const desktop = await electron.launch({
-    ...(process.env.ALDUS_EXECUTABLE
-      ? { executablePath: process.env.ALDUS_EXECUTABLE, args: [] }
-      : { args: [root] }),
-    env,
-  });
+  const launch = () =>
+    electron.launch({
+      ...(process.env.ALDUS_EXECUTABLE
+        ? { executablePath: process.env.ALDUS_EXECUTABLE, args: [] }
+        : { args: [root] }),
+      env,
+    });
+  let desktop = await launch();
   const bounds = () =>
     desktop.evaluate(({ BrowserWindow }) =>
       BrowserWindow.getAllWindows()[0].getBounds(),
@@ -72,18 +74,21 @@ const path = require("node:path");
       before.y,
       "search result heights must not move the top edge",
     );
-    // At fractional DPI, Windows can report a slightly wider rectangle even
-    // while dragging only the top/bottom edge. It must never become a preference.
+    // Top/bottom drags resize symmetrically without adopting native width jitter.
     await desktop.evaluate(({ BrowserWindow }) => {
       const window = BrowserWindow.getAllWindows()[0];
-      for (let index = 0; index < 20; index++) {
-        for (const edge of ["bottom", "top"]) {
+      for (let index = 0; index < 10; index++) {
+        for (const delta of [20, -20]) {
           const bounds = window.getBounds();
           window.emit(
             "will-resize",
             { preventDefault() {} },
-            { ...bounds, width: bounds.width + 2, height: bounds.height + 40 },
-            { edge },
+            {
+              ...bounds,
+              width: bounds.width + 2,
+              height: bounds.height + delta,
+            },
+            { edge: "bottom" },
           );
         }
       }
@@ -91,7 +96,7 @@ const path = require("node:path");
     assert.deepEqual(
       await bounds(),
       before,
-      "vertical edge drags keep the compact bar stable",
+      "opposite vertical drags restore the original bounds without width drift",
     );
     assert.equal(
       (await page.evaluate(() => window.aldus.state())).searchWidth,
@@ -133,6 +138,53 @@ const path = require("node:path");
       moved.x,
       "manual positioning remains stable while searching",
     );
+    const resizeBefore = await bounds();
+    await desktop.evaluate(({ BrowserWindow }) => {
+      const win = BrowserWindow.getAllWindows()[0];
+      const native = win.getBounds();
+      win.emit(
+        "will-resize",
+        { preventDefault() {} },
+        {
+          ...native,
+          y: native.y - 20,
+          height: native.height + 20,
+          width: native.width + 2,
+        },
+        { edge: "top" },
+      );
+    });
+    const resized = await bounds();
+    assert.equal(resized.width, resizeBefore.width);
+    assert.ok(
+      Math.abs(resized.height - resizeBefore.height - 40) <= 2,
+      "fractional DPI may round the native border by a pixel",
+    );
+    assert.ok(
+      Math.abs(
+        resized.y +
+          resized.height / 2 -
+          resizeBefore.y -
+          resizeBefore.height / 2,
+      ) <= 1,
+    );
+    const preference = await page.evaluate(() => window.aldus.state());
+    assert.equal(preference.searchHeight, 102);
+    await cycle(page, 5);
+    assert.deepEqual(
+      await bounds(),
+      resized,
+      "result changes retain the manual height",
+    );
+    await desktop.close();
+    desktop = await launch();
+    const restartedPage = await desktop.firstWindow();
+    await restartedPage.getByRole("combobox").waitFor();
+    assert.equal(
+      (await restartedPage.evaluate(() => window.aldus.state())).searchHeight,
+      102,
+    );
+    assert.ok(Math.abs((await bounds()).height - resized.height) <= 2);
     console.log(
       "PASS: stable position across search, result counts, clearing, manual move and width changes.",
     );

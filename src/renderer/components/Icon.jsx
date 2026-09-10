@@ -30,6 +30,12 @@ export function Icon({ name, size = 20 }) {
       </>
     ),
     folder: <path d="M3 7V5h6l2 2h10v13H3z" />,
+    info: (
+      <>
+        <circle cx="12" cy="12" r="9" />
+        <path d="M12 11v6M12 7h.01" />
+      </>
+    ),
     settings: (
       <>
         <path d="M4 7h16M4 17h16" />

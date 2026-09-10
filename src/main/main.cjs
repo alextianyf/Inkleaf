@@ -15,6 +15,12 @@ const {
 } = require("electron");
 const fs = require("node:fs/promises");
 const path = require("node:path");
+const { runtimeOptions } = require("./runtime.cjs");
+const { migrateProfile } = require("./profile-migration.cjs");
+const runtime = runtimeOptions({
+  packaged: app.isPackaged,
+  appData: app.getPath("appData"),
+});
 const { pathToFileURL } = require("node:url");
 const { createUpdateService } = require("./updates.cjs");
 const { autoUpdater } = require("electron-updater");
@@ -39,12 +45,17 @@ let batchCompletion = Promise.resolve();
 const {
   searchWidth,
   layoutBounds,
+  symmetricResize,
+  searchContentHeight,
   MIN_SEARCH_WIDTH,
   MARGIN,
 } = require("./window-layout.cjs");
 const strings = require("../shared/strings.json");
 const os = require("node:os");
-const t = (key) => strings[config?.language || "zh"][key];
+const t = (key) =>
+  key === "brandName" && runtime.development
+    ? runtime.name
+    : strings[config?.language || "zh"][key];
 
 const APP_URL = "aldus://app/desktop.html";
 let library;
@@ -54,21 +65,44 @@ const pdfService = new PdfService(documents, t);
 const previews = new Map();
 const sampleService = new PdfService(documents, t);
 let sampleQueue = Promise.resolve();
-const settingsWindow = createSettingsWindow(() => {
-  void persist()
-    .then(() => {
-      if (!window.isDestroyed() && !quitting) {
-        window.webContents.send("aldus:preferences-changed", state());
-        if (currentLayout.mode === "preview" && !process.env.ALDUS_TEST_DIR)
-          reveal();
-      }
-    })
-    .catch((error) => console.error("Unable to save settings", error));
-});
+let preferencesQueue = Promise.resolve();
+let previewGeneration = 0;
+const settingsWindow = createSettingsWindow(
+  () => {
+    void persist()
+      .then(() => {
+        if (!window.isDestroyed() && !quitting) {
+          window.webContents.send("aldus:preferences-changed", state());
+          if (currentLayout.mode === "preview" && !process.env.ALDUS_TEST_DIR)
+            reveal();
+        }
+      })
+      .catch((error) => console.error("Unable to save settings", error));
+  },
+  () => quitting,
+  () => currentAppearance(),
+);
+function currentAppearance() {
+  if (config.appearance !== "system") return config.appearance;
+  return nativeTheme.shouldUseDarkColors ? "dark" : "light";
+}
+function updateAppearance() {
+  const appearance = currentAppearance();
+  for (const target of [window, settingsWindow.get()]) {
+    if (!target || target.isDestroyed()) continue;
+    // Preserve the transparent native backdrop on the search/preview window.
+    if (target !== window || !usesBackdrop)
+      target.setBackgroundColor(appearance === "dark" ? "#20252c" : "#f5f6f8");
+    target.webContents.send("aldus:appearance-changed", appearance);
+  }
+}
 function state() {
   return {
     ...config,
     version: app.getVersion(),
+    development: runtime.development,
+    runtimeMode: runtime.mode,
+    defaultShortcut: runtime.defaultShortcut,
     shortcutError,
     update: updates.getState(),
     downloadsPath: app.getPath("downloads"),
@@ -83,6 +117,7 @@ let window,
   configFile,
   quitting = false;
 let shortcutError = "";
+let usesBackdrop = false;
 let nativeDialogs = 0;
 let blurTimer;
 let widthSaveTimer;
@@ -90,12 +125,13 @@ let currentLayout = { mode: "search" };
 let currentDisplayId;
 let requestedBounds;
 
-app.setName("Inkleaf");
-// Keep the existing profile and installation identity when changing the brand.
-app.setPath(
-  "userData",
-  process.env.ALDUS_TEST_DIR || path.join(app.getPath("appData"), "Aldus"),
-);
+app.setName(runtime.name);
+// Select identity and storage before Chromium or the single-instance lock starts.
+require("node:fs").mkdirSync(runtime.sessionData, { recursive: true });
+app.setPath("userData", runtime.userData);
+app.setPath("sessionData", runtime.sessionData);
+app.setAppLogsPath(path.join(runtime.userData, "logs"));
+if (process.platform === "win32") app.setAppUserModelId(runtime.appId);
 protocol.registerSchemesAsPrivileged([
   {
     scheme: "aldus",
@@ -123,6 +159,7 @@ function applyLayout(display, reposition = false) {
     currentLayout,
     config.searchWidth,
     reposition ? undefined : requestedBounds,
+    config.searchHeight,
   );
   window.setBounds(requestedBounds);
 }
@@ -238,7 +275,7 @@ function installHandlers() {
   handle("open-settings", openSettings);
   handle("close-settings", () => settingsWindow.close());
   handle("settings-layout", (layout) => settingsWindow.resize(layout === true));
-  handle("sample-preview", async (options) => {
+  handle("sample-preview", async (options, scenario) => {
     let valid;
     try {
       valid = validatePreferences(options);
@@ -247,19 +284,14 @@ function installHandlers() {
     }
     const language = config.language;
     const optionsSnapshot = { ...config, ...valid, language };
+    const sample = require("./layout-sample.cjs").layoutSample(
+      optionsSnapshot,
+      scenario,
+    );
     // Keep requests ordered even if the settings window is closed and reopened.
     sampleQueue = sampleQueue
       .catch(() => {})
-      .then(() =>
-        sampleService.render(
-          path.join(
-            __dirname,
-            "../../resources/samples",
-            "layout-" + language + ".md",
-          ),
-          optionsSnapshot,
-        ),
-      );
+      .then(() => sampleService.render(sample.file, sample.options));
     const result = await sampleQueue;
     return { ...result, data: new Uint8Array(result.data) };
   });
@@ -347,45 +379,62 @@ function installHandlers() {
       folder: path.dirname(file),
     };
   });
-  handle("settings", async (options) => {
-    let patch;
-    try {
-      patch = validatePreferences(options);
-    } catch {
-      throw new Error(t("invalidSettings"));
-    }
-    const changesLogin =
-      Object.hasOwn(patch, "launchAtLogin") &&
-      patch.launchAtLogin !== config.launchAtLogin;
-    const supportsLogin =
-      process.env.ALDUS_TEST_DIR ||
-      (app.isPackaged && ["win32", "darwin"].includes(process.platform));
-    if (changesLogin && !supportsLogin) throw new Error(t("loginUnavailable"));
-    if (patch.shortcut && !registerShortcut(patch.shortcut))
-      throw new Error(t("shortcutConflict"));
-    // Integration tests must not change the user's login applications.
-    if (changesLogin && !process.env.ALDUS_TEST_DIR) {
-      app.setLoginItemSettings({
-        openAtLogin: patch.launchAtLogin,
-        args: ["--hidden"],
+  handle("settings", (options) => {
+    const operation = preferencesQueue
+      .catch(() => {})
+      .then(async () => {
+        let patch;
+        try {
+          patch = validatePreferences(options);
+        } catch {
+          throw new Error(t("invalidSettings"));
+        }
+        const changesLogin =
+          Object.hasOwn(patch, "launchAtLogin") &&
+          patch.launchAtLogin !== config.launchAtLogin;
+        const supportsLogin =
+          !runtime.development &&
+          (process.env.ALDUS_TEST_DIR ||
+            (app.isPackaged && ["win32", "darwin"].includes(process.platform)));
+        if (runtime.development && patch.launchAtLogin === true)
+          throw new Error(t("developmentLoginHint"));
+        if (changesLogin && !supportsLogin)
+          throw new Error(t("loginUnavailable"));
+        if (patch.shortcut && !registerShortcut(patch.shortcut))
+          throw new Error(t("shortcutConflict"));
+        // Integration tests must not change the user's login applications.
+        if (changesLogin && !process.env.ALDUS_TEST_DIR) {
+          app.setLoginItemSettings({
+            openAtLogin: patch.launchAtLogin,
+            args: ["--hidden"],
+          });
+        }
+        const nextConfig = { ...config, ...patch };
+        nextConfig.language = resolveLanguage(
+          nextConfig.languagePreference,
+          app.getLocale(),
+        );
+        // Do not apply a draft to subsequent conversions if writing it fails.
+        await saveSettings(nextConfig);
+        config = nextConfig;
+        if (Object.hasOwn(patch, "appearance")) updateAppearance();
+        shortcutError = "";
+        updateTray();
+        if (
+          ["roots", "excludedRoots", "autoSearch"].some((key) =>
+            Object.hasOwn(patch, key),
+          )
+        )
+          await configureSearch();
+        if (
+          Object.hasOwn(patch, "searchWidth") ||
+          Object.hasOwn(patch, "searchHeight")
+        )
+          applyLayout();
+        return state();
       });
-    }
-    config = { ...config, ...patch };
-    config.language = resolveLanguage(
-      config.languagePreference,
-      app.getLocale(),
-    );
-    shortcutError = "";
-    await persist();
-    updateTray();
-    if (
-      ["roots", "excludedRoots", "autoSearch"].some((key) =>
-        Object.hasOwn(patch, key),
-      )
-    )
-      await configureSearch();
-    if (Object.hasOwn(patch, "searchWidth")) applyLayout();
-    return state();
+    preferencesQueue = operation;
+    return operation;
   });
   handle("language", async (language) => {
     if (!["system", "zh", "en"].includes(language))
@@ -403,7 +452,14 @@ function installHandlers() {
     applyLayout(undefined, changedMode);
   });
   handle("hide", () => window.hide());
+  handle("cancel-preview", () => {
+    if (!batchJob?.running) {
+      previewGeneration++;
+      pdfService.cancel();
+    }
+  });
   handle("preview", async (file) => {
+    const generation = ++previewGeneration;
     if (
       typeof file !== "string" ||
       !isMarkdown(file) ||
@@ -411,7 +467,9 @@ function installHandlers() {
     )
       throw new Error(t("chooseMarkdown"));
     if (batchJob?.running) throw new Error(t("batchBusy"));
+    if (generation !== previewGeneration) throw new Error("Preview cancelled");
     const result = await pdfService.render(file, { ...config });
+    if (generation !== previewGeneration) throw new Error("Preview cancelled");
     previews.clear();
     previews.set(result.id, {
       data: result.data,
@@ -575,15 +633,27 @@ function updateTray() {
 }
 
 async function start() {
-  if (process.platform === "win32") app.setAppUserModelId("com.alextian.aldus");
+  try {
+    await migrateProfile(runtime.legacyData, runtime.userData);
+  } catch (error) {
+    throw new Error(
+      `Could not migrate settings from Aldus to Inkleaf. The original data is unchanged. ${error.message}`,
+    );
+  }
   configFile = path.join(app.getPath("userData"), "settings.json");
-  config = await loadSettings(configFile, app.getLocale());
+  config = await loadSettings(configFile, app.getLocale(), {
+    shortcut: runtime.defaultShortcut,
+  });
+  if (runtime.development) {
+    config.launchAtLogin = false;
+    // Upgrade the former development default; retain other custom shortcuts.
+    if (config.shortcut === "Control+Alt+Space")
+      config.shortcut = runtime.defaultShortcut;
+  }
   saveSettings = createSettingsWriter(configFile);
   updates = createUpdateService({
     updater: autoUpdater,
-    enabled:
-      process.platform === "win32" &&
-      (app.isPackaged || Boolean(process.env.ALDUS_TEST_DIR)),
+    enabled: process.platform === "win32" && runtime.updatesAllowed,
     isBusy: () =>
       quitting ||
       activeOperations > 0 ||
@@ -641,11 +711,12 @@ async function start() {
     maximizable: false,
     fullscreenable: false,
     alwaysOnTop: true,
-    backgroundColor: "#f5f5f6",
-    title: "Inkleaf",
+    backgroundColor: currentAppearance() === "dark" ? "#20252c" : "#f5f6f8",
+    title: runtime.name,
     icon: path.join(__dirname, "../../resources/icons/inkleaf.ico"),
     autoHideMenuBar: true,
     webPreferences: {
+      additionalArguments: [`--inkleaf-appearance=${currentAppearance()}`],
       preload: path.join(__dirname, "preload.cjs"),
       contextIsolation: true,
       sandbox: true,
@@ -661,28 +732,23 @@ async function start() {
   window.on("will-resize", (event, next, details) => {
     if (currentLayout.mode !== "search" || currentLayout.settings) return;
     event.preventDefault();
-    // Top/bottom drags can include native DPI rounding in next.width. Only
-    // dragging a side (including a corner) may change the width preference.
-    if (!details.edge.includes("left") && !details.edge.includes("right"))
-      return;
-    if (next.width === window.getBounds().width) return;
     const bounds = requestedBounds || window.getBounds();
     const area = screen.getDisplayMatching(bounds).workArea;
-    const width = searchWidth(area, next.width);
-    const left = details.edge.includes("left");
-    const x = left ? bounds.x + bounds.width - width : bounds.x;
-    requestedBounds = {
-      ...bounds,
-      width,
-      x: Math.round(
-        Math.max(
-          area.x + MARGIN,
-          Math.min(x, area.x + area.width - width - MARGIN),
-        ),
-      ),
-    };
+    const minimum = searchContentHeight(currentLayout);
+    requestedBounds = symmetricResize(
+      area,
+      bounds,
+      window.getBounds(),
+      next,
+      details.edge,
+      minimum,
+    );
     window.setBounds(requestedBounds);
-    config.searchWidth = width;
+    if (details.edge.includes("left") || details.edge.includes("right"))
+      config.searchWidth = requestedBounds.width;
+    if (details.edge.includes("top") || details.edge.includes("bottom"))
+      config.searchHeight = Math.max(62, requestedBounds.height - minimum + 62);
+    window.webContents.send("aldus:preferences-changed", state());
     clearTimeout(widthSaveTimer);
     widthSaveTimer = setTimeout(() => {
       widthSaveTimer = undefined;
@@ -718,10 +784,12 @@ async function start() {
     (acrylic || process.platform === "darwin")
   ) {
     window.setBackgroundColor("#00000000");
+    usesBackdrop = true;
     if (acrylic) window.setBackgroundMaterial("acrylic");
     else window.setVibrancy("under-window");
   }
   window.webContents.setWindowOpenHandler(() => ({ action: "deny" }));
+  window.webContents.on("dom-ready", updateAppearance);
   window.webContents.on("will-navigate", (event) => event.preventDefault());
   window.on("close", (event) => {
     if (!quitting) {
@@ -731,7 +799,10 @@ async function start() {
   });
 
   tray = new Tray(createTrayIcon());
-  nativeTheme.on("updated", () => tray.setImage(createTrayIcon()));
+  nativeTheme.on("updated", () => {
+    tray.setImage(createTrayIcon());
+    if (config.appearance === "system") updateAppearance();
+  });
   updateTray();
   tray.on("click", reveal);
   if (!registerShortcut(config.shortcut)) shortcutError = t("shortcutFailed");
@@ -745,7 +816,7 @@ async function start() {
     if (process.argv.includes("--settings")) openSettings();
     else if (!loginLaunch) reveal();
   }
-  if (!process.env.ALDUS_TEST_DIR) {
+  if (!process.env.ALDUS_TEST_DIR && runtime.updatesAllowed) {
     void updates.check();
     setInterval(() => void updates.check(), 4 * 60 * 60 * 1000).unref();
   }

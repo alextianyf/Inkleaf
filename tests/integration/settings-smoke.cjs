@@ -82,6 +82,9 @@ const os = require("node:os");
       const win = BrowserWindow.getAllWindows().find((win) =>
         win.webContents.getURL().endsWith("?settings"),
       );
+      await win.webContents.executeJavaScript(
+        "new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))",
+      );
       return (
         await win.webContents.capturePage(undefined, {
           stayHidden: true,
@@ -112,6 +115,10 @@ const os = require("node:os");
     page.on("pageerror", (error) => errors.push(error.message));
     await page.getByRole("combobox").waitFor();
     await setup();
+    assert.equal(
+      (await page.evaluate(() => window.aldus.state())).theme,
+      "folio",
+    );
     await expect
       .poll(
         async () =>
@@ -132,13 +139,93 @@ const os = require("node:os");
     await expect(settings.locator(".pdf-page canvas")).toHaveCount(2, {
       timeout: 60000,
     });
+    await settings.locator("#author").fill("Unsaved draft");
+    assert.equal((await page.evaluate(() => window.aldus.state())).author, "");
+    await settings
+      .getByRole("button", { name: "Close settings", exact: true })
+      .click();
+    await expect(settings.getByRole("dialog")).toBeVisible();
+    await settings
+      .getByRole("button", { name: "Keep editing", exact: true })
+      .click();
+    await expect(settings.locator("#author")).toHaveValue("Unsaved draft");
+    await settings
+      .getByRole("button", { name: "Revert changes", exact: true })
+      .click();
+    await expect(settings.locator("#author")).toHaveValue("");
     await settings.locator("#author").fill("Aldus settings test");
     await settings.locator("#paperSize").selectOption("Letter");
     await settings.locator("#orientation").selectOption("landscape");
     await settings.locator("#margins").selectOption("compact");
     await settings.locator("#fontSize").fill("12");
     await settings.locator("#lineHeight").selectOption("1.8");
+    await expect(settings.locator("#theme")).toHaveValue("folio");
+    assert.deepEqual(
+      await settings
+        .locator("#theme option")
+        .evaluateAll((options) => options.map((option) => option.value)),
+      ["folio", "default", "minimal"],
+    );
     await settings.locator("#theme").selectOption("minimal");
+    await settings.locator("#copyrightLabel").fill("Custom class notes");
+    assert.equal(
+      (await page.evaluate(() => window.aldus.state())).copyrightLabel,
+      "",
+    );
+    assert.equal(
+      (await page.evaluate(() => window.aldus.state())).paperSize,
+      "A4",
+      "live layout preview must not save the draft",
+    );
+    await expect(
+      settings.getByRole("button", { name: "View the change", exact: true }),
+    ).toBeEnabled();
+    await expect(
+      settings.locator(".layout-sample .preview-content"),
+    ).toHaveAttribute("aria-busy", "false", { timeout: 60000 });
+    await expect
+      .poll(() =>
+        settings
+          .locator(".pdf-page canvas")
+          .first()
+          .evaluate((c) => c.width / c.height),
+      )
+      .toBeGreaterThan(1.2);
+    await settings.locator("#sample-zoom").selectOption("125");
+    await expect
+      .poll(() =>
+        settings
+          .locator(".pdf-page canvas")
+          .first()
+          .evaluate((c) => c.getBoundingClientRect().width),
+      )
+      .toBeGreaterThan(1200);
+    await settings.locator("#sample-zoom").selectOption("fit");
+    await capture(settings, "settings-layout-draft.png");
+    // An empty directory blocks the atomic settings write in this test profile.
+    const blockedWrite = path.join(sandbox, "settings.json.tmp");
+    await fs.mkdir(blockedWrite);
+    await settings
+      .getByRole("button", { name: "Save layout", exact: true })
+      .click();
+    await expect(settings.getByRole("alert")).toContainText(
+      /EISDIR|EPERM|EACCES/,
+    );
+    await fs.rmdir(blockedWrite);
+    assert.equal(
+      (await page.evaluate(() => window.aldus.state())).author,
+      "",
+      "a failed save must not apply the draft",
+    );
+    await expect(settings.locator("#author")).toHaveValue(
+      "Aldus settings test",
+    );
+    await settings
+      .getByRole("button", { name: "Save layout", exact: true })
+      .click();
+    await expect(settings.locator(".layout-savebar [role=status]")).toHaveText(
+      "Layout saved",
+    );
     await saved(settings);
     await expect(
       settings.locator(".layout-sample .preview-content"),
@@ -149,8 +236,13 @@ const os = require("node:os");
       return window.aldus.samplePreview(config);
     });
     const sampleInfo = await inspect(sample.data);
-    assert.equal(sampleInfo.pages, 2);
+    assert.ok(
+      sampleInfo.pages >= 2,
+      "The sample paginates its expanded code examples",
+    );
     assert.match(sampleInfo.text, /Aldus settings test/);
+    assert.match(sampleInfo.text, /Custom class notes/);
+    assert.match(sampleInfo.text, /A quieter way to publish/);
     assert.doesNotMatch(sampleInfo.text, /PRIVATE ORIGINAL/);
     assert.ok(
       Math.abs(sampleInfo.view[2] - 792) < 2 &&
@@ -167,6 +259,27 @@ const os = require("node:os");
       )
       .toBeGreaterThan(1.2);
     await capture(settings, "settings-layout.png");
+    const originalCanvas = await settings
+      .locator(".pdf-page canvas")
+      .first()
+      .elementHandle();
+    await settings
+      .getByRole("button", { name: "View the change", exact: true })
+      .click();
+    await expect(settings.locator(".pdf-change-highlight")).toBeAttached();
+    assert.equal(
+      await originalCanvas.evaluate((canvas) => canvas.isConnected),
+      true,
+      "viewing a change must not rebuild the PDF canvases",
+    );
+    await expect
+      .poll(() =>
+        settings
+          .locator(".layout-sample .preview-content")
+          .evaluate((el) => el.scrollTop),
+      )
+      .toBeGreaterThan(100);
+    await capture(settings, "settings-copyright.png");
     await settings.getByRole("button", { name: "Export", exact: true }).click();
     await expect(settings.locator(".layout-sample")).toHaveCount(0);
     await expect(settings.locator("input[value=downloads]")).toBeChecked();
@@ -186,9 +299,41 @@ const os = require("node:os");
       timeout: 60000,
     });
     await capture(settings, "settings-layout-zh.png");
+    await desktop.evaluate(({ BrowserWindow }) =>
+      BrowserWindow.getAllWindows()
+        .find((win) => win.webContents.getURL().endsWith("?settings"))
+        .setSize(760, 640),
+    );
+    await expect
+      .poll(() =>
+        settings.evaluate(
+          () => document.documentElement.scrollWidth <= innerWidth,
+        ),
+      )
+      .toBe(true);
+    await expect(
+      settings.getByRole("button", { name: "保存排版", exact: true }),
+    ).toBeVisible();
+    await capture(settings, "settings-narrow.png");
+    await settings.locator("#author").fill("关闭时放弃的草稿");
+    // Alt+F4 / native close follows the same unsaved-changes interaction.
+    await desktop.evaluate(({ BrowserWindow }) =>
+      BrowserWindow.getAllWindows()
+        .find((win) => win.webContents.getURL().endsWith("?settings"))
+        .close(),
+    );
+    await expect(settings.getByRole("dialog")).toBeVisible();
     await settings
-      .getByRole("button", { name: "关闭设置", exact: true })
-      .click();
+      .getByRole("button", { name: "放弃并关闭", exact: true })
+      .click()
+      .catch((error) => {
+        if (!settings.isClosed()) throw error;
+      });
+    await expect.poll(() => settings.isClosed()).toBe(true);
+    assert.equal(
+      (await page.evaluate(() => window.aldus.state())).author,
+      "Aldus settings test",
+    );
     await expect(page.locator(".preview-title")).toContainText("Letter");
     await expect(
       page.getByRole("button", { name: "导出 PDF", exact: true }),
@@ -205,6 +350,7 @@ const os = require("node:os");
     const pdfInfo = await inspect(
       await fs.readFile(path.join(downloads, "private.pdf")),
     );
+    assert.match(pdfInfo.text, /Custom class notes/);
     assert.match(pdfInfo.text, /PRIVATE ORIGINAL/);
     assert.match(pdfInfo.text, /Aldus settings test/);
     assert.deepEqual(pdfInfo.view, sampleInfo.view);
@@ -303,10 +449,49 @@ const os = require("node:os");
     await page.getByRole("combobox").waitFor();
     const restarted = await page.evaluate(() => window.aldus.state());
     assert.equal(restarted.author, "For the next batch");
+    assert.equal(restarted.theme, "minimal");
+    assert.equal(restarted.copyrightLabel, "Custom class notes");
     assert.equal(restarted.paperSize, "Letter");
     assert.equal(restarted.orientation, "landscape");
     assert.equal(restarted.exportFolder, custom);
     assert.equal(restarted.language, "zh");
+    settings = await openSettings(page);
+    await settings.getByRole("button", { name: "排版", exact: true }).click();
+    await settings.locator("#author").fill("Saved on close");
+    await settings
+      .getByRole("button", { name: "关闭设置", exact: true })
+      .click();
+    await settings
+      .getByRole("button", { name: "保存并关闭", exact: true })
+      .click();
+    await expect
+      .poll(
+        async () => (await page.evaluate(() => window.aldus.state())).author,
+      )
+      .toBe("Saved on close");
+    await expect.poll(() => settings.isClosed()).toBe(true);
+    settings = await openSettings(page);
+    await settings.getByRole("button", { name: "排版", exact: true }).click();
+    await expect(settings.locator("#theme")).toHaveValue("minimal");
+    await settings
+      .getByRole("button", { name: "恢复此分类的默认设置", exact: true })
+      .click();
+    await expect(settings.locator("#theme")).toHaveValue("folio");
+    assert.equal(
+      (await page.evaluate(() => window.aldus.state())).theme,
+      "minimal",
+      "reset remains a draft",
+    );
+    await settings
+      .getByRole("button", { name: "保存排版", exact: true })
+      .click();
+    await expect
+      .poll(async () => (await page.evaluate(() => window.aldus.state())).theme)
+      .toBe("folio");
+    assert.equal(
+      JSON.parse(await fs.readFile(path.join(sandbox, "settings.json"))).theme,
+      "folio",
+    );
     assert.deepEqual(errors, []);
     console.log(
       "PASS: separate bilingual settings, real sample PDF, Letter landscape, autosave/restart, original untouched, Downloads/source/custom/picker exports, collision numbering, batch snapshot and hierarchy.",

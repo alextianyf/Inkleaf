@@ -1,5 +1,6 @@
 const { _electron: electron, expect } = require("@playwright/test");
 const assert = require("node:assert/strict");
+const { searchWidth } = require("../../src/main/window-layout.cjs");
 const fs = require("node:fs/promises");
 const path = require("node:path");
 const os = require("node:os");
@@ -159,10 +160,10 @@ const os = require("node:os");
       BrowserWindow.getAllWindows()[0].getSize(),
     );
     assert.ok(
-      compactSize[1] <= 70 && compactSize[0] <= 564,
+      compactSize[1] <= 70 && compactSize[0] <= 644,
       "empty search is a single compact bar",
     );
-    await expect(page.locator(".titlebar button")).toHaveCount(3);
+    await expect(page.locator(".titlebar button")).toHaveCount(2);
     assert.equal(
       await desktop.evaluate(({ BrowserWindow }) =>
         BrowserWindow.getAllWindows()[0].isAlwaysOnTop(),
@@ -205,31 +206,34 @@ const os = require("node:os");
       null,
       "automatic layout must not become a manual preference",
     );
-    const drag = await desktop.evaluate(({ BrowserWindow }) => {
+    const drag = await desktop.evaluate(({ BrowserWindow }, logicalWidth) => {
       const window = BrowserWindow.getAllWindows()[0];
       const before = window.getBounds();
       window.emit(
         "will-resize",
         { preventDefault() {} },
-        { ...before, width: 640 },
+        { ...before, width: before.width + (640 - logicalWidth) / 2 },
         { edge: "right" },
       );
       const wider = window.getBounds();
       window.emit(
         "will-resize",
         { preventDefault() {} },
-        { ...wider, x: wider.x + wider.width - 470, width: 470 },
+        { ...wider, x: wider.x + 85, width: wider.width - 85 },
         { edge: "left" },
       );
       return { wider, narrower: window.getBounds() };
-    });
+    }, searchWidth(position.area));
     assert.ok(Math.abs(drag.wider.width - 640) <= 4);
     assert.ok(Math.abs(drag.narrower.width - 470) <= 4);
     assert.ok(
       Math.abs(
-        drag.wider.x + drag.wider.width - drag.narrower.x - drag.narrower.width,
+        drag.wider.x +
+          drag.wider.width / 2 -
+          drag.narrower.x -
+          drag.narrower.width / 2,
       ) <= 4,
-      "dragging the left edge keeps the right edge in place",
+      "dragging the left edge keeps the center in place",
     );
     await expect
       .poll(
@@ -292,6 +296,7 @@ const os = require("node:os");
     await screenshot("search.png");
     await search.press("ArrowDown");
     await search.press("ArrowUp");
+    const previousQuery = await search.inputValue();
     await search.press("Enter");
     const exportButton = page.getByRole("button", {
       name: "导出 PDF",
@@ -353,14 +358,20 @@ const os = require("node:os");
     const settingsCreated = desktop.waitForEvent("window", {
       predicate: (candidate) => candidate !== page,
     });
-    await openTraySettings();
+    await page.getByRole("button", { name: "设置", exact: true }).click();
     const settings = await settingsCreated;
+    await openTraySettings();
     await settings.getByRole("button", { name: "排版", exact: true }).click();
     await expect(
       settings.locator(".layout-sample .pdf-page canvas"),
     ).not.toHaveCount(0, { timeout: 60000 });
-    await settings.getByLabel("署名", { exact: true }).fill("Aldus smoke test");
+    await settings
+      .getByLabel("版权所有者 · © 右侧", { exact: true })
+      .fill("Aldus smoke test");
     await settings.getByLabel("主题", { exact: true }).selectOption("minimal");
+    await settings
+      .getByRole("button", { name: "保存排版", exact: true })
+      .click();
     await expect
       .poll(
         async () =>
@@ -374,9 +385,9 @@ const os = require("node:os");
       "en",
     );
     await settings.getByRole("button", { name: "Layout", exact: true }).click();
-    await expect(settings.getByLabel("Author", { exact: true })).toHaveValue(
-      "Aldus smoke test",
-    );
+    await expect(
+      settings.getByLabel("Copyright holder · after ©", { exact: true }),
+    ).toHaveValue("Aldus smoke test");
     await settings
       .getByRole("button", { name: "General", exact: true })
       .click();
@@ -401,7 +412,9 @@ const os = require("node:os");
       timeout: 60000,
     });
     await expect(exportButton).toBeEnabled({ timeout: 60000 });
-    await page.getByRole("button", { name: "返回搜索" }).click();
+    await page.keyboard.press("Escape");
+    await expect(search).toBeFocused();
+    await expect(search).toHaveValue(previousQuery);
     await search.fill("中文");
     await page.getByRole("option").filter({ hasText: "中文笔记.MD" }).waitFor();
     await search.press("Enter");
@@ -440,7 +453,7 @@ const os = require("node:os");
       window.emit(
         "will-resize",
         { preventDefault() {} },
-        { ...window.getBounds(), width: 490 },
+        { ...window.getBounds(), width: window.getBounds().width + 10 },
         { edge: "right" },
       );
       app.quit();
@@ -475,6 +488,11 @@ const os = require("node:os");
     );
   } finally {
     await desktop.close();
+    assert.equal(
+      path.dirname(path.resolve(sandbox)),
+      path.resolve(os.tmpdir()),
+    );
+    assert.ok(path.basename(sandbox).startsWith("aldus-"));
     await fs.rm(sandbox, { recursive: true, force: true });
   }
 })().catch((error) => {

@@ -1,8 +1,9 @@
 const { BrowserWindow } = require("electron");
 const fs = require("node:fs/promises");
 const { randomUUID } = require("node:crypto");
-const { layoutKey } = require("../conversion/layout.cjs");
+const { layoutKey, pageMargins } = require("../conversion/layout.cjs");
 const { buildDocument } = require("../conversion/document.cjs");
+const { printDecoration } = require("../conversion/print-decoration.cjs");
 
 class PdfService {
   constructor(documents, translate) {
@@ -10,14 +11,32 @@ class PdfService {
     this.translate = translate;
     this.cache = new Map();
     this.busy = false;
+    this.current = null;
+  }
+  cancel() {
+    this.current?.abort();
   }
   async render(file, options) {
     if (this.busy) throw new Error(this.translate("renderBusy"));
     const id = randomUUID();
+    const controller = new AbortController();
+    this.current = controller;
+    const cancelled = new Promise((_, reject) => {
+      controller.signal.addEventListener(
+        "abort",
+        () => {
+          const error = new Error("Preview cancelled");
+          error.name = "AbortError";
+          reject(error);
+        },
+        { once: true },
+      );
+    });
+    const wait = (operation) => Promise.race([operation, cancelled]);
     let printer;
     this.busy = true;
     try {
-      const stat = await fs.stat(file);
+      const stat = await wait(fs.stat(file));
       const cacheKey = JSON.stringify([
         file,
         stat.mtimeMs,
@@ -26,8 +45,9 @@ class PdfService {
         options.language,
       ]);
       const cached = this.cache.get(cacheKey);
-      if (cached && Date.now() - cached.created < 60000) return cached;
-      const document = await buildDocument(file, options);
+      if (cached && Date.now() - cached.created < 60000)
+        return { ...cached, id };
+      const document = await wait(buildDocument(file, options));
       this.documents.set(id, document.html);
       printer = new BrowserWindow({
         show: false,
@@ -41,9 +61,10 @@ class PdfService {
       printer.webContents.on("will-navigate", (event) =>
         event.preventDefault(),
       );
-      await printer.loadURL(`aldus://document/${id}`);
-      const missing = await printer.webContents.executeJavaScript(
-        `async function waitForAssets() {
+      await wait(printer.loadURL(`aldus://document/${id}`));
+      const missing = await wait(
+        printer.webContents.executeJavaScript(
+          `async function waitForAssets() {
           await document.fonts.ready;
           return Promise.all(Array.from(document.images, async (image) => {
             try {
@@ -55,19 +76,18 @@ class PdfService {
           }));
         }
         waitForAssets();`,
+        ),
       );
       document.warnings.push(...missing.filter(Boolean));
-      const data = await printer.webContents.printToPDF({
-        pageSize: options.paperSize || "A4",
-        landscape: options.orientation === "landscape",
-        printBackground: true,
-        preferCSSPageSize: true,
-        margins: { top: 0.79, bottom: 0.98, left: 0.79, right: 0.79 },
-        displayHeaderFooter: options.pageNumbers,
-        headerTemplate: "<span></span>",
-        footerTemplate:
-          '<div style="width:100%;text-align:center;font-size:9px;color:#888"><span class="pageNumber"></span> / <span class="totalPages"></span></div>',
-      });
+      const data = await wait(
+        printer.webContents.printToPDF({
+          pageSize: options.paperSize || "A4",
+          landscape: options.orientation === "landscape",
+          printBackground: true,
+          preferCSSPageSize: true,
+          ...printDecoration(options, file, document.title),
+        }),
+      );
       const result = {
         id,
         data,
@@ -78,6 +98,10 @@ class PdfService {
         theme: options.theme,
         paperSize: options.paperSize || "A4",
         layoutKey: layoutKey(options),
+        previewMargins: pageMargins(options, {
+          title: document.title,
+          file: require("node:path").basename(file),
+        }),
       };
       if (!document.warnings.length) {
         this.cache.set(cacheKey, result);
@@ -100,6 +124,7 @@ class PdfService {
       this.documents.delete(id);
       printer?.destroy();
       this.busy = false;
+      this.current = null;
     }
   }
 }

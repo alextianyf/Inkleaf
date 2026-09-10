@@ -1,15 +1,7 @@
+@import "./appearance.css";
+
 * {
   box-sizing: border-box;
-}
-:root {
-  --ink: #30343b;
-  --text-secondary: #4f5865;
-  --text-muted: #606875;
-  --text-action: #465b75;
-  --text-warning: #745b32;
-  --accent: #66788a;
-  --surface: rgba(248, 250, 252, 0.48);
-  --selection: rgba(102, 120, 138, 0.14);
 }
 body {
   margin: 0;
@@ -42,11 +34,15 @@ button:disabled {
   opacity: 0.4;
   cursor: default;
 }
+input::placeholder {
+  color: var(--text-muted);
+  opacity: 1;
+}
 button:focus-visible,
 input:focus-visible,
 select:focus-visible,
 summary:focus-visible {
-  outline: 2px solid #7f8da3;
+  outline: 2px solid var(--focus);
   outline-offset: 2px;
 }
 svg {
@@ -62,10 +58,10 @@ kbd {
   font-size: 10px;
   line-height: 17px;
   color: var(--text-secondary);
-  border: 1px solid #d9dadd;
+  border: 1px solid var(--border);
   border-radius: 4px;
   padding: 0 4px;
-  background: #ffffff35;
+  background: var(--keyboard);
 }
 .desktop-app {
   height: 100vh;
@@ -73,7 +69,7 @@ kbd {
   flex-direction: column;
   overflow: hidden;
   background: var(--surface);
-  border: 1px solid rgba(255, 255, 255, 0.78);
+  border: 1px solid var(--frame);
   border-radius: 10px;
   box-shadow: inset 0 0 0 1px #24272f09;
 }
@@ -127,8 +123,8 @@ kbd {
 }
 .icon-button:hover:not(:disabled),
 .icon-button.active {
-  background: #2026310c;
-  color: #353b48;
+  background: var(--hover);
+  color: var(--ink);
 }
 .workspace {
   display: flex;
@@ -151,7 +147,7 @@ kbd {
   min-width: 0;
   flex: 1;
   padding: 0 0 0 12px;
-  border-left: 1px solid #30343b20;
+  border-left: 1px solid var(--divider);
   color: var(--ink);
 }
 .search-field input {
@@ -174,7 +170,7 @@ kbd {
   letter-spacing: 0;
 }
 .search-results {
-  border-top: 1px solid #30364412;
+  border-top: 1px solid var(--divider);
   display: flex;
   flex-direction: column;
   min-height: 0;
@@ -208,7 +204,7 @@ kbd {
   color: var(--text-action);
 }
 .file-result:hover {
-  background: #3c4d750a;
+  background: var(--hover);
 }
 .file-result.selected:hover {
   background: var(--selection);
@@ -223,7 +219,7 @@ kbd {
 .file-info strong {
   font-size: 12px;
   font-weight: 500;
-  color: #353840;
+  color: var(--ink);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -271,7 +267,7 @@ kbd {
   gap: 9px;
   flex-shrink: 0;
   padding: 8px 19px;
-  border-bottom: 1px solid #343a4612;
+  border-bottom: 1px solid var(--divider);
 }
 .preview-title {
   min-width: 0;
@@ -301,13 +297,13 @@ kbd {
   transition: background 0.12s;
 }
 .primary-button:hover:not(:disabled) {
-  background: #3d485c;
+  background: var(--accent-hover);
 }
 .preview-content {
   flex: 1;
   min-height: 0;
   overflow: auto;
-  background: rgba(211, 215, 223, 0.38);
+  background: var(--preview-surround);
   position: relative;
 }
 .pdf-pages {
@@ -378,9 +374,9 @@ kbd {
   margin: 10px auto -34px;
   width: max-content;
   padding: 7px 12px;
-  border: 1px solid #ffffffa0;
+  border: 1px solid var(--frame);
   border-radius: 6px;
-  background: #f5f5f5ef;
+  background: var(--overlay);
   color: var(--text-secondary);
   font-size: 11px;
   box-shadow: 0 2px 8px #3036450c;
@@ -388,8 +384,8 @@ kbd {
 .spinner {
   width: 16px;
   height: 16px;
-  border: 1.5px solid #c6cbd3;
-  border-top-color: #6d7c92;
+  border: 1.5px solid var(--border);
+  border-top-color: var(--focus);
   border-radius: 50%;
   animation: spin 0.8s linear infinite;
 }
@@ -403,8 +399,8 @@ kbd {
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
-  border-left: 1px solid #252c3a12;
-  background: rgba(248, 250, 252, 0.32);
+  border-left: 1px solid var(--divider);
+  background: var(--surface);
   min-height: 0;
 }
 .settings-heading {
@@ -432,7 +428,7 @@ kbd {
 }
 .settings-scroll section {
   padding: 16px 0;
-  border-bottom: 1px solid #3036420d;
+  border-bottom: 1px solid var(--divider);
 }
 .settings-scroll h2,
 .block-label {
@@ -460,15 +456,15 @@ kbd {
   min-width: 0;
   width: 135px;
   padding: 6px 8px;
-  border: 1px solid #343e4e14;
+  border: 1px solid var(--border);
   border-radius: 5px;
-  background: #ffffff65;
+  background: var(--control);
   font-size: 11px;
 }
 .setting-row input[type="checkbox"] {
   width: 14px;
   height: 14px;
-  accent-color: #627089;
+  accent-color: var(--accent);
 }
 .settings-form input::placeholder {
   color: var(--text-muted);
@@ -506,9 +502,9 @@ kbd {
 }
 .shortcut-input {
   width: 100%;
-  border: 1px solid #343e4e14;
+  border: 1px solid var(--border);
   border-radius: 5px;
-  background: #ffffff65;
+  background: var(--control);
   padding: 7px 9px;
   font-size: 11px;
   margin-bottom: 7px;
@@ -534,7 +530,7 @@ kbd {
   justify-content: space-between;
   gap: 9px;
   padding: 11px 20px;
-  border-top: 1px solid #3036420d;
+  border-top: 1px solid var(--divider);
   font-size: 10px;
   color: var(--text-muted);
   flex-shrink: 0;
@@ -547,15 +543,15 @@ kbd {
   white-space: nowrap;
 }
 .text-button:hover {
-  color: #3c4d68;
+  color: var(--ink);
 }
 .saved-row {
   padding: 9px 20px;
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #3f614d;
-  background: #ecf5efb0;
+  color: var(--success-text);
+  background: var(--success-surface);
   font-size: 11px;
   flex-shrink: 0;
 }
@@ -567,8 +563,8 @@ kbd {
 }
 .error-message {
   padding: 9px 23px;
-  color: #8c4740;
-  background: #fff0eec0;
+  color: var(--error-text);
+  background: var(--error-surface);
   font-size: 11px;
   max-height: 75px;
   overflow: auto;
@@ -577,7 +573,7 @@ kbd {
 .preview-warnings {
   padding: 8px 23px;
   color: var(--text-warning);
-  background: #fff9eec0;
+  background: var(--warning-surface);
   font-size: 10px;
   max-height: 100px;
   overflow: auto;
@@ -636,7 +632,7 @@ kbd {
   width: 250px;
   min-width: 180px;
   max-width: 35%;
-  border-right: 1px solid #30364412;
+  border-right: 1px solid var(--divider);
 }
 .batch-options {
   padding: 12px 15px 6px;
@@ -704,7 +700,7 @@ kbd {
   color: var(--text-secondary);
 }
 .batch-file-button .status-failed {
-  color: #8c4740;
+  color: var(--error-text);
   white-space: normal;
   overflow-wrap: anywhere;
 }
@@ -712,7 +708,7 @@ kbd {
   color: var(--text-warning);
 }
 .batch-file-button .status-done {
-  color: #3f614d;
+  color: var(--success-text);
 }
 .batch-empty,
 .batch-scope {
@@ -747,7 +743,7 @@ kbd {
   align-items: center;
   gap: 16px;
   padding: 12px 20px;
-  border-top: 1px solid #30364412;
+  border-top: 1px solid var(--divider);
   flex-wrap: wrap;
 }
 .batch-summary {
@@ -773,7 +769,7 @@ kbd {
   width: 6px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #535e752a;
+  background: var(--scroll-thumb);
   border-radius: 5px;
   border: 1px solid transparent;
   background-clip: padding-box;
@@ -808,10 +804,10 @@ kbd {
 }
 @media (prefers-reduced-transparency: reduce) {
   .desktop-app {
-    background: #f6f6f8;
+    background: var(--surface-solid);
   }
   .settings-panel {
-    background: #f8f8fa;
+    background: var(--preferences);
   }
 }
 @media (prefers-reduced-motion: reduce) {

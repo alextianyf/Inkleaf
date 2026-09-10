@@ -8,12 +8,20 @@ function validatePreferences(patch) {
     throw new Error("Invalid settings");
   const result = {};
   const choices = {
+    appearance: ["light", "dark", "system"],
     languagePreference: ["system", "zh", "en"],
-    theme: ["default", "minimal", "dark"],
+    theme: ["default", "minimal", "folio"],
     paperSize: ["A4", "Letter"],
     orientation: ["portrait", "landscape"],
     margins: ["compact", "standard", "wide"],
     exportDestination: ["downloads", "source", "custom"],
+    signaturePosition: ["left", "center", "right"],
+    headerPosition: ["left", "center", "right"],
+    footerPosition: ["left", "center", "right"],
+    pageNumberPosition: ["left", "center", "right"],
+    pageNumberArea: ["header", "footer"],
+    pageNumberFormat: ["number", "fraction", "label"],
+    chapterBreak: ["none", "h1", "h2"],
   };
   for (const [key, value] of Object.entries(patch)) {
     if (!Object.hasOwn(DEFAULTS, key)) continue;
@@ -25,6 +33,10 @@ function validatePreferences(patch) {
         (Number.isFinite(value) && value >= 420 && value <= 10000);
     else if (key === "fontSize")
       valid = Number.isFinite(value) && value >= 8 && value <= 18;
+    else if (key === "searchHeight")
+      valid =
+        value === null ||
+        (Number.isFinite(value) && value >= 62 && value <= 10000);
     else if (key === "lineHeight")
       valid = Number.isFinite(value) && value >= 1.2 && value <= 2;
     else if (["roots", "excludedRoots"].includes(key))
@@ -35,7 +47,19 @@ function validatePreferences(patch) {
         );
     else if (typeof DEFAULTS[key] === "boolean")
       valid = typeof value === "boolean";
-    else if (key === "author")
+    else if (/^h[1-6]Color$/.test(key))
+      valid =
+        typeof value === "string" &&
+        (value === "" || /^#[0-9a-f]{6}$/i.test(value));
+    else if (/^h[1-6](Size|Before|After)$/.test(key))
+      valid =
+        value === null ||
+        (Number.isFinite(value) &&
+          value >= (key.endsWith("Size") ? 8 : 0) &&
+          value <= 80);
+    else if (
+      ["author", "copyrightLabel", "headerText", "footerText"].includes(key)
+    )
       valid = typeof value === "string" && value.length <= 200;
     else if (key === "shortcut")
       valid =
@@ -53,14 +77,23 @@ function resolveLanguage(preference, locale) {
   if (locale.startsWith("zh")) return "zh";
   return "en";
 }
-async function loadSettings(file, locale) {
+async function loadSettings(file, locale, overrides = {}) {
   const defaults = {
     ...DEFAULTS,
+    ...overrides,
     language: locale.startsWith("zh") ? "zh" : "en",
   };
   let config;
   try {
     const saved = JSON.parse(await fs.readFile(file, "utf8"));
+    // Earlier development builds used this field for the wrong purpose.
+    // Keep that text in the copyright line, never in the document heading.
+    if (
+      saved.copyrightLabel === undefined &&
+      typeof saved.documentTitle === "string"
+    )
+      saved.copyrightLabel = saved.documentTitle;
+    delete saved.documentTitle;
     config = {
       ...defaults,
       ...Object.fromEntries(

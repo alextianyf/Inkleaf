@@ -1,60 +1,22 @@
+import { Group, Row, Toggle, Select } from "./SettingControls.jsx";
+import AdvancedLayout from "./AdvancedLayout.jsx";
 import IconButton from "./IconButton.jsx";
 import UpdateControls from "./UpdateControls.jsx";
 const api = window.aldus;
 
-function Row({ name, label, children }) {
-  return (
-    <div className="setting-row">
-      <label htmlFor={name}>{label}</label>
-      {children}
-    </div>
-  );
-}
-function Toggle({ name, config, change, t }) {
-  return (
-    <Row name={name} label={t(name)}>
-      <input
-        id={name}
-        type="checkbox"
-        checked={config[name]}
-        onChange={(event) => change({ [name]: event.target.checked })}
-      />
-    </Row>
-  );
-}
-function Select({ name, values, config, change, t, numeric = false }) {
-  return (
-    <Row name={name} label={t(name)}>
-      <select
-        id={name}
-        value={config[name]}
-        onChange={(event) =>
-          change({
-            [name]: numeric ? Number(event.target.value) : event.target.value,
-          })
-        }
-      >
-        {values.map((value) => (
-          <option key={value} value={value}>
-            {t(String(value))}
-          </option>
-        ))}
-      </select>
-    </Row>
-  );
-}
 function Folders({ excluded, config, action, t }) {
   const roots = excluded ? config.excludedRoots : config.roots;
   return (
-    <section className="settings-section">
-      <div className="section-heading">
-        <h2>{t(excluded ? "excludedFolders" : "folders")}</h2>
+    <Group
+      title={t(excluded ? "excludedFolders" : "folders")}
+      action={
         <IconButton
           name="folderAdd"
           label={t(excluded ? "excludeFolder" : "addFolder")}
           onClick={() => action(excluded ? api.excludeFolder : api.addFolder)}
         />
-      </div>
+      }
+    >
       <div className="folder-list">
         {roots.map((root) => (
           <div className="folder-row" key={root}>
@@ -72,7 +34,7 @@ function Folders({ excluded, config, action, t }) {
         ))}
       </div>
       {!roots.length && <p className="muted">{t("emptyFolders")}</p>}
-    </section>
+    </Group>
   );
 }
 
@@ -83,6 +45,7 @@ export default function SettingsPanel({
   action,
   t,
   update,
+  viewChange,
 }) {
   function shortcutKey(event) {
     if (event.key === "Tab" || event.key === "Escape") return;
@@ -111,7 +74,14 @@ export default function SettingsPanel({
   if (category === "general")
     return (
       <>
-        <section className="settings-section">
+        <Group title={t("groupApp")}>
+          <Select
+            name="appearance"
+            values={["light", "dark", "system"]}
+            config={config}
+            change={change}
+            t={t}
+          />
           <Select
             name="languagePreference"
             values={["system", "zh", "en"]}
@@ -119,29 +89,36 @@ export default function SettingsPanel({
             change={change}
             t={t}
           />
-          <Toggle name="launchAtLogin" config={config} change={change} t={t} />
-        </section>
-        <section className="settings-section">
-          <label className="block-label" htmlFor="shortcut">
-            {t("shortcut")}
-          </label>
-          <input
-            id="shortcut"
-            className="shortcut-input"
-            value={config.shortcut
-              .replace(
-                "CommandOrControl",
-                navigator.platform.includes("Mac") ? "⌘" : "Ctrl",
-              )
-              .replace("Control", "Ctrl")
-              .split("+")
-              .join(" + ")}
-            readOnly
-            onKeyDown={shortcutKey}
+          <Toggle
+            name="launchAtLogin"
+            config={config}
+            change={change}
+            t={t}
+            disabled={config.development}
           />
-          <p className="muted">{t("shortcutHint")}</p>
-        </section>
-        <section className="settings-section">
+          {config.development && (
+            <p className="muted">{t("developmentLoginHint")}</p>
+          )}
+        </Group>
+        <Group title={t("groupActivation")}>
+          <Row name="shortcut" label={t("shortcut")} hint={t("shortcutHint")}>
+            <input
+              id="shortcut"
+              className="shortcut-input"
+              value={config.shortcut
+                .replace(
+                  "CommandOrControl",
+                  navigator.platform.includes("Mac") ? "⌘" : "Ctrl",
+                )
+                .replace("Control", "Ctrl")
+                .split("+")
+                .join(" + ")}
+              readOnly
+              onKeyDown={shortcutKey}
+            />
+          </Row>
+        </Group>
+        <Group title={t("groupSearchBar")}>
           <Row name="search-width" label={t("searchWidth")}>
             <span>
               {config.searchWidth
@@ -149,40 +126,47 @@ export default function SettingsPanel({
                 : t("automaticWidth")}
             </span>
           </Row>
+          <Row name="search-height" label={t("searchHeight")}>
+            <span>
+              {config.searchHeight
+                ? config.searchHeight + " px"
+                : t("automaticHeight")}
+            </span>
+          </Row>
           <p className="muted">{t("searchWidthHint")}</p>
           <button
             className="text-button"
-            onClick={() => change({ searchWidth: null })}
+            onClick={() => change({ searchWidth: null, searchHeight: null })}
           >
             {t("resetSearchWidth")}
           </button>
-        </section>
+        </Group>
       </>
     );
   if (category === "search")
     return (
       <>
-        <section className="settings-section">
+        <Group title={t("groupSearchScope")}>
           <Toggle name="autoSearch" config={config} change={change} t={t} />
           <p className="muted">{t("autoSearchHint")}</p>
-        </section>
+        </Group>
         <Folders config={config} action={action} t={t} />
         <Folders excluded config={config} action={action} t={t} />
-        <section className="settings-section">
+        <Group title={t("groupIndex")}>
           <p className="muted">{t("markdownSearchOnly")}</p>
           <button className="text-button" onClick={() => action(api.refresh)}>
             {t("rebuildIndex")}
           </button>
-        </section>
+        </Group>
       </>
     );
   if (category === "layout")
     return (
       <>
-        <section className="settings-section">
+        <Group title={t("groupPage")}>
           <Select
             name="theme"
-            values={["default", "minimal", "dark"]}
+            values={["folio", "default", "minimal"]}
             config={config}
             change={change}
             t={t}
@@ -208,8 +192,8 @@ export default function SettingsPanel({
             change={change}
             t={t}
           />
-        </section>
-        <section className="settings-section">
+        </Group>
+        <Group title={t("groupTypography")}>
           <Row name="fontSize" label={t("fontSize")}>
             <input
               id="fontSize"
@@ -232,9 +216,22 @@ export default function SettingsPanel({
             change={change}
             t={t}
           />
-        </section>
-        <section className="settings-section">
+        </Group>
+        <Group title={t("groupCopyright")}>
           <Toggle name="authorEnabled" config={config} change={change} t={t} />
+          {config.authorEnabled && (
+            <Row name="copyrightLabel" label={t("copyrightLabel")}>
+              <input
+                id="copyrightLabel"
+                value={config.copyrightLabel || ""}
+                maxLength={200}
+                placeholder={t("originalTitle")}
+                onChange={(event) =>
+                  change({ copyrightLabel: event.target.value })
+                }
+              />
+            </Row>
+          )}
           {config.authorEnabled && (
             <Row name="author" label={t("author")}>
               <input
@@ -246,15 +243,30 @@ export default function SettingsPanel({
               />
             </Row>
           )}
+          <p className="muted">{t("copyrightHint")}</p>
+          <button
+            className="text-button"
+            onClick={() => viewChange("signature")}
+            disabled={!config.authorEnabled || !config.author.trim()}
+          >
+            {t("viewChange")}
+          </button>
+        </Group>
+        <Group title={t("groupFooter")}>
           <Toggle name="pageNumbers" config={config} change={change} t={t} />
-        </section>
+        </Group>
+        <AdvancedLayout
+          config={config}
+          change={change}
+          t={t}
+          viewChange={viewChange}
+        />
       </>
     );
   if (category === "export")
     return (
       <>
-        <section className="settings-section">
-          <p className="block-label">{t("exportDestination")}</p>
+        <Group title={t("exportDestination")}>
           <div className="destination-options">
             {["downloads", "source", "custom"].map((value) => (
               <label key={value}>
@@ -299,8 +311,8 @@ export default function SettingsPanel({
               </button>
             </>
           )}
-        </section>
-        <section className="settings-section">
+        </Group>
+        <Group title={t("groupExportBehavior")}>
           <Toggle
             name="askExportLocation"
             config={config}
@@ -321,16 +333,20 @@ export default function SettingsPanel({
           />
           <p className="muted">{t("batchDestinationHint")}</p>
           <p className="muted">{t("collisionHint")}</p>
-        </section>
+        </Group>
       </>
     );
   return (
     <section className="preferences-about">
-      <strong>印页 · Inkleaf</strong>
+      <strong>{config.development ? "Inkleaf Dev" : "印页 · Inkleaf"}</strong>
       <p>
         {t("version")} {config.version}
       </p>
-      <UpdateControls update={update} t={t} />
+      {config.development ? (
+        <p className="muted">{t("developmentUpdateHint")}</p>
+      ) : (
+        <UpdateControls update={update} t={t} />
+      )}
       <button
         className="text-button"
         onClick={() =>

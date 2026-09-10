@@ -1,0 +1,69 @@
+Inkleaf Personal Noncommercial License 1.0
+Copyright (c) 2026 Alex Tian
+
+1. Scope
+This license covers the Inkleaf code, documentation and original assets for
+which Alex Tian holds the applicable rights (the "Software"). Third-party
+dependencies, fonts, images and other separately licensed materials retain
+their own licenses. This license does not restrict rights granted by those
+licenses or claim ownership of third-party material.
+
+2. Free personal noncommercial use
+An individual may use, copy and privately modify the Software without payment
+for personal purposes that are not directed toward financial benefit or
+commercial advantage, such as private study, hobbies and unpaid personal work.
+Individuals may share original or modified copies without charge for these
+same purposes, provided they include this license and copyright notices,
+identify modifications, and do not imply official endorsement. Recipients
+receive only the permissions stated in this license.
+
+3. Commercial use requires separate written permission
+Except for section 4, use for commercial purposes requires prior, separate
+written authorization from Alex Tian. Fees and other terms are negotiated
+separately. Paying an unspecified fee, making a donation, or downloading the
+Software does not by itself grant commercial permission.
+
+Commercial purposes include internal business or employer work; work for
+paying clients; paid teaching or training; sale or paid distribution of the
+Software or a derivative; and use in a paid conversion service, hosted service
+or commercial product. This applies even when no separate conversion fee is
+charged or the business has not yet made a profit. Calling a business activity
+"personal use" does not make it noncommercial.
+
+4. Rights holder and own-business exception
+Alex Tian, and companies under his majority ownership or effective management
+control, may use the Software commercially without a fee under this license.
+This exception applies only while that ownership or control continues and
+does not grant permission to unrelated customers or other third parties.
+Alex Tian may also grant separate written permissions on different terms.
+
+5. Documents and output
+This license does not claim rights in your Markdown documents or generated
+PDFs. It does not require a watermark, attribution or this license inside a
+PDF that contains only your content and separately permitted material. The
+purpose for which you use the Software still determines whether section 3
+requires commercial authorization.
+
+6. No broader grant
+Rights not expressly granted here are reserved. No right to use the Inkleaf
+name or logo as your own brand, or to imply sponsorship, is granted. This is
+a source-available, noncommercial license, not the MIT license or an
+unrestricted open-source license. These terms apply to copies distributed
+with them and do not purport to revoke rights already granted separately.
+
+7. Warranty and liability
+The Software is offered without promises about reliability, suitability,
+availability or error-free output. To the extent permitted by applicable law,
+Alex Tian and the contributors provide no warranty and accept no liability
+for loss or damage resulting from use of, or inability to use, the Software.
+Nothing in this license excludes rights or liabilities that applicable law
+does not allow to be excluded.
+
+8. Compliance and requests
+Permission under this license ends if you breach its terms. Stop the use or
+distribution that requires permission unless Alex Tian authorizes it in
+writing. Commercial authorization requests may be directed to Alex Tian
+through the contact channels on https://github.com/alextianyf.
+
+The English text above governs this license. A Chinese explanation is in
+docs/license.zh-CN.md.

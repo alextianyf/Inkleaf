@@ -128,7 +128,7 @@ ${Array.from({ length: 70 }, (_, i) => `| ROW-${String(i + 1).padStart(3, "0")} 
       )
       .toBe(false);
     const reports = [];
-    for (const theme of ["default", "minimal", "dark"]) {
+    for (const theme of ["default", "minimal", "folio"]) {
       const preview = await page.evaluate(
         async ({ file, theme }) => {
           await window.aldus.settings({
@@ -254,6 +254,9 @@ ${Array.from({ length: 70 }, (_, i) => `| ROW-${String(i + 1).padStart(3, "0")} 
         theme: "default",
       }),
     );
+    // Synchronize the UI after the direct IPC theme sweep above.
+    await page.reload();
+    await page.getByRole("combobox").waitFor();
     await page.getByRole("combobox").fill("compatibility");
     await expect(page.getByRole("option").first()).toContainText(
       "compatibility.md",
@@ -304,7 +307,7 @@ ${Array.from({ length: 70 }, (_, i) => `| ROW-${String(i + 1).padStart(3, "0")} 
       JSON.stringify(reports, null, 2),
     );
     console.log(
-      "PASS: compatibility corpus, three themes, printed text bounds/content, repeated table headers, images, task lists, footnotes and preview return links.",
+      "PASS: compatibility corpus, all themes, printed text bounds/content, repeated table headers, images, task lists, footnotes and preview return links.",
       reports,
     );
   } finally {

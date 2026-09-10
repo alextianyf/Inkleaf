@@ -9,6 +9,7 @@ const sanitize = require("sanitize-html");
 const { resolveImages } = require("./images.cjs");
 const { layoutHints, layoutAllowedAttributes } = require("./html-layout.cjs");
 const { checkMarkdown } = require("./diagnostics/index.cjs");
+const { highlightCode } = require("./code-highlight.cjs");
 
 const escape = (value) =>
   String(value).replace(
@@ -19,9 +20,14 @@ const escape = (value) =>
       ],
   );
 const { layoutCss } = require("./layout.cjs");
+const { layout: layoutDefaults } = require("../shared/preferences.json");
 const { mathCss } = require("./math-fonts.cjs");
 const documentCss = fs.readFileSync(
   path.join(__dirname, "../../resources/styles/document.css"),
+  "utf8",
+);
+const codeCss = fs.readFileSync(
+  path.join(__dirname, "../../resources/styles/code.css"),
   "utf8",
 );
 
@@ -36,7 +42,11 @@ async function buildDocument(file, options = {}) {
     if (!layoutWarnings.some((warning) => warning.key === key))
       layoutWarnings.push({ key });
   };
-  const md = new MarkdownIt({ html: true, linkify: true })
+  const md = new MarkdownIt({
+    html: true,
+    linkify: true,
+    highlight: highlightCode,
+  })
     .use(footnote)
     .use(taskLists)
     .use(texmath, {
@@ -249,28 +259,38 @@ async function buildDocument(file, options = {}) {
   });
   if (fragments.some((fragment) => fragment && !targets.has(fragment)))
     warnLayout("brokenAnchor");
-  const theme = ["default", "minimal", "dark"].includes(options.theme)
+  const theme = ["default", "minimal", "folio"].includes(options.theme)
     ? options.theme
-    : "default";
+    : layoutDefaults.theme;
   const css = fs.readFileSync(
     path.join(__dirname, "../../resources/themes", `${theme}.css`),
     "utf8",
   );
   let linkColor = "#1565c0";
-  if (theme === "dark") linkColor = "#90caf9";
   if (theme === "minimal") linkColor = "#424242";
-  const title = source.match(/^#\s+(.+)$/m)?.[1] || path.basename(file);
+  if (theme === "folio") linkColor = "#7651a8";
+  const heading = body.match(
+    /<h1\b(?:[^>"']|"[^"]*"|'[^']*')*>([\s\S]*?)<\/h1\s*>/i,
+  );
+  const title = heading
+    ? md.utils.unescapeAll(
+        sanitize(heading[1], { allowedTags: [], allowedAttributes: {} }),
+      )
+    : path.basename(file);
+  const copyrightLabel = options.copyrightLabel?.trim() || title;
   const footer =
     options.authorEnabled !== false && options.author
-      ? `<div class="aldus-footer">${escape(title)} · © ${escape(options.author)}</div>`
+      ? `<div class="aldus-footer">${escape(copyrightLabel)} · © ${escape(options.author)}</div>`
       : "";
   return {
+    title,
     sourceDiagnostics: checked.diagnostics,
     warnings: [...new Set(warnings)],
     layoutWarnings,
     html: `<!doctype html>
 <html>
 <head>
+  <title>${escape(title)}</title>
   <meta charset="utf-8">
   <meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src data:; font-src data:; base-uri 'none'; form-action 'none'">
   <style>
@@ -280,7 +300,8 @@ async function buildDocument(file, options = {}) {
       ${css}
       a { color: ${linkColor}; }
       ${documentCss}
-      ${layoutCss(options)}
+      ${codeCss}
+      ${layoutCss(options, { title, file: path.basename(file) })}
     }
     @layer aldus-hints { ${hintRules.join("\n")} }
   </style>

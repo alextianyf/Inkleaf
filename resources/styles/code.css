@@ -1,0 +1,71 @@
+/* A light editor palette, shared by the preview and exported PDF. */
+pre:has(> code) {
+  background: #f6f8fa;
+  border: 1px solid #dce1e7;
+  border-radius: 6px;
+  padding: 12px 16px;
+  tab-size: 4;
+}
+pre code {
+  color: #24292e;
+  line-height: 1.5;
+}
+pre code .hljs-comment,
+pre code .hljs-quote {
+  color: #52734d;
+  font-style: italic;
+}
+pre code .hljs-keyword,
+pre code .hljs-selector-tag,
+pre code .hljs-literal {
+  color: #0000bf;
+}
+pre code .hljs-string,
+pre code .hljs-regexp,
+pre code .hljs-template-tag {
+  color: #a31515;
+}
+pre code .hljs-number,
+pre code .hljs-symbol,
+pre code .hljs-bullet {
+  color: #087f5b;
+}
+pre code .hljs-title,
+pre code .hljs-section {
+  color: #795e26;
+}
+pre code .hljs-type,
+pre code .hljs-built_in,
+pre code .hljs-title.class_ {
+  color: #267f99;
+}
+pre code .hljs-attr,
+pre code .hljs-attribute,
+pre code .hljs-variable {
+  color: #005a9e;
+}
+pre code .hljs-meta {
+  color: #af00db;
+}
+pre code .hljs-tag,
+pre code .hljs-name {
+  color: #800000;
+}
+pre code .hljs-selector-class,
+pre code .hljs-selector-id {
+  color: #800000;
+}
+pre code .hljs-addition {
+  color: #166534;
+  background: #eaf6ec;
+}
+pre code .hljs-deletion {
+  color: #a31515;
+  background: #fff0f0;
+}
+pre code .hljs-emphasis {
+  font-style: italic;
+}
+pre code .hljs-strong {
+  font-weight: bold;
+}

@@ -16,10 +16,22 @@ Inkleaf brings your ideas to the page. This sample shows how your chosen typogra
 | Lists    | Make details easy to scan |
 | Tables   | Compare information       |
 
+### JavaScript example
+
 ```javascript
 function publish(document) {
   return document.toPDF();
 }
+```
+
+### Python example
+
+```python
+# Export a collection of notes
+def publish(notes: list[str]) -> int:
+    for note in notes:
+        print(f"Exporting {note}")
+    return len(notes)
 ```
 
 <div style="break-before: page"></div>
@@ -38,5 +50,15 @@ $$\int_0^1 x^2\,dx = \frac{1}{3}$$
 ### Ready to share
 
 Your author name and page numbers complete the document. [Return to the beginning](#a-quieter-way-to-publish) to see how headings and links work together.
+
+#### Before you export
+
+Check that code, mathematics and tables are clear and complete.
+
+##### The finishing touches
+
+Space between headings and body text makes the hierarchy easier to follow.
+
+###### About this sample
 
 This is a sample document. Your own Markdown files are never used or changed by this preview.

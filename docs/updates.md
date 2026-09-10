@@ -34,6 +34,8 @@ Windows 安装包统一使用 `Inkleaf-Setup-版本号.exe`，与更新清单中
 
 ## 开发入口与验证
 
+直接运行源码会进入独立的 Inkleaf Dev：不检查、下载或安装正式版更新，“关于与更新”显示本地源码说明。打包后的 Windows 程序继续使用原更新流程。两版数据隔离及旧 Aldus 设置迁移见[开发指南](development.md#独立开发模式)。
+
 - `src/main/updates.cjs`：更新状态、单次下载、失败重试、等待/取消安装。
 - `src/main/main.cjs`：连接更新器，判断转换/导出是否忙碌，保存设置与退出。
 - `src/renderer/components/UpdateControls.jsx`：搜索栏与设置中共用的中英文更新交互。

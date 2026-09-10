@@ -1,4 +1,19 @@
 const { contextBridge, ipcRenderer } = require("electron");
+// Style only the app DOM. Native system preferences and PDF documents stay independent.
+let appearance = process.argv.includes("--inkleaf-appearance=dark")
+  ? "dark"
+  : "light";
+function applyAppearance() {
+  if (document.documentElement)
+    document.documentElement.dataset.appearance = appearance;
+}
+ipcRenderer.on("aldus:appearance-changed", (_event, value) => {
+  if (value !== "light" && value !== "dark") return;
+  appearance = value;
+  applyAppearance();
+});
+window.addEventListener("DOMContentLoaded", applyAppearance, { once: true });
+applyAppearance();
 const invoke =
   (channel) =>
   (...args) =>
@@ -8,6 +23,12 @@ contextBridge.exposeInMainWorld("aldus", {
   openSettings: invoke("open-settings"),
   closeSettings: invoke("close-settings"),
   settingsLayout: invoke("settings-layout"),
+  onSettingsClose: (callback) => {
+    const listener = () => callback();
+    ipcRenderer.on("aldus:settings-close-requested", listener);
+    return () =>
+      ipcRenderer.removeListener("aldus:settings-close-requested", listener);
+  },
   samplePreview: invoke("sample-preview"),
   chooseExportFolder: invoke("choose-export-folder"),
   onPreferencesChanged: (callback) => {
@@ -30,6 +51,7 @@ contextBridge.exposeInMainWorld("aldus", {
   refresh: invoke("refresh"),
   chooseFile: invoke("choose-file"),
   preview: invoke("preview"),
+  cancelPreview: invoke("cancel-preview"),
   folder: invoke("folder"),
   batchStart: invoke("batch-start"),
   batchCancel: invoke("batch-cancel"),

@@ -105,7 +105,7 @@ const os = require("node:os");
             .busy,
       )
       .toBe(false);
-    for (const theme of ["default", "minimal", "dark"]) {
+    for (const theme of ["default", "minimal", "folio"]) {
       const preview = await page.evaluate(
         async ({ file, theme }) => {
           await window.aldus.settings({
@@ -217,6 +217,10 @@ const os = require("node:os");
         theme: "default",
       }),
     );
+    // Direct test IPC bypasses the settings window's close/refresh event.
+    // Reload so the UI snapshot matches the selected Classic fixture theme.
+    await page.reload();
+    await page.getByRole("combobox").waitFor();
     await page.getByRole("combobox").fill("layout-fixture");
     await expect(page.getByRole("option").first()).toContainText(
       "layout-fixture.md",

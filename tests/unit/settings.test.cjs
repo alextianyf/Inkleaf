@@ -34,6 +34,8 @@ test("old preferences migrate without losing language, author or width; invalid 
   assert.equal(config.fontSize, 10.5);
   assert.equal(config.paperSize, "A4");
   assert.equal(config.exportDestination, "downloads");
+  assert.equal(config.appearance, "system");
+  assert.throws(() => validatePreferences({ appearance: "purple" }));
   const save = createSettingsWriter(file);
   await Promise.all([
     save({ ...config, author: "First" }),

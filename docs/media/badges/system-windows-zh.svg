@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="184" height="28" viewBox="0 0 184 28" role="img" aria-label="支持系统： Windows">
+  <title>支持系统： Windows</title>
+  <text x="0" y="18.5" font-family="'Segoe UI','Microsoft YaHei',Arial,sans-serif" font-size="12" fill="#7D8795">支持系统：</text>
+  <rect x="76" width="108" height="28" rx="14" fill="#3C4654"/>
+  <path d="M90 9h4v4h-4zm6 0h4v4h-4zm-6 6h4v4h-4zm6 0h4v4h-4z" fill="#E8EDF4"/>
+  <text x="138" y="18.5" text-anchor="middle" font-family="'Segoe UI','Microsoft YaHei',Arial,sans-serif" font-size="12" font-weight="600" fill="#F6F8FC">Windows</text>
+</svg>

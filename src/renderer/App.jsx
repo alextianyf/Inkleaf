@@ -40,6 +40,7 @@ export default function DesktopApp() {
   const busyRef = useRef(false);
   const uiRef = useRef({ mode });
   const previewId = useRef(null);
+  const previewRequest = useRef(0);
   const previewQueue = useRef(Promise.resolve());
   const language =
     config?.language || (navigator.language.startsWith("zh") ? "zh" : "en");
@@ -84,8 +85,10 @@ export default function DesktopApp() {
   }, []);
   useEffect(() => {
     document.documentElement.lang = language === "zh" ? "zh-CN" : "en";
-    document.title = strings[language].brandName;
-  }, [language]);
+    document.title = config?.development
+      ? "Inkleaf Dev"
+      : strings[language].brandName;
+  }, [language, config?.development]);
   useEffect(() => {
     uiRef.current = { mode };
     if (mode === "search") input.current?.focus();
@@ -139,7 +142,12 @@ export default function DesktopApp() {
   }, [selectedIndex]);
 
   function back() {
-    if (busyRef.current || exporting) return;
+    if (exporting || batchWorking) return;
+    previewRequest.current++;
+    void api.cancelPreview().catch(() => {});
+    busyRef.current = false;
+    setBusy(false);
+    setFile(null);
     if (previewId.current) void api.discard(previewId.current);
     previewId.current = null;
     setPreview(null);
@@ -163,6 +171,7 @@ export default function DesktopApp() {
     }
     setBatchFolder(null);
     busyRef.current = true;
+    const request = ++previewRequest.current;
     setBusy(true);
     setError("");
     setFile(entry);
@@ -174,29 +183,27 @@ export default function DesktopApp() {
     }
     try {
       const next = await api.preview(entry.path);
+      if (request !== previewRequest.current) {
+        void api.discard(next.id);
+        return;
+      }
       previewId.current = next.id;
       setPreview(next);
       setPages(0);
       setSaved("");
     } catch (e) {
-      setError(getErrorMessage(e));
+      if (request === previewRequest.current) setError(getErrorMessage(e));
     } finally {
-      busyRef.current = false;
-      setBusy(false);
+      if (request === previewRequest.current) {
+        busyRef.current = false;
+        setBusy(false);
+      }
     }
   }
   async function chooseFile() {
     try {
       const entry = await api.chooseFile();
       if (entry) await openPreview(entry);
-    } catch (e) {
-      setError(getErrorMessage(e));
-    }
-  }
-  async function addFolder() {
-    try {
-      const roots = await api.addFolder();
-      setConfig((c) => ({ ...c, roots }));
     } catch (e) {
       setError(getErrorMessage(e));
     }
@@ -219,20 +226,22 @@ export default function DesktopApp() {
       .catch(() => {})
       .then(async () => {
         if (!active) return;
+        const request = ++previewRequest.current;
         busyRef.current = true;
         try {
           const next = await api.preview(file.path);
-          if (active) {
+          if (active && request === previewRequest.current) {
             previewId.current = next.id;
             setPreview(next);
             setPages(0);
             setSaved("");
             setError("");
-          }
+          } else void api.discard(next.id);
         } catch (e) {
-          if (active) setError(getErrorMessage(e));
+          if (active && request === previewRequest.current)
+            setError(getErrorMessage(e));
         } finally {
-          busyRef.current = false;
+          if (request === previewRequest.current) busyRef.current = false;
         }
       });
     return () => {
@@ -255,10 +264,6 @@ export default function DesktopApp() {
   }
   function onKeyDown(event) {
     if (event.nativeEvent.isComposing) return;
-    if (event.key === "Escape") {
-      event.preventDefault();
-      void api.hide();
-    }
     if (mode === "search" && event.target === input.current) {
       if (["ArrowDown", "ArrowUp"].includes(event.key)) {
         event.preventDefault();
@@ -279,12 +284,43 @@ export default function DesktopApp() {
     }
   }
 
+  useEffect(() => {
+    // Opening a PDF removes the focused search input. Listen on the window so
+    // Escape also works before the user clicks anything in the preview.
+    function escape(event) {
+      if (
+        event.key !== "Escape" ||
+        event.isComposing ||
+        event.repeat ||
+        event.defaultPrevented
+      )
+        return;
+      event.preventDefault();
+      if (mode === "preview") back();
+      else void api?.hide();
+    }
+    window.addEventListener("keydown", escape);
+    return () => window.removeEventListener("keydown", escape);
+  });
+
   if (!api) return <p className="desktop-required">{t("desktopRequired")}</p>;
   return (
     <main className={`desktop-app mode-${mode}`} onKeyDown={onKeyDown}>
-      <header className="titlebar">
+      <header
+        className="titlebar"
+        style={
+          mode === "search"
+            ? {
+                height: (config?.searchHeight || 62) - 2,
+                maxHeight: hasQuery
+                  ? "max(60px, calc(100vh - 106px))"
+                  : "calc(100vh - 2px)",
+              }
+            : undefined
+        }
+      >
         <Brand
-          name="Inkleaf"
+          name={config?.development ? "Inkleaf Dev" : "Inkleaf"}
           showIcon={mode !== "search"}
           caption={mode === "preview" ? t("subtitle") : null}
         />
@@ -312,24 +348,17 @@ export default function DesktopApp() {
         )}
         <div className="window-actions">
           <IconButton
-            name={"refresh"}
-            label={t("refresh")}
-            onClick={() =>
-              api.refresh().catch((e) => setError(getErrorMessage(e)))
-            }
-            disabled={false}
-          />
-          <IconButton
-            name={"folderAdd"}
-            label={t("addFolder")}
-            onClick={addFolder}
-            disabled={false}
-          />
-          <IconButton
             name={"open"}
             label={t("openFile")}
             onClick={chooseFile}
-            disabled={busy || exporting || batchWorking}
+            disabled={exporting || batchWorking}
+          />
+          <IconButton
+            name="settings"
+            label={t("settings")}
+            onClick={() =>
+              api.openSettings().catch((e) => setError(getErrorMessage(e)))
+            }
           />
         </div>
       </header>
@@ -375,7 +404,7 @@ export default function DesktopApp() {
                   <strong>{file?.name}</strong>
                   <span>
                     {pages
-                      ? `${pages} ${t("page")} · ${preview?.paperSize || "A4"} · ${t(preview?.theme || "default")}`
+                      ? `${pages} ${t("page")} · ${preview?.paperSize || "A4"} · ${t(preview?.theme || preferenceDefaults.layout.theme)}`
                       : t("preview")}
                     {!saved && ` · ${t("unsaved")}`}
                   </span>

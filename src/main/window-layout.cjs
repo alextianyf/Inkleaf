@@ -4,7 +4,7 @@ const MIN_SEARCH_WIDTH = 420;
 
 function searchWidth(area, preference) {
   const available = Math.max(1, area.width - MARGIN * 2);
-  const automatic = clamp(Math.round(area.width * 0.3) + 40, 480, 560);
+  const automatic = clamp(Math.round(area.width * 0.3) + 120, 560, 640);
   const preferred = Number.isFinite(preference) && preference > 0;
   return Math.round(
     clamp(
@@ -15,14 +15,21 @@ function searchWidth(area, preference) {
   );
 }
 
-function layoutBounds(area, layout, preference, previous) {
+function searchContentHeight(layout) {
   const rows = clamp(Number(layout.rows) || 0, 0, 6);
-  const searchHeight = layout.hasQuery ? (rows ? 130 + rows * 57 : 166) : 62;
+  return (
+    (layout.hasQuery ? (rows ? 130 + rows * 57 : 166) : 62) +
+    (layout.hasMessage ? 48 : 0)
+  );
+}
+
+function layoutBounds(area, layout, preference, previous, heightPreference) {
   let width = layout.mode === "preview" ? 900 : searchWidth(area, preference);
   let height =
     layout.mode === "preview"
       ? 780
-      : searchHeight + (layout.hasMessage ? 48 : 0);
+      : searchContentHeight(layout) +
+        Math.max(0, (heightPreference || 62) - 62);
   if (layout.settings) {
     width += 300;
     height = Math.max(height, 620);
@@ -49,4 +56,59 @@ function layoutBounds(area, layout, preference, previous) {
   };
 }
 
-module.exports = { searchWidth, layoutBounds, MIN_SEARCH_WIDTH, MARGIN };
+// Measure only the dragged edges against native bounds. Other dimensions may
+// include Windows DPI rounding and must not feed back into our logical size.
+function symmetricResize(area, bounds, native, next, edge, minHeight = 62) {
+  const horizontal = edge.includes("left") || edge.includes("right");
+  const vertical = edge.includes("top") || edge.includes("bottom");
+  const centerX = bounds.x + bounds.width / 2;
+  const centerY = bounds.y + bounds.height / 2;
+  const dx = edge.includes("left")
+    ? native.x - next.x
+    : next.x + next.width - native.x - native.width;
+  const dy = edge.includes("top")
+    ? native.y - next.y
+    : next.y + next.height - native.y - native.height;
+  const maxWidth =
+    2 *
+    Math.min(centerX - area.x - MARGIN, area.x + area.width - MARGIN - centerX);
+  const maxHeight =
+    2 *
+    Math.min(
+      centerY - area.y - MARGIN,
+      area.y + area.height - MARGIN - centerY,
+    );
+  const width = horizontal
+    ? Math.round(
+        clamp(
+          bounds.width + 2 * dx,
+          Math.min(MIN_SEARCH_WIDTH, maxWidth),
+          maxWidth,
+        ),
+      )
+    : bounds.width;
+  const height = vertical
+    ? Math.round(
+        clamp(
+          bounds.height + 2 * dy,
+          Math.min(minHeight, maxHeight),
+          maxHeight,
+        ),
+      )
+    : bounds.height;
+  return {
+    x: Math.round(centerX - width / 2),
+    y: Math.round(centerY - height / 2),
+    width,
+    height,
+  };
+}
+
+module.exports = {
+  searchWidth,
+  searchContentHeight,
+  symmetricResize,
+  layoutBounds,
+  MIN_SEARCH_WIDTH,
+  MARGIN,
+};

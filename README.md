@@ -1,68 +1,49 @@
 <p align="center">
-  <img src="resources/icons/inkleaf-128.png" width="88" height="88" alt="Inkleaf ink seal">
-</p>
-
-<h1 align="center">印页 · Inkleaf</h1>
-
-<p align="center">
-  <strong>Give your Markdown a page of its own.</strong><br>
-  Search your files, preview the PDF, and save it on your computer.
-</p>
-
-<p align="center">This is a free tool for all Markdown lovers!</p>
-
-<p align="center">
-  <strong>English</strong> · <a href="README.zh-CN.md">简体中文</a>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="docs/media/hero-en-dark.png">
+    <img src="docs/media/hero-en.png" width="1500" alt="Inkleaf — A tool for Markdown lovers. A real PDF with code, mathematics and bilingual text.">
+  </picture>
 </p>
 
 <p align="center">
-  <a href="#get-inkleaf"><img src="https://img.shields.io/badge/Windows-30343B?style=flat-square" alt="Windows only"></a>
-  <img src="https://img.shields.io/badge/Free-30343B?style=flat-square" alt="Free to use">
-  <img src="https://img.shields.io/badge/English_%C2%B7_%E4%B8%AD%E6%96%87-30343B?style=flat-square" alt="English and Chinese">
+  <a href="https://github.com/alextianyf/Inkleaf/releases/latest"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/download-en-dark.svg"><img src="docs/media/badges/download-en.svg" width="218" height="44" alt="Download for Windows"></picture></a>&nbsp;&nbsp;<a href="#quick-start"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/quick-start-en-dark.svg"><img src="docs/media/badges/quick-start-en.svg" width="122" height="44" alt="Quick start"></picture></a>
 </p>
 
 <p align="center">
-  <a href="#get-inkleaf">Get Inkleaf</a> ·
-  <a href="#make-your-first-pdf">Quick start</a> ·
-  <a href="docs/todo.md">Roadmap</a> ·
-  <a href="https://github.com/alextianyf/Inkleaf/issues">Feedback</a>
+  <picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/system-windows-en-dark.svg"><img src="docs/media/badges/system-windows-en.svg" width="228" height="28" alt="Supported system: Windows"></picture>&nbsp;&nbsp;<a href="LICENSE"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/free-en-dark.svg"><img src="docs/media/badges/free-en.svg" width="154" height="28" alt="Free for personal, noncommercial use"></picture></a>
+</p>
+
+<p align="center">
+  <sub>by <a href="https://github.com/alextianyf"><strong>Alex Tian</strong></a> &nbsp;·&nbsp; <strong>English</strong> · <a href="README.zh-CN.md">简体中文</a> &nbsp;·&nbsp; <a href="docs/todo.md">Roadmap</a> &nbsp;·&nbsp; <a href="https://github.com/alextianyf/Inkleaf/issues">Feedback</a></sub>
 </p>
 
 ## A small space for your next PDF
 
 Inkleaf is a Windows desktop tool for turning Markdown notes, project READMEs and technical documents into PDFs. A shortcut brings up the search bar. Find a file, check the finished pages, and export. No account, subscription or document upload.
 
+**Language support:** The interface is available in English and Simplified Chinese. Markdown documents and exported PDFs support English, Chinese, and mixed Chinese–English text.
+
 [![Search Markdown, preview its formula and table, follow a contents link, and export a PDF](docs/media/demo-en.gif)](docs/media/demo-en.png)
 
 <p align="center"><sub>Recorded in the real app with a sample document. <a href="docs/media/demo-en.png">View a still image</a>.</sub></p>
 
-## Behind the Name
-
-A printing block can be used again and again. So can a Markdown document.
-
-Inspired by traditional Chinese printing, **印页** brings together the act of printing and the finished page. **Inkleaf** pairs _ink_ with _leaf_, a sheet of paper. Keep writing in Markdown; make a PDF whenever it is ready to share.
-
 ## What you can do
 
-| Task                    | Inkleaf                                                                                                                                                      |
+| Task                    | How it works                                                                                                                                                 |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Find a document**     | Search part of a filename or path. Results distinguish Markdown files from folders containing Markdown.                                                      |
 | **Check before saving** | Preview the generated PDF, including page breaks and clickable contents. Export uses those same PDF bytes.                                                   |
 | **Keep the details**    | Render mathematics, tables, images, aligned badges, task lists and footnotes. Missing resources and some unsupported content produce notices.                |
 | **Convert a folder**    | Select Markdown files for batch export and inspect them individually. Preserve subfolders; automatic output adds numbers to avoid overwriting existing PDFs. |
-| **Choose the layout**   | Three themes, A4 or Letter, orientation, margins, text size, line spacing, author information and page numbers.                                              |
+| **Choose the layout**   | Folio (default), Classic and Minimal themes, A4 or Letter, typography, heading styles, pagination, headers, footers and copyright.                                            |
 | **Keep it local**       | Convert without changing the Markdown source. Save to Downloads, beside the source, or in a folder you choose.                                               |
 
 ## Why Inkleaf?
 
-- **Free to use.** No subscription, conversion credits or account to create.
-- **A small interface, a short workflow.** Bring up the search bar, choose a file and preview. Inkleaf stays in the system tray between uses.
+- **Free for personal, noncommercial use.** No subscription, conversion credits or account required for that use. Business and other commercial use require separate written permission; fees are negotiated separately. [License](LICENSE).
+- **Nothing leaves your computer.** Conversion runs locally and leaves the Markdown source unchanged. Local resources and bundled mathematics work offline; only remote images and update checks need a connection.
 - **Fast filename search.** A recorded Windows benchmark measured about **23 ms median query time for 100,000 indexed Markdown files**. Initial scanning, startup and displaying results are separate. [Measurements and limits](docs/search.md).
-- **Your documents stay on your computer.** Conversion runs locally and leaves the Markdown source unchanged. Local resources and bundled mathematics work offline.
-- **Check the result before sharing.** Preview the actual PDF, including page breaks, formulas and link destinations, before exporting it.
-- **Less repetition.** Convert a folder of notes together and keep its subfolder structure in the output.
-
-Remote images and update checks need a connection; your documents are converted on your computer.
+- **A small interface, a short workflow.** Bring up the search bar, choose a file and preview. Inkleaf stays in the system tray between uses.
 
 ## Markdown, on paper
 
@@ -78,7 +59,7 @@ All six heading levels, **bold**, _italic_, strikethrough, bilingual text and a 
 
 ### Code and mathematics
 
-Code preserves its text and indentation; syntax highlighting is not currently implemented. KaTeX renders inline formulas, integrals and fractions.
+Code preserves its text and indentation, with language-specific syntax highlighting. KaTeX renders inline formulas, integrals and fractions.
 
 [![Markdown and actual PDF: JavaScript code, inline math, a Gaussian integral and the quadratic formula](docs/media/examples/code-math.png)](docs/media/examples/code-math.png)
 
@@ -94,7 +75,7 @@ Left-, center- and right-aligned table columns, checked and unchecked tasks, num
 
 ### Images, badges and links
 
-A local image and SVG badge follow their paragraph's center alignment. The PDF includes an internal jump, an external link, and a footnote with a return link. Links work in the PDF, not in this static comparison image.
+A local image and SVG badge follow their paragraph's center alignment. The PDF includes an internal jump, an external link, and a footnote with a return link.
 
 [![Markdown and actual PDF: centered image and badge, internal and external links, and a footnote](docs/media/examples/images-links.png)](docs/media/examples/images-links.png)
 
@@ -104,13 +85,15 @@ These are examples of supported content, not a promise of every Markdown dialect
 
 ## Get Inkleaf
 
-**[Download for Windows (x64)](https://github.com/alextianyf/Inkleaf/releases/download/v0.4.10/Inkleaf-Setup-0.4.10.exe)** · [Release notes](https://github.com/alextianyf/Inkleaf/releases/tag/v0.4.10)
+**[Download for Windows (x64)](https://github.com/alextianyf/Inkleaf/releases/latest)** · [Release notes](https://github.com/alextianyf/Inkleaf/releases/latest)
 
-The current stable release is **0.4.10**. Download the `.exe` installer above, or [run from source](#built-with). The `.blockmap` and `latest.yml` files on the release page are used by the updater; manual installation only needs the `.exe`.
+The current stable release is **0.4.11**. Download the `.exe` installer above, or [run from source](#development). The `.blockmap` and `latest.yml` files on the release page are used by the updater; manual installation only needs the `.exe`.
 
-The Windows installer includes the runtime; users do not need Node.js or Python. macOS and Linux builds are not currently offered. Current Windows builds are unsigned.
+The installer bundles the runtime, so Node.js and Python are not needed. macOS and Linux builds are not currently offered, and Windows builds are unsigned. Some layout and highlighting improvements shown above are only in the current source; the release notes list what is packaged in 0.4.11.
 
 Installed Windows builds check for new stable versions. You choose **Download**, then **Restart and update** when ready. Inkleaf waits for active conversion or export tasks; quitting normally does not install an update. [Update and release details](docs/updates.md).
+
+<a id="quick-start"></a>
 
 ## Make your first PDF
 
@@ -120,7 +103,7 @@ Installed Windows builds check for new stable versions. You choose **Download**,
 
 Choose a folder result to prepare a batch. Use **Esc** to dismiss the search bar. Right-click the **system tray icon** to open Settings or quit the app.
 
-Settings are grouped into **General, Search, Layout, Export, and About & updates**. Layout uses a fixed sample document for its live preview. Settings currently save as you change them. [All settings](docs/settings.md).
+Settings are grouped into **General, Search, Layout, Export, and About & updates**. Layout uses a fixed sample document for its live preview. Ordinary settings save automatically; Layout requires Save layout and prompts before leaving unsaved changes. [All settings](docs/settings.md).
 
 ## A few things to know
 
@@ -141,7 +124,7 @@ Yes, for documents using local resources. Mathematics and fonts needed for formu
 <details>
 <summary><strong>Will every Markdown extension render?</strong></summary>
 
-Inkleaf supports common Markdown and selected extensions, including KaTeX math and footnotes. Mermaid, PlantUML, Obsidian wiki links and code syntax highlighting are not implemented. Complex HTML/CSS, very wide tables and formulas may need adjustments. [Supported formats and limits](docs/engine.md).
+Inkleaf supports common Markdown and selected extensions, including KaTeX math and footnotes. Mermaid, PlantUML, Obsidian wiki links are not implemented. Complex HTML/CSS, very wide tables and formulas may need adjustments. [Supported formats and limits](docs/engine.md).
 
 </details>
 
@@ -152,15 +135,29 @@ No. Conversion reads your Markdown. Limited formatting recovery happens in memor
 
 </details>
 
+## Behind the name
+
+A printing block can be used again and again. So can a Markdown document.
+
+Inspired by traditional Chinese printing, **印页** brings together the act of printing and the finished page. **Inkleaf** pairs _ink_ with _leaf_, a sheet of paper. Keep writing in Markdown; make a PDF whenever it is ready to share.
+
 ## Still taking shape
 
-The conversion workflow is implemented; the desktop experience is still being refined. Known issues include search-bar resizing, the small Layout sample preview, and unclear feedback when editing author information. Better layout controls, PDF styling and search are on the [roadmap](docs/todo.md).
+The conversion workflow is implemented; the desktop experience is still being refined. The current source includes symmetric resizing, a larger layout preview and clear save/change feedback. Further PDF styling and search improvements are on the [roadmap](docs/todo.md).
 
 If something renders incorrectly, [open an issue](https://github.com/alextianyf/Inkleaf/issues) with the app version, Windows version, a small Markdown example and the expected result. Remove private information before sharing a sample.
 
+## License
+
+Copyright © 2026 **Alex Tian**. Inkleaf uses a custom [Personal Noncommercial License](LICENSE), not MIT. Personal use without financial benefit or commercial advantage is free. Internal business use, paid teaching, resale and paid services require prior written authorization, with fees agreed separately.
+
+Your documents and generated PDFs remain yours; the license does not require a watermark. Third-party components retain their own licenses. For authorization, use the contact channels on [Alex Tian's profile](https://github.com/alextianyf).
+
+<a id="development"></a>
+
 ## Built with
 
-**Electron and React** for the desktop app, **Markdown-it** for parsing, **KaTeX** for mathematics, **Chromium** for PDF generation, and **PDF.js** for preview. Updates use **electron-updater** and GitHub Releases.
+**Electron and React** for the desktop app, **Markdown-it** for parsing, **KaTeX** for mathematics, **Chromium** for PDF generation, **PDF.js** for preview, and **highlight.js** for code colors. Updates use **electron-updater** and GitHub Releases.
 
 To run the desktop version locally, install Node.js 22.12 or newer, then:
 
@@ -168,16 +165,16 @@ To run the desktop version locally, install Node.js 22.12 or newer, then:
 git clone https://github.com/alextianyf/Inkleaf.git
 cd Inkleaf
 npm ci
-npm start
+npm run dev
 ```
 
-The desktop version is available on `main`. The earlier app is preserved on `aldusV1`. [Development and builds](docs/development.md) · [Project structure](docs/architecture.md).
+This starts **Inkleaf Dev** with separate settings and the default shortcut **Ctrl + Alt + Shift + Space**, so it can run alongside the installed app. In PowerShell, use `npm.cmd` if `npm` is blocked by script policy.
+
+The desktop version is available on `main`. The earlier app is preserved on `aldusV1`. [Command cheat sheet (中文)](docs/commands.md) · [Development and builds](docs/development.md) · [Project structure](docs/architecture.md).
 
 ---
 
 <p align="center">
   <sub>印页 · Inkleaf · 让文字成页。</sub><br>
-  <a href="resources/icons/README.md">Brand assets</a> ·
-  <a href="docs/engine.md">Markdown support</a> ·
-  <a href="https://github.com/alextianyf/Inkleaf/issues">Report an issue</a>
+  <sub><a href="resources/icons/README.md">Brand assets</a> · <a href="docs/engine.md">Markdown support</a> · <a href="https://github.com/alextianyf/Inkleaf/issues">Report an issue</a></sub>
 </p>
