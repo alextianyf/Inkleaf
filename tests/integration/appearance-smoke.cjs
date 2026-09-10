@@ -23,7 +23,13 @@ const os = require("node:os");
       shortcut: "Control+Alt+F9",
     }),
   );
-  const env = { ...process.env, ALDUS_TEST_DIR: profile };
+  // General reset includes the default shortcut; leave the installed app's
+  // production shortcut available while testing appearance in isolation.
+  const env = {
+    ...process.env,
+    ALDUS_TEST_DIR: profile,
+    INKLEAF_TEST_MODE: "development",
+  };
   delete env.ELECTRON_RUN_AS_NODE;
   const launch = () => electron.launch({ args: [root], env });
   let desktop = await launch();
