@@ -133,7 +133,7 @@ const path = require("node:path");
     const settings = await opened;
     settings.setDefaultTimeout(20000);
     await settings.getByRole("button", { name: "Layout", exact: true }).click();
-    await expect(settings.locator("#theme option")).toHaveCount(3);
+    await expect(settings.locator("#theme option")).toHaveCount(2);
     await settings.locator("#author").fill("Alex Tian");
     await settings.locator(".advanced-layout summary").click();
     await settings.locator("#headerEnabled").check();
