@@ -54,7 +54,7 @@ const path = require("node:path");
     });
     await input.fill("slow");
     await expect(page.getByRole("option")).toHaveCount(1);
-    await input.press("Enter");
+    await page.getByRole("option").click();
     await expect.poll(() => app.evaluate(() => global.printStarted)).toBe(true);
     await page.keyboard.press("Escape");
     await expect(input).toBeFocused();
@@ -71,7 +71,36 @@ const path = require("node:path");
     await expect(page.locator(".error-message")).toHaveCount(0);
     await page.keyboard.press("Escape");
     await expect(input).toHaveValue("next");
-    console.log("PASS: cancel loading and open another document");
+    console.log(
+      "PASS: single-click starts loading, Escape cancels, Enter opens the next document",
+    );
+
+    // Clicking another row opens that row, not the keyboard's selected result.
+    await input.fill(".md");
+    await expect(page.getByRole("option")).toHaveCount(2);
+    const second = page.getByRole("option").nth(1);
+    const clickedName = await second.locator("strong").textContent();
+    await expect(second).toHaveAttribute("aria-selected", "false");
+    await second.click();
+    await expect(page.locator(".preview-title")).toContainText(clickedName);
+    await expect(
+      page.getByRole("button", { name: "Export PDF", exact: true }),
+    ).toBeEnabled({ timeout: 30000 });
+    await page.keyboard.press("Escape");
+    await expect(input).toHaveValue(".md");
+    await input.fill("notes");
+    // The result element itself owns data-kind.
+    const folderRow = page.locator('[role="option"][data-kind="folder"]');
+    await expect(folderRow).toHaveCount(1);
+    await folderRow.click();
+    await expect(
+      page.getByRole("complementary", { name: "Markdown file list" }),
+    ).toBeVisible();
+    await page.keyboard.press("Escape");
+    await expect(input).toHaveValue("notes");
+    console.log(
+      "PASS: single-click opens the clicked file and folder batch preview",
+    );
 
     const created = app.waitForEvent("window", {
       predicate: (win) => win !== page,

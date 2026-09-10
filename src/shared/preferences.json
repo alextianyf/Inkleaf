@@ -50,7 +50,7 @@
     "h6Color": "",
     "h6Before": null,
     "h6After": null,
-    "theme": "folio",
+    "theme": "default",
     "author": "",
     "authorEnabled": true,
     "pageNumbers": true,

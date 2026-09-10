@@ -15,13 +15,15 @@ Categories share a grouped layout: labeled panels separate related options, thin
 
 ## Layout
 
-Themes: Folio (开本, default), Classic and Minimal. New profiles, missing/invalid theme preferences and Reset this category use Folio; resetting Layout remains a draft until saved. Existing saved Classic/Minimal choices are retained. Legacy Dark preferences fall back to Folio. Paper: A4 or Letter, portrait or landscape. Margins: compact, standard or wide. Body text: 8–18 pt. Line spacing: 1.4, 1.6 or 1.8. Signature and copyright can be enabled/disabled independently of the stored name; existing `author` / `authorEnabled` preferences remain compatible. Page numbers have their own switch.
+Themes: Classic (default) and Minimal. New profiles, missing/invalid theme preferences and Reset this category use Classic; resetting Layout remains a draft until saved. Retired Folio and Dark preferences fall back to Classic without changing other settings. Existing saved Minimal choices are retained. Paper: A4 or Letter, portrait or landscape. Margins: compact, standard or wide. Body text: 8–18 pt. Line spacing: 1.4, 1.6 or 1.8. Signature and copyright can be enabled/disabled independently of the stored name; existing `author` / `authorEnabled` preferences remain compatible. Page numbers have their own switch.
 
 The expanded preview supports Fit width, 100%, 125% and 150% zoom. **View the change** in the copyright, page header and page footer groups scrolls to the corresponding text in the generated sample PDF and briefly highlights it. Alignment and page-number area/format choices automatically locate their output after the latest render; typing text waits for an explicit View action. This does not rebuild the canvases or alter the exported PDF. Reduced-motion preferences use a steady highlight. Smaller windows stack the controls and preview in a scrollable layout.
 
 The copyright line has two fields: text before © (defaults to the document title) and the copyright holder after ©. These affect only the signature at the end of the PDF. They never replace body headings, metadata titles, source Markdown or output filenames. Older development builds' `documentTitle` value migrates to `copyrightLabel`.
 
 Fenced code uses offline, explicit-language syntax highlighting in both themes and in preview/export. Keywords, strings, comments, numbers, functions and types use a restrained light-editor palette. Unknown/omitted languages stay plain; no automatic language guessing is performed. Fences above 200,000 characters remain plain to bound highlighting work. Raw HTML ASCII-art `<pre>` blocks retain their authored styling.
+
+Heading numbering is not currently available. Preview and export retain authored heading text and numbers, with no automatic numbering or renumbering. Earlier numbering preferences are discarded when loading settings; future ideas are recorded in [TODO](todo.md).
 
 ### Advanced layout
 

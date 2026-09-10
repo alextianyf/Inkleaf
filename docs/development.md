@@ -53,7 +53,7 @@ src/
   conversion/     Markdown、HTML、图片和转换前检测
   shared/         中英文文案
 resources/
-  themes/         PDF 的 Folio（默认）/ Classic / Minimal 主题
+  themes/         PDF 的 Classic（默认）/ Minimal 主题
   styles/         PDF 通用排版规则
 tests/
   unit/           规则和业务逻辑测试

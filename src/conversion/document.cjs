@@ -259,7 +259,7 @@ async function buildDocument(file, options = {}) {
   });
   if (fragments.some((fragment) => fragment && !targets.has(fragment)))
     warnLayout("brokenAnchor");
-  const theme = ["default", "minimal", "folio"].includes(options.theme)
+  const theme = ["default", "minimal"].includes(options.theme)
     ? options.theme
     : layoutDefaults.theme;
   const css = fs.readFileSync(
@@ -268,7 +268,6 @@ async function buildDocument(file, options = {}) {
   );
   let linkColor = "#1565c0";
   if (theme === "minimal") linkColor = "#424242";
-  if (theme === "folio") linkColor = "#7651a8";
   const heading = body.match(
     /<h1\b(?:[^>"']|"[^"]*"|'[^']*')*>([\s\S]*?)<\/h1\s*>/i,
   );

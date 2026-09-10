@@ -10,7 +10,7 @@ function validatePreferences(patch) {
   const choices = {
     appearance: ["light", "dark", "system"],
     languagePreference: ["system", "zh", "en"],
-    theme: ["default", "minimal", "folio"],
+    theme: ["default", "minimal"],
     paperSize: ["A4", "Letter"],
     orientation: ["portrait", "landscape"],
     margins: ["compact", "standard", "wide"],
@@ -94,6 +94,9 @@ async function loadSettings(file, locale, overrides = {}) {
     )
       saved.copyrightLabel = saved.documentTitle;
     delete saved.documentTitle;
+    // Retired numbering preferences must not survive in the active profile.
+    delete saved.headingNumbering;
+    delete saved.unnumberedHeadings;
     config = {
       ...defaults,
       ...Object.fromEntries(

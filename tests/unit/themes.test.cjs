@@ -8,39 +8,66 @@ const {
   validatePreferences,
 } = require("../../src/main/settings.cjs");
 const { buildDocument } = require("../../src/conversion/document.cjs");
-const { layoutSample } = require("../../src/main/layout-sample.cjs");
 
-test("Folio is the default while saved Classic and Minimal preferences survive", async (t) => {
+test("retired themes fall back to Classic without losing other preferences", async (t) => {
   const folder = await fs.mkdtemp(path.join(os.tmpdir(), "inkleaf-themes-"));
   t.after(() => fs.rm(folder, { recursive: true, force: true }));
   const settings = path.join(folder, "settings.json");
-  assert.equal((await loadSettings(settings, "en")).theme, "folio");
-  for (const theme of ["folio", "default", "minimal", "unknown"]) {
-    await fs.writeFile(settings, JSON.stringify({ theme, author: "Keep me" }));
+  assert.equal((await loadSettings(settings, "en")).theme, "default");
+  for (const theme of ["folio", "dark", "default", "minimal", "unknown"]) {
+    await fs.writeFile(
+      settings,
+      JSON.stringify({
+        theme,
+        author: "Keep me",
+        h2Size: 22,
+        headingNumbering: "uniform",
+        unnumberedHeadings: "Preface",
+      }),
+    );
     const config = await loadSettings(settings, "en");
-    assert.equal(config.theme, theme === "unknown" ? "folio" : theme);
+    assert.equal(config.theme, theme === "minimal" ? "minimal" : "default");
     assert.equal(config.author, "Keep me");
-    if (theme !== "unknown")
+    assert.equal(config.h2Size, 22);
+    assert.ok(!Object.hasOwn(config, "headingNumbering"));
+    assert.ok(!Object.hasOwn(config, "unnumberedHeadings"));
+    if (["default", "minimal"].includes(theme))
       assert.deepEqual(validatePreferences({ theme }), { theme });
+    else assert.throws(() => validatePreferences({ theme }));
   }
+});
+
+test("both themes preserve authored headings and links even with stale numbering options", async (t) => {
+  const folder = await fs.mkdtemp(path.join(os.tmpdir(), "inkleaf-headings-"));
+  t.after(() => fs.rm(folder, { recursive: true, force: true }));
   const file = path.join(folder, "sample.md");
-  const source = "# Sample\n\n## A section\n\nHello 中文.\n";
+  const source =
+    "# Sample\n\n## Contents\n\n[9. Mechanical Waves](#9-mechanical-waves)\n\n## 9. Mechanical Waves\n\n### 9.4 Energy\n\nHello 中文.\n\n## Unnumbered chapter\n\nText.\n";
   await fs.writeFile(file, source);
+  const before = await fs.stat(file);
+  const classic = await buildDocument(file, {
+    theme: "default",
+    language: "en",
+  });
   for (const theme of [undefined, "unknown", "folio", "default", "minimal"]) {
-    const document = await buildDocument(file, { theme, language: "en" });
-    const folio = !theme || theme === "unknown" || theme === "folio";
-    assert.equal(document.html.includes("counter-reset: folio-section"), folio);
+    const document = await buildDocument(file, {
+      theme,
+      language: "en",
+      headingNumbering: "uniform",
+      unnumberedHeadings: "Contents",
+    });
+    if (theme !== "minimal") assert.equal(document.html, classic.html);
+    assert.match(
+      document.html,
+      /<h2 id="9-mechanical-waves">9\. Mechanical Waves<\/h2>/,
+    );
+    assert.match(document.html, /<h3[^>]*>9\.4 Energy<\/h3>/);
+    assert.match(document.html, /<h2[^>]*>Unnumbered chapter<\/h2>/);
+    assert.match(document.html, /href="#9-mechanical-waves"/);
+    assert.doesNotMatch(document.html, /inkleaf-heading-number|folio-section/);
     assert.equal(document.title, "Sample");
     assert.deepEqual(document.layoutWarnings, []);
   }
   assert.equal(await fs.readFile(file, "utf8"), source);
-  const comparison = layoutSample(
-    { theme: "folio", language: "en" },
-    { name: "keepHeadings", enabled: true },
-  );
-  assert.equal(
-    comparison.options.theme,
-    "default",
-    "calibrated comparisons retain their reference theme",
-  );
+  assert.equal((await fs.stat(file)).mtimeMs, before.mtimeMs);
 });

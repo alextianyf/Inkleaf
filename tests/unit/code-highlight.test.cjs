@@ -44,13 +44,13 @@ test("language fences color tokens without changing their code", () => {
   assert.equal(highlightCode("x".repeat(200001), "js"), "");
 });
 
-test("retired Dark settings use Folio and retain other preferences", async () => {
+test("retired Dark settings use Classic and retain other preferences", async () => {
   const folder = await fs.mkdtemp(path.join(os.tmpdir(), "inkleaf-theme-"));
   try {
     const file = path.join(folder, "settings.json");
     await fs.writeFile(file, JSON.stringify({ theme: "dark", author: "Alex" }));
     const config = await loadSettings(file, "en");
-    assert.equal(config.theme, "folio");
+    assert.equal(config.theme, "default");
     assert.equal(config.author, "Alex");
     assert.throws(() => validatePreferences({ theme: "dark" }));
   } finally {

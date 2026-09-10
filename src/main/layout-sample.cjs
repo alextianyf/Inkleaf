@@ -32,7 +32,12 @@ function layoutSample(options, scenario = null) {
     // A controlled page boundary isolates this rule from the other settings.
     // These fixtures were calibrated in Classic; isolate the pagination rule
     // from the selected theme and future changes to the application default.
-    settings = { ...defaults, theme: "default", language, authorEnabled: false };
+    settings = {
+      ...defaults,
+      theme: "default",
+      language,
+      authorEnabled: false,
+    };
     for (const rule of paginationRules)
       settings[rule] = rule === "chapterBreak" ? "none" : false;
     settings[scenario.name] =

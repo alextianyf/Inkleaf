@@ -37,6 +37,9 @@ h3,
 h4,
 h5,
 h6 {
+  /* A heading includes its number and every wrapped title line. The Layout
+     keepHeadings switch independently controls the break after this block. */
+  break-inside: avoid;
   break-after: avoid;
 }
 body {

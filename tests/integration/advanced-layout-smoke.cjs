@@ -193,7 +193,7 @@ const os = require("node:os");
         .filter((item) => /教学|结束/.test(item.str))
         .map((item) => item.transform[5]),
     );
-    // Folio can wrap this title at the configured size. Locate its first line,
+    // A theme can wrap this title at the configured size. Locate its first line,
     // but still require the complete title to survive in the PDF text.
     assert.match(
       longItems

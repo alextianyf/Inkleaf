@@ -17,7 +17,7 @@ npm.cmd run dev
 
 1. Start typing a filename. Inkleaf automatically discovers Markdown files on local fixed drives, starting with common folders. Existing indexed results work while discovery continues. You can also add a folder or use **打开文件**.
 2. Type part of a filename. The empty search window is a single 62-pixel-high row: Inkleaf text, “搜索 Markdown，转为 PDF / Find Markdown for PDF”, then Open file and Settings icons. Folder management and index refresh are available in Settings → Search. Whitespace shows no results. Search covers `.md` and `.markdown`, including subfolders. Files and folders have distinct icons; folder counts include indexed descendants. Select with ↑ / ↓ or a mouse click.
-3. Press **Enter** (or double-click a result) to preview the actual paginated PDF. This creates no PDF beside the source file.
+3. Press **Enter** or single-click a result to preview the actual paginated PDF. Clicking a folder opens its batch preview. This creates no PDF beside the source file.
 4. Choose **导出 PDF / Export PDF** to save to Downloads by default. Settings → Export lets you choose the source folder, a custom folder, or a location picker for each export. The saved bytes are exactly the PDF being previewed. To include subsequent source edits, return to search and preview again. Closing settings after a layout change regenerates the current preview before export becomes available.
 5. **Esc** returns from preview to search, including while a preview is loading; in search it hides the window. The preview back arrow also returns to search. Settings close separately and prompt before discarding an unsaved layout. Clicking another application hides the search/preview window, preserving its state; native file pickers keep it open.
 6. On Windows, **Ctrl+Shift+Space** toggles the installed app; **Ctrl+Alt+Shift+Space** toggles Inkleaf Dev. Use the tray menu's **退出 / Quit** to exit. General provides Light, Dark and System appearance independently of the PDF theme.
@@ -44,7 +44,7 @@ The desktop renderer preserves static HTML layout rather than replacing it with 
 
 Document-local `<style>` blocks and inline CSS are supported, including flex/grid layout and print page breaks. The preview uses the actual Chromium-generated PDF. External stylesheets, CSS images/fonts referenced by URL, scripts, and embedded web pages are not loaded or executed; the preview reports these dependencies as document notices. This is a tested static-document subset, not a guarantee of pixel-identical reproduction of arbitrary websites or JavaScript applications.
 
-`npm run test:layout` exercises all three themes in Electron and measures the rendered geometry for alignment, image dimensions, table dimensions/cell properties, flex/grid and author CSS precedence; it also verifies a two-page PDF from an explicit page break and visible notices for unsupported dependencies. PDF fixtures and a preview screenshot are stored under `artifacts/tests/`.
+`npm run test:layout` exercises both themes in Electron and measures the rendered geometry for alignment, image dimensions, table dimensions/cell properties, flex/grid and author CSS precedence; it also verifies a two-page PDF from an explicit page break and visible notices for unsupported dependencies. PDF fixtures and a preview screenshot are stored under `artifacts/tests/`.
 
 ## Build Windows downloads
 

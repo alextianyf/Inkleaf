@@ -177,7 +177,7 @@ const os = require("node:os");
     );
     assert.equal(
       (await page.evaluate(() => window.aldus.state())).theme,
-      "folio",
+      "default",
     );
     await settings.locator("#appearance").selectOption("dark");
     await appearance([page, settings], "dark");

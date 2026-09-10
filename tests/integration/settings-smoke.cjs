@@ -117,7 +117,7 @@ const os = require("node:os");
     await setup();
     assert.equal(
       (await page.evaluate(() => window.aldus.state())).theme,
-      "folio",
+      "default",
     );
     await expect
       .poll(
@@ -159,13 +159,16 @@ const os = require("node:os");
     await settings.locator("#margins").selectOption("compact");
     await settings.locator("#fontSize").fill("12");
     await settings.locator("#lineHeight").selectOption("1.8");
-    await expect(settings.locator("#theme")).toHaveValue("folio");
+    await expect(settings.locator("#theme")).toHaveValue("default");
     assert.deepEqual(
       await settings
         .locator("#theme option")
         .evaluateAll((options) => options.map((option) => option.value)),
-      ["folio", "default", "minimal"],
+      ["default", "minimal"],
     );
+    await expect(
+      settings.locator("#headingNumbering, #unnumberedHeadings"),
+    ).toHaveCount(0);
     await settings.locator("#theme").selectOption("minimal");
     await settings.locator("#copyrightLabel").fill("Custom class notes");
     assert.equal(
@@ -476,7 +479,7 @@ const os = require("node:os");
     await settings
       .getByRole("button", { name: "恢复此分类的默认设置", exact: true })
       .click();
-    await expect(settings.locator("#theme")).toHaveValue("folio");
+    await expect(settings.locator("#theme")).toHaveValue("default");
     assert.equal(
       (await page.evaluate(() => window.aldus.state())).theme,
       "minimal",
@@ -487,10 +490,10 @@ const os = require("node:os");
       .click();
     await expect
       .poll(async () => (await page.evaluate(() => window.aldus.state())).theme)
-      .toBe("folio");
+      .toBe("default");
     assert.equal(
       JSON.parse(await fs.readFile(path.join(sandbox, "settings.json"))).theme,
-      "folio",
+      "default",
     );
     assert.deepEqual(errors, []);
     console.log(

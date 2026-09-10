@@ -128,7 +128,7 @@ ${Array.from({ length: 70 }, (_, i) => `| ROW-${String(i + 1).padStart(3, "0")} 
       )
       .toBe(false);
     const reports = [];
-    for (const theme of ["default", "minimal", "folio"]) {
+    for (const theme of ["default", "minimal"]) {
       const preview = await page.evaluate(
         async ({ file, theme }) => {
           await window.aldus.settings({

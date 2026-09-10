@@ -377,7 +377,6 @@ export default function DesktopApp() {
                   selectedIndex={selectedIndex}
                   query={query}
                   config={config}
-                  input={input}
                   setSelected={setSelected}
                   openPreview={openPreview}
                 />

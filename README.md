@@ -35,7 +35,7 @@ Inkleaf is a Windows desktop tool for turning Markdown notes, project READMEs an
 | **Check before saving** | Preview the generated PDF, including page breaks and clickable contents. Export uses those same PDF bytes.                                                   |
 | **Keep the details**    | Render mathematics, tables, images, aligned badges, task lists and footnotes. Missing resources and some unsupported content produce notices.                |
 | **Convert a folder**    | Select Markdown files for batch export and inspect them individually. Preserve subfolders; automatic output adds numbers to avoid overwriting existing PDFs. |
-| **Choose the layout**   | Folio (default), Classic and Minimal themes, A4 or Letter, typography, heading styles, pagination, headers, footers and copyright.                           |
+| **Choose the layout**   | Classic (default) and Minimal themes, A4 or Letter, typography, heading styles, pagination, headers, footers and copyright.                                  |
 | **Set app appearance**  | Choose Light, Dark or System in General. App appearance stays independent of your PDF theme.                                                                 |
 | **Keep it local**       | Convert without changing the Markdown source. Save to Downloads, beside the source, or in a folder you choose.                                               |
 

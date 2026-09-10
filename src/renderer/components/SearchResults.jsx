@@ -7,7 +7,6 @@ export default function SearchResults({
   selectedIndex,
   query,
   config,
-  input,
   setSelected,
   openPreview,
 }) {
@@ -43,9 +42,8 @@ export default function SearchResults({
             aria-selected={index === selectedIndex}
             onClick={() => {
               setSelected(index);
-              input.current?.focus();
+              void openPreview(entry);
             }}
-            onDoubleClick={() => openPreview(entry)}
           >
             <Icon
               name={entry.kind === "folder" ? "folder" : "file"}

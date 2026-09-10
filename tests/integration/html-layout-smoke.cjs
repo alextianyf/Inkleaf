@@ -105,7 +105,7 @@ const os = require("node:os");
             .busy,
       )
       .toBe(false);
-    for (const theme of ["default", "minimal", "folio"]) {
+    for (const theme of ["default", "minimal"]) {
       const preview = await page.evaluate(
         async ({ file, theme }) => {
           await window.aldus.settings({
@@ -270,7 +270,7 @@ const os = require("node:os");
     assert.deepEqual(await fs.readFile(file), original);
     assert.equal((await fs.stat(file)).mtimeMs, before.mtimeMs);
     console.log(
-      "PASS: all three themes preserve source HTML/CSS alignment, image sizing, table layout, flex/grid; unsupported layout dependencies surface in preview.",
+      "PASS: both themes preserve source HTML/CSS alignment, image sizing, table layout, flex/grid; unsupported layout dependencies surface in preview.",
     );
   } finally {
     await desktop.close();
