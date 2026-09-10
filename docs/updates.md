@@ -82,3 +82,11 @@ Windows x64 安装包、对应 blockmap 与 `latest.yml` 来自同一次构建�
 使用真实打包的 0.4.11 在隔离配置中连接 GitHub，成功检测并下载 0.5.0，下载文件 SHA-512 与本地安装包相同；0.5.0 自身正确报告没有更新。本次没有运行正式安装器，也没有覆盖用户正在使用的安装；实际旧版覆盖安装的既有隔离测试记录见上文。
 
 验证报告保存在忽略目录 `artifacts/release-checks-0.5.0.log`、`artifacts/release-packaged-check-0.5.0.log`、`artifacts/package-manifest-0.5.0.json` 和 `artifacts/public-update-check-0.5.0.json`。
+
+## 正式 Release：0.5.1
+
+2026-09-09，已发布 [Inkleaf 0.5.1](https://github.com/alextianyf/Inkleaf/releases/tag/v0.5.1)，为正式版并设为 Latest。[完整更新说明](releases/0.5.1.md)涵盖恢复 Classic 默认、下架 Folio、保留原有标题编号、搜索结果单击预览和标题分页修复。标签 v0.5.1 对应提交 1d451d889753654b5e834472c7ec7c4bc691c553。
+
+安装包、blockmap 和 latest.yml 来自同一次 Windows x64 构建，输出位于 artifacts/publish-0.5.1。安装包大小 114855363 字节，SHA-256：11844fd4d92dba6b163c005aa94e61178265a48480288cd6d1c27f69963dd14f。test:all 覆盖的各项检查及打包后的桌面检查均通过；修正两处测试预期／环境问题后，失败项与剩余项分别补跑通过，包内 70 个源码与资源文件核对一致，确认不再包含 Folio 与自动标题编号模块。
+
+使用打包的 0.5.0 和隔离配置连接 GitHub，实际检测并下载 0.5.1，下载文件的 SHA-512 与本地构建一致；0.5.1 自身正确报告没有更新。本次未执行正式安装器、未覆盖用户安装。报告在忽略目录 artifacts/release-checks-0.5.1.log、artifacts/release-final-checks-0.5.1.log、artifacts/release-appearance-check-0.5.1.log、artifacts/release-packaged-check-0.5.1.log、artifacts/package-manifest-0.5.1.json 和 artifacts/public-update-check-0.5.1.json。

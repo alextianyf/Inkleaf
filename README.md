@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/alextianyf/Inkleaf/releases/download/v0.5.0/Inkleaf-Setup-0.5.0.exe"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/download-en-dark.svg"><img src="docs/media/badges/download-en.svg" width="218" height="44" alt="Download for Windows"></picture></a>&nbsp;&nbsp;<a href="#quick-start"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/quick-start-en-dark.svg"><img src="docs/media/badges/quick-start-en.svg" width="122" height="44" alt="Quick start"></picture></a>
+  <a href="https://github.com/alextianyf/Inkleaf/releases/download/v0.5.1/Inkleaf-Setup-0.5.1.exe"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/download-en-dark.svg"><img src="docs/media/badges/download-en.svg" width="218" height="44" alt="Download for Windows"></picture></a>&nbsp;&nbsp;<a href="#quick-start"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/quick-start-en-dark.svg"><img src="docs/media/badges/quick-start-en.svg" width="122" height="44" alt="Quick start"></picture></a>
 </p>
 
 <p align="center">
@@ -86,11 +86,11 @@ These are examples of supported content, not a promise of every Markdown dialect
 
 ## Get Inkleaf
 
-**[Download for Windows (x64)](https://github.com/alextianyf/Inkleaf/releases/download/v0.5.0/Inkleaf-Setup-0.5.0.exe)** · [Release notes](https://github.com/alextianyf/Inkleaf/releases/tag/v0.5.0)
+**[Download for Windows (x64)](https://github.com/alextianyf/Inkleaf/releases/download/v0.5.1/Inkleaf-Setup-0.5.1.exe)** · [Release notes](https://github.com/alextianyf/Inkleaf/releases/tag/v0.5.1)
 
-The current stable release is **0.5.0**. Download the `.exe` installer above, or [run from source](#development). The `.blockmap` and `latest.yml` files on the release page are used by the updater; manual installation only needs the `.exe`.
+The current stable release is **0.5.1**. Download the `.exe` installer above, or [run from source](#development). The `.blockmap` and `latest.yml` files on the release page are used by the updater; manual installation only needs the `.exe`.
 
-The installer bundles the runtime, so Node.js and Python are not needed. macOS and Linux builds are not currently offered, and Windows builds are unsigned. Folio, advanced layout settings, code highlighting and Light/Dark/System appearance are included in 0.5.0.
+The installer bundles the runtime, so Node.js and Python are not needed. macOS and Linux builds are not currently offered, and Windows builds are unsigned. Version 0.5.1 offers Classic (default) and Minimal, advanced layout settings, code highlighting and Light/Dark/System appearance. Saved Folio preferences fall back to Classic.
 
 Installed Windows builds check for new stable versions. You choose **Download**, then **Restart and update** when ready. Inkleaf waits for active conversion or export tasks; quitting normally does not install an update. [Update and release details](docs/updates.md).
 

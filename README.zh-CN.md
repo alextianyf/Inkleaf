@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/alextianyf/Inkleaf/releases/download/v0.5.0/Inkleaf-Setup-0.5.0.exe"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/download-zh-dark.svg"><img src="docs/media/badges/download-zh.svg" width="218" height="44" alt="下载 Windows 版"></picture></a>&nbsp;&nbsp;<a href="#quick-start"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/quick-start-zh-dark.svg"><img src="docs/media/badges/quick-start-zh.svg" width="122" height="44" alt="开始使用"></picture></a>
+  <a href="https://github.com/alextianyf/Inkleaf/releases/download/v0.5.1/Inkleaf-Setup-0.5.1.exe"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/download-zh-dark.svg"><img src="docs/media/badges/download-zh.svg" width="218" height="44" alt="下载 Windows 版"></picture></a>&nbsp;&nbsp;<a href="#quick-start"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/quick-start-zh-dark.svg"><img src="docs/media/badges/quick-start-zh.svg" width="122" height="44" alt="开始使用"></picture></a>
 </p>
 
 <p align="center">
@@ -86,11 +86,11 @@
 
 ## 获取印页
 
-**[下载 Windows 安装包（x64）](https://github.com/alextianyf/Inkleaf/releases/download/v0.5.0/Inkleaf-Setup-0.5.0.exe)** · [发布说明](https://github.com/alextianyf/Inkleaf/releases/tag/v0.5.0)
+**[下载 Windows 安装包（x64）](https://github.com/alextianyf/Inkleaf/releases/download/v0.5.1/Inkleaf-Setup-0.5.1.exe)** · [发布说明](https://github.com/alextianyf/Inkleaf/releases/tag/v0.5.1)
 
-当前正式版本为 **0.5.0**。点击上方链接下载 `.exe` 安装包，也可以[从源码运行](#development)。发布页中的 `.blockmap` 与 `latest.yml` 供更新器使用，手动安装只需下载 `.exe`。
+当前正式版本为 **0.5.1**。点击上方链接下载 `.exe` 安装包，也可以[从源码运行](#development)。发布页中的 `.blockmap` 与 `latest.yml` 供更新器使用，手动安装只需下载 `.exe`。
 
-安装包自带运行环境，无需另外安装 Node.js 或 Python。目前不提供 macOS 和 Linux 版本，Windows 构建尚未进行代码签名。Folio、高级排版设置、代码高亮及浅色／深色／跟随系统外观均已包含在 0.5.0 中。
+安装包自带运行环境，无需另外安装 Node.js 或 Python。目前不提供 macOS 和 Linux 版本，Windows 构建尚未进行代码签名。0.5.1 提供 Classic（默认）与 Minimal、高级排版设置、代码高亮及浅色／深色／跟随系统外观；旧 Folio 设置会回退到 Classic。
 
 安装版会检查新的稳定版本。发现更新后，点击**下载**，准备好后再选择**重启并更新**。有转换或导出任务时会等待完成；普通退出不会自动安装。[更新与发布说明](docs/updates.md)。
 
