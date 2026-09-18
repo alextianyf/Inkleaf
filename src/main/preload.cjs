@@ -51,6 +51,11 @@ contextBridge.exposeInMainWorld("aldus", {
   refresh: invoke("refresh"),
   chooseFile: invoke("choose-file"),
   preview: invoke("preview"),
+  onPreviewProgress: (callback) => {
+    const listener = (_event, progress) => callback(progress);
+    ipcRenderer.on("aldus:preview-progress", listener);
+    return () => ipcRenderer.removeListener("aldus:preview-progress", listener);
+  },
   cancelPreview: invoke("cancel-preview"),
   folder: invoke("folder"),
   batchStart: invoke("batch-start"),

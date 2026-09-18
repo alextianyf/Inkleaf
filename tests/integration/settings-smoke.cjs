@@ -117,7 +117,7 @@ const os = require("node:os");
     await setup();
     assert.equal(
       (await page.evaluate(() => window.aldus.state())).theme,
-      "default",
+      "modern",
     );
     await expect
       .poll(
@@ -159,17 +159,17 @@ const os = require("node:os");
     await settings.locator("#margins").selectOption("compact");
     await settings.locator("#fontSize").fill("12");
     await settings.locator("#lineHeight").selectOption("1.8");
-    await expect(settings.locator("#theme")).toHaveValue("default");
+    await expect(settings.locator("#theme")).toHaveValue("modern");
     assert.deepEqual(
       await settings
         .locator("#theme option")
         .evaluateAll((options) => options.map((option) => option.value)),
-      ["default", "minimal"],
+      ["modern", "default", "minimal"],
     );
     await expect(
       settings.locator("#headingNumbering, #unnumberedHeadings"),
     ).toHaveCount(0);
-    await settings.locator("#theme").selectOption("minimal");
+    await settings.locator("#theme").selectOption("modern");
     await settings.locator("#copyrightLabel").fill("Custom class notes");
     assert.equal(
       (await page.evaluate(() => window.aldus.state())).copyrightLabel,
@@ -452,7 +452,7 @@ const os = require("node:os");
     await page.getByRole("combobox").waitFor();
     const restarted = await page.evaluate(() => window.aldus.state());
     assert.equal(restarted.author, "For the next batch");
-    assert.equal(restarted.theme, "minimal");
+    assert.equal(restarted.theme, "modern");
     assert.equal(restarted.copyrightLabel, "Custom class notes");
     assert.equal(restarted.paperSize, "Letter");
     assert.equal(restarted.orientation, "landscape");
@@ -475,14 +475,14 @@ const os = require("node:os");
     await expect.poll(() => settings.isClosed()).toBe(true);
     settings = await openSettings(page);
     await settings.getByRole("button", { name: "排版", exact: true }).click();
-    await expect(settings.locator("#theme")).toHaveValue("minimal");
+    await expect(settings.locator("#theme")).toHaveValue("modern");
     await settings
       .getByRole("button", { name: "恢复此分类的默认设置", exact: true })
       .click();
-    await expect(settings.locator("#theme")).toHaveValue("default");
+    await expect(settings.locator("#theme")).toHaveValue("modern");
     assert.equal(
       (await page.evaluate(() => window.aldus.state())).theme,
-      "minimal",
+      "modern",
       "reset remains a draft",
     );
     await settings
@@ -490,10 +490,10 @@ const os = require("node:os");
       .click();
     await expect
       .poll(async () => (await page.evaluate(() => window.aldus.state())).theme)
-      .toBe("default");
+      .toBe("modern");
     assert.equal(
       JSON.parse(await fs.readFile(path.join(sandbox, "settings.json"))).theme,
-      "default",
+      "modern",
     );
     assert.deepEqual(errors, []);
     console.log(

@@ -53,29 +53,33 @@ src/
   conversion/     Markdown、HTML、图片和转换前检测
   shared/         中英文文案
 resources/
-  themes/         PDF 的 Classic（默认）/ Minimal 主题
+  themes/         PDF 的 Modern（默认）/ Classic / Minimal 主题
   styles/         PDF 通用排版规则
+  fonts/          Modern 内置英文字体与第三方许可
 tests/
   unit/           规则和业务逻辑测试
   integration/    真实 Electron 窗口及 PDF 回归测试
   performance/    搜索速度基准
+  quality/        全量模板、真实讲义样本与彩色／灰度质量检查
   fixtures/       测试用 Markdown 与图片
 docs/             使用、架构与引擎说明
 ```
 
-`node_modules/` 是安装的依赖，`dist/` 是编译后的界面，`release/` 是安装包，`artifacts/` 是测试报告。这四个目录都是本地产物，不提交到 Git；源码和测试样本在上面的目录中。
+`node_modules/` 是安装的依赖，`dist/` 是编译后的界面，`release/` 是安装包，`artifacts/` 是测试报告，`output/` 是质量检查报告。这五个目录都是本地产物，不提交到 Git；源码和测试样本在上面的目录中。
 
 ## 常用命令
 
-| 命令                | 用途                                 |
-| ------------------- | ------------------------------------ |
-| `npm run lint`      | 检查代码                             |
-| `npm run format`    | 统一排版；不会改写 Markdown 测试样本 |
-| `npm test`          | 单元测试                             |
-| `npm run test:all`  | 界面构建和全部自动回归               |
-| `npm run benchmark` | 搜索速度测试                         |
-| `npm run pack`      | 生成可运行的完整程序目录             |
-| `npm run dist:win`  | 生成 Windows 安装包                  |
+| 命令                      | 用途                                        |
+| ------------------------- | ------------------------------------------- |
+| `npm run lint`            | 检查代码                                    |
+| `npm run format`          | 统一排版；不会改写 Markdown 测试样本        |
+| `npm test`                | 单元测试                                    |
+| `npm run test:all`        | 界面构建和全部自动回归                      |
+| `npm run benchmark`       | 搜索速度测试                                |
+| `npm run check:quality`   | 全量模板在三种主题、中英文下的 PDF 质量检查 |
+| `npm run check:grayscale` | 黑白打印检查：灰度页面与标题层级            |
+| `npm run pack`            | 生成可运行的完整程序目录                    |
+| `npm run dist:win`        | 生成 Windows 安装包                         |
 
 安装包位于 `release/`。使用安装包的人无需安装 Node.js 或 Python。Windows 构建和回归已验证；macOS、Linux 目标尚未验证。
 

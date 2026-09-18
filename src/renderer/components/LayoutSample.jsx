@@ -1,10 +1,14 @@
 import { useEffect, useMemo, useState } from "react";
 import { PdfPreview } from "./PdfPreview.jsx";
+import PreviewProgress from "./PreviewProgress.jsx";
+import { usePreviewProgress } from "../lib/use-preview-progress.js";
 import defaults from "../../shared/preferences.json";
 import { getErrorMessage } from "../lib/errors.js";
 
 export default function LayoutSample({ config, t, queue, focusRequest }) {
   const [preview, setPreview] = useState(null);
+  const [pages, setPages] = useState(0);
+  const { progress, begin, cancel, onPages } = usePreviewProgress();
   const [finished, setFinished] = useState("");
   const [error, setError] = useState("");
   const [retry, setRetry] = useState(0);
@@ -109,6 +113,7 @@ export default function LayoutSample({ config, t, queue, focusRequest }) {
   ]);
   useEffect(() => {
     let active = true;
+    const requestId = begin();
     const timer = setTimeout(() => {
       // One sample render at a time. Superseded inputs never enter the renderer.
       queue.current = queue.current
@@ -120,9 +125,11 @@ export default function LayoutSample({ config, t, queue, focusRequest }) {
             const result = await window.aldus.samplePreview(
               request.options,
               request.scenario,
+              requestId,
             );
             if (active) {
               setPreview(result);
+              setPages(0);
               setFinished(key);
               setError("");
             }
@@ -136,9 +143,10 @@ export default function LayoutSample({ config, t, queue, focusRequest }) {
     }, 300);
     return () => {
       active = false;
+      cancel();
       clearTimeout(timer);
     };
-  }, [key, queue, retry]);
+  }, [key, queue, retry, begin, cancel]);
   return (
     <aside className="layout-sample" aria-label={t("sampleDocument")}>
       <div className="sample-heading">
@@ -211,8 +219,18 @@ export default function LayoutSample({ config, t, queue, focusRequest }) {
           </button>
         </div>
       )}
-      <div className="preview-content" aria-busy={finished !== key}>
-        {preview ? (
+      <div
+        className="preview-content"
+        aria-busy={!error && (finished !== key || !pages)}
+      >
+        {!error && (finished !== key || !pages) && (
+          <PreviewProgress
+            progress={progress}
+            t={t}
+            compact={Boolean(preview)}
+          />
+        )}
+        {preview && (
           <PdfPreview
             data={preview.data}
             zoom={zoom}
@@ -221,12 +239,9 @@ export default function LayoutSample({ config, t, queue, focusRequest }) {
             externalLinkLabel={t("previewOpenLink")}
             unavailableLinkLabel={t("previewLinkUnavailable")}
             onError={setError}
+            onReady={setPages}
+            onProgress={onPages}
           />
-        ) : (
-          <div className="loading-state">
-            <span className="spinner" />
-            {t("rendering")}
-          </div>
         )}
       </div>
     </aside>

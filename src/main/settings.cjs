@@ -10,7 +10,7 @@ function validatePreferences(patch) {
   const choices = {
     appearance: ["light", "dark", "system"],
     languagePreference: ["system", "zh", "en"],
-    theme: ["default", "minimal"],
+    theme: ["default", "modern", "minimal"],
     paperSize: ["A4", "Letter"],
     orientation: ["portrait", "landscape"],
     margins: ["compact", "standard", "wide"],

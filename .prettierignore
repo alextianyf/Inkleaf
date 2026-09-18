@@ -4,6 +4,8 @@ release/
 artifacts/
 # Fixtures are authored Markdown: formatting can change the case being tested.
 tests/fixtures/
+tests/quality/template/
+tests/quality/samples/
 # Keep the literal source in README comparisons consistent with generated media.
 docs/demo/examples/
 package-lock.json

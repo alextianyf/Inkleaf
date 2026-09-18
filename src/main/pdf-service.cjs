@@ -16,7 +16,7 @@ class PdfService {
   cancel() {
     this.current?.abort();
   }
-  async render(file, options) {
+  async render(file, options, onProgress = () => {}) {
     if (this.busy) throw new Error(this.translate("renderBusy"));
     const id = randomUUID();
     const controller = new AbortController();
@@ -36,6 +36,7 @@ class PdfService {
     let printer;
     this.busy = true;
     try {
+      onProgress("previewReading");
       const stat = await wait(fs.stat(file));
       const cacheKey = JSON.stringify([
         file,
@@ -45,9 +46,12 @@ class PdfService {
         options.language,
       ]);
       const cached = this.cache.get(cacheKey);
-      if (cached && Date.now() - cached.created < 60000)
+      if (cached && Date.now() - cached.created < 60000) {
+        onProgress("previewPages");
         return { ...cached, id };
+      }
       const document = await wait(buildDocument(file, options));
+      onProgress("previewLayout");
       this.documents.set(id, document.html);
       printer = new BrowserWindow({
         show: false,
@@ -79,6 +83,7 @@ class PdfService {
         ),
       );
       document.warnings.push(...missing.filter(Boolean));
+      onProgress("previewPrinting");
       const data = await wait(
         printer.webContents.printToPDF({
           pageSize: options.paperSize || "A4",
@@ -115,6 +120,7 @@ class PdfService {
           this.cache.delete(key);
         }
       }
+      onProgress("previewPages");
       return result;
     } catch (error) {
       if (error.code === "ENOENT")

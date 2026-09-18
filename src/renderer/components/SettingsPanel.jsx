@@ -166,7 +166,7 @@ export default function SettingsPanel({
         <Group title={t("groupPage")}>
           <Select
             name="theme"
-            values={["default", "minimal"]}
+            values={["modern", "default", "minimal"]}
             config={config}
             change={change}
             t={t}

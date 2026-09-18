@@ -214,6 +214,14 @@ function registerShortcut(accelerator) {
   }
 }
 
+function previewProgress(target, requestId) {
+  return (stage) => {
+    if (typeof requestId !== "string" || requestId.length > 100) return;
+    if (target && !target.isDestroyed())
+      target.webContents.send("aldus:preview-progress", { requestId, stage });
+  };
+}
+
 function handle(name, fn) {
   const changesFiles = [
     "preview",
@@ -275,7 +283,8 @@ function installHandlers() {
   handle("open-settings", openSettings);
   handle("close-settings", () => settingsWindow.close());
   handle("settings-layout", (layout) => settingsWindow.resize(layout === true));
-  handle("sample-preview", async (options, scenario) => {
+  handle("sample-preview", async (options, scenario, requestId) => {
+    const report = previewProgress(settingsWindow.get(), requestId);
     let valid;
     try {
       valid = validatePreferences(options);
@@ -291,7 +300,7 @@ function installHandlers() {
     // Keep requests ordered even if the settings window is closed and reopened.
     sampleQueue = sampleQueue
       .catch(() => {})
-      .then(() => sampleService.render(sample.file, sample.options));
+      .then(() => sampleService.render(sample.file, sample.options, report));
     const result = await sampleQueue;
     return { ...result, data: new Uint8Array(result.data) };
   });
@@ -458,7 +467,7 @@ function installHandlers() {
       pdfService.cancel();
     }
   });
-  handle("preview", async (file) => {
+  handle("preview", async (file, requestId) => {
     const generation = ++previewGeneration;
     if (
       typeof file !== "string" ||
@@ -468,7 +477,11 @@ function installHandlers() {
       throw new Error(t("chooseMarkdown"));
     if (batchJob?.running) throw new Error(t("batchBusy"));
     if (generation !== previewGeneration) throw new Error("Preview cancelled");
-    const result = await pdfService.render(file, { ...config });
+    const result = await pdfService.render(
+      file,
+      { ...config },
+      previewProgress(window, requestId),
+    );
     if (generation !== previewGeneration) throw new Error("Preview cancelled");
     previews.clear();
     previews.set(result.id, {

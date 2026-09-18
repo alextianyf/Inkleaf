@@ -1,5 +1,8 @@
 import preferenceDefaults from "../../shared/preferences.json";
 import DocumentWarnings from "./DocumentWarnings.jsx";
+import PreviewProgress from "./PreviewProgress.jsx";
+import ExportNotice from "./ExportNotice.jsx";
+import { usePreviewProgress } from "../lib/use-preview-progress.js";
 import { useEffect, useRef, useState } from "react";
 import { PdfPreview } from "./PdfPreview.jsx";
 import { Icon } from "./Icon.jsx";
@@ -19,9 +22,11 @@ export default function BatchPreview({ folder, config, t, onBack, onWorking }) {
   const [rendering, setRendering] = useState(false);
   const [starting, setStarting] = useState(false);
   const [job, setJob] = useState(null);
+  const [dismissedExport, setDismissedExport] = useState(null);
   const [error, setError] = useState("");
   const [finishedKey, setFinishedKey] = useState("");
   const previewId = useRef(null);
+  const { progress, begin, cancel, onPages } = usePreviewProgress();
   const renderKey = JSON.stringify([
     current?.path,
     ...Object.keys(preferenceDefaults.layout).map((key) => config[key]),
@@ -68,7 +73,7 @@ export default function BatchPreview({ folder, config, t, onBack, onWorking }) {
     let active = true;
     // Selection is disabled while rendering, so a new preview cannot race this one.
     api
-      .preview(current.path)
+      .preview(current.path, begin())
       .then((next) => {
         if (!active) {
           void api.discard(next.id);
@@ -89,8 +94,9 @@ export default function BatchPreview({ folder, config, t, onBack, onWorking }) {
       });
     return () => {
       active = false;
+      cancel();
     };
-  }, [current, renderKey, job?.running]);
+  }, [current, renderKey, job?.running, begin, cancel]);
 
   useEffect(
     () =>
@@ -269,33 +275,66 @@ export default function BatchPreview({ folder, config, t, onBack, onWorking }) {
               </span>
             )}
           </div>
-          <div
-            className="preview-content"
-            aria-busy={loading || rendering || previewPending}
-          >
-            {(loading || rendering || previewPending) && (
-              <div className={preview ? "render-indicator" : "loading-state"}>
-                <span className="spinner" />
-                {t(loading ? "searching" : "rendering")}
-              </div>
-            )}
-            {preview && (
-              <PdfPreview
-                data={preview.data}
-                internalLinkLabel={t("previewJumpLink")}
-                externalLinkLabel={t("previewOpenLink")}
-                unavailableLinkLabel={t("previewLinkUnavailable")}
-                onReady={setPages}
-                onError={setError}
-              />
-            )}
-            {!loading && !rendering && !preview && current && (
-              <div className="loading-state">
-                <button className="text-button" onClick={() => select(current)}>
-                  {t("retry")}
-                </button>
-              </div>
-            )}
+          <div className="preview-stage">
+            {job &&
+              job.id !== dismissedExport &&
+              !job.running &&
+              !job.cancelled &&
+              !job.failed &&
+              job.completed === job.total &&
+              job.total > 0 && (
+                <ExportNotice
+                  detail={t("batchExportSuccess").replace(
+                    "{count}",
+                    job.completed,
+                  )}
+                  t={t}
+                  onDismiss={() => setDismissedExport(job.id)}
+                />
+              )}
+            <div
+              className="preview-content"
+              aria-busy={
+                !error &&
+                (loading ||
+                  rendering ||
+                  previewPending ||
+                  Boolean(preview && !pages))
+              }
+            >
+              {!error &&
+                (loading ||
+                  rendering ||
+                  previewPending ||
+                  Boolean(preview && !pages)) && (
+                  <PreviewProgress
+                    progress={progress}
+                    t={t}
+                    compact={Boolean(preview)}
+                  />
+                )}
+              {preview && (
+                <PdfPreview
+                  data={preview.data}
+                  internalLinkLabel={t("previewJumpLink")}
+                  externalLinkLabel={t("previewOpenLink")}
+                  unavailableLinkLabel={t("previewLinkUnavailable")}
+                  onReady={setPages}
+                  onProgress={onPages}
+                  onError={setError}
+                />
+              )}
+              {!loading && !rendering && !preview && current && (
+                <div className="loading-state">
+                  <button
+                    className="text-button"
+                    onClick={() => select(current)}
+                  >
+                    {t("retry")}
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
           <DocumentWarnings preview={preview} t={t} />
         </div>

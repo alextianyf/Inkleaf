@@ -22,7 +22,11 @@ npm.cmd run dev
 5. **Esc** returns from preview to search, including while a preview is loading; in search it hides the window. The preview back arrow also returns to search. Settings close separately and prompt before discarding an unsaved layout. Clicking another application hides the search/preview window, preserving its state; native file pickers keep it open.
 6. On Windows, **Ctrl+Shift+Space** toggles the installed app; **Ctrl+Alt+Shift+Space** toggles Inkleaf Dev. Use the tray menu's **退出 / Quit** to exit. General provides Light, Dark and System appearance independently of the PDF theme.
 
+Version 0.6.0: previews show a four-step progress bar for reading Markdown/images, layout, PDF generation, and displaying pages. Stage changes come from the conversion pipeline; the last stage reports actual rendered page counts. The bar represents workflow progress, not a time estimate. Single-file exports show a dismissible success toast with the filename over the upper-right of the PDF preview after saving, without moving the document, while the bottom saved-path row remains available. Cancelling or failing a save does not display success. A fully successful batch also shows confirmation.
+
 The shortcut is active while Inkleaf is running. Launch at login is optional and off by default. Right-click the Inkleaf system tray icon and choose **设置 / Settings**. A separate window groups settings into General, Search, Layout, Export and About & updates. Preferences save automatically. Only Layout displays a fixed bilingual sample, rendered with the same PDF engine; it never reads the active user document. Closing settings returns new layout preferences to the current document preview. A running batch retains its original settings snapshot. Chinese, English and system language are supported. Native dialogs follow the operating system. Settings live in Electron's per-user userData/settings.json. See [Settings behavior](settings.md).
+
+Version 0.6.0 offers Modern (default), Classic and Minimal in Settings → Layout → Theme. Modern includes bundled Inter and JetBrains Mono Latin fonts, a six-level heading hierarchy, code cards with language labels and optional line numbers, and dedicated quotation/callout styling. Existing saved theme choices are retained. The reusable [quality template and grayscale checks](../tests/quality/README.md) cover all three themes; see [release notes](releases/0.6.0.md).
 
 While visible, the window floats above ordinary application windows; clicking elsewhere intentionally hides it. System security screens and exclusive fullscreen applications are outside this guarantee.
 
@@ -44,7 +48,7 @@ The desktop renderer preserves static HTML layout rather than replacing it with 
 
 Document-local `<style>` blocks and inline CSS are supported, including flex/grid layout and print page breaks. The preview uses the actual Chromium-generated PDF. External stylesheets, CSS images/fonts referenced by URL, scripts, and embedded web pages are not loaded or executed; the preview reports these dependencies as document notices. This is a tested static-document subset, not a guarantee of pixel-identical reproduction of arbitrary websites or JavaScript applications.
 
-`npm run test:layout` exercises both themes in Electron and measures the rendered geometry for alignment, image dimensions, table dimensions/cell properties, flex/grid and author CSS precedence; it also verifies a two-page PDF from an explicit page break and visible notices for unsupported dependencies. PDF fixtures and a preview screenshot are stored under `artifacts/tests/`.
+`npm run test:layout` exercises all themes in Electron and measures the rendered geometry for alignment, image dimensions, table dimensions/cell properties, flex/grid and author CSS precedence; it also verifies a two-page PDF from an explicit page break and visible notices for unsupported dependencies. PDF fixtures and a preview screenshot are stored under `artifacts/tests/`.
 
 ## Build Windows downloads
 

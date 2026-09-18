@@ -68,6 +68,23 @@ input[type="checkbox"]:checked {
 summary {
   font-weight: 600;
 }
+/* The language label on a fenced block is hidden unless a theme shows it. */
+.aldus-code-lang {
+  display: none;
+}
+/* One source line per box, so a theme can hang a number beside it. A blank
+   line still occupies a line. */
+.aldus-code-line {
+  display: block;
+  min-height: 1.55em;
+  min-height: 1lh;
+}
+/* A [!NOTE]-style callout keeps its label as ordinary bold text unless the
+   theme gives it a treatment of its own. */
+.aldus-callout-label {
+  margin: 0 0 4px;
+  font-weight: 700;
+}
 details {
   margin: 8px 0;
 }

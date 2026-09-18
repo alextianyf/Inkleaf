@@ -183,7 +183,7 @@ const os = require("node:os");
     );
     assert.equal(
       (await page.evaluate(() => window.aldus.state())).theme,
-      "default",
+      "modern",
     );
     await settings.locator("#appearance").selectOption("dark");
     await appearance([page, settings], "dark");

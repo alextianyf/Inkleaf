@@ -50,7 +50,7 @@ const path = require("node:path");
       });
     });
     const pdfjs = await import("pdfjs-dist/legacy/build/pdf.mjs");
-    for (const theme of ["default", "minimal"]) {
+    for (const theme of ["default", "modern", "minimal"]) {
       for (const keepHeadings of [true, false]) {
         for (const edge of ["inside", "after"]) {
           // Exercise Letter landscape as well as A4 portrait.

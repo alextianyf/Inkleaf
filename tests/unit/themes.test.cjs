@@ -9,12 +9,19 @@ const {
 } = require("../../src/main/settings.cjs");
 const { buildDocument } = require("../../src/conversion/document.cjs");
 
-test("retired themes fall back to Classic without losing other preferences", async (t) => {
+test("retired themes fall back to Modern without losing other preferences", async (t) => {
   const folder = await fs.mkdtemp(path.join(os.tmpdir(), "inkleaf-themes-"));
   t.after(() => fs.rm(folder, { recursive: true, force: true }));
   const settings = path.join(folder, "settings.json");
-  assert.equal((await loadSettings(settings, "en")).theme, "default");
-  for (const theme of ["folio", "dark", "default", "minimal", "unknown"]) {
+  assert.equal((await loadSettings(settings, "en")).theme, "modern");
+  for (const theme of [
+    "folio",
+    "dark",
+    "default",
+    "modern",
+    "minimal",
+    "unknown",
+  ]) {
     await fs.writeFile(
       settings,
       JSON.stringify({
@@ -26,18 +33,21 @@ test("retired themes fall back to Classic without losing other preferences", asy
       }),
     );
     const config = await loadSettings(settings, "en");
-    assert.equal(config.theme, theme === "minimal" ? "minimal" : "default");
+    assert.equal(
+      config.theme,
+      ["default", "modern", "minimal"].includes(theme) ? theme : "modern",
+    );
     assert.equal(config.author, "Keep me");
     assert.equal(config.h2Size, 22);
     assert.ok(!Object.hasOwn(config, "headingNumbering"));
     assert.ok(!Object.hasOwn(config, "unnumberedHeadings"));
-    if (["default", "minimal"].includes(theme))
+    if (["default", "modern", "minimal"].includes(theme))
       assert.deepEqual(validatePreferences({ theme }), { theme });
     else assert.throws(() => validatePreferences({ theme }));
   }
 });
 
-test("both themes preserve authored headings and links even with stale numbering options", async (t) => {
+test("all themes preserve authored headings and links even with stale numbering options", async (t) => {
   const folder = await fs.mkdtemp(path.join(os.tmpdir(), "inkleaf-headings-"));
   t.after(() => fs.rm(folder, { recursive: true, force: true }));
   const file = path.join(folder, "sample.md");
@@ -45,18 +55,26 @@ test("both themes preserve authored headings and links even with stale numbering
     "# Sample\n\n## Contents\n\n[9. Mechanical Waves](#9-mechanical-waves)\n\n## 9. Mechanical Waves\n\n### 9.4 Energy\n\nHello 中文.\n\n## Unnumbered chapter\n\nText.\n";
   await fs.writeFile(file, source);
   const before = await fs.stat(file);
-  const classic = await buildDocument(file, {
-    theme: "default",
+  const modern = await buildDocument(file, {
+    theme: "modern",
     language: "en",
   });
-  for (const theme of [undefined, "unknown", "folio", "default", "minimal"]) {
+  for (const theme of [
+    undefined,
+    "unknown",
+    "folio",
+    "default",
+    "modern",
+    "minimal",
+  ]) {
     const document = await buildDocument(file, {
       theme,
       language: "en",
       headingNumbering: "uniform",
       unnumberedHeadings: "Contents",
     });
-    if (theme !== "minimal") assert.equal(document.html, classic.html);
+    if (!["minimal", "default"].includes(theme))
+      assert.equal(document.html, modern.html);
     assert.match(
       document.html,
       /<h2 id="9-mechanical-waves">9\. Mechanical Waves<\/h2>/,

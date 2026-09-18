@@ -7,6 +7,9 @@ import { PdfPreview } from "./components/PdfPreview.jsx";
 import { Icon } from "./components/Icon.jsx";
 import BatchPreview from "./components/BatchPreview.jsx";
 import UpdateControls from "./components/UpdateControls.jsx";
+import PreviewProgress from "./components/PreviewProgress.jsx";
+import ExportNotice from "./components/ExportNotice.jsx";
+import { usePreviewProgress } from "./lib/use-preview-progress.js";
 import { getErrorMessage } from "./lib/errors.js";
 import preferenceDefaults from "../shared/preferences.json";
 import strings from "../shared/strings.json";
@@ -34,6 +37,8 @@ export default function DesktopApp() {
   const [exporting, setExporting] = useState(false);
   const [pages, setPages] = useState(0);
   const [saved, setSaved] = useState("");
+  const [exportNotice, setExportNotice] = useState("");
+  const { progress, begin, cancel, onPages } = usePreviewProgress();
   const [error, setError] = useState("");
   const [update, setUpdate] = useState({ status: "idle" });
   const input = useRef(null);
@@ -144,6 +149,8 @@ export default function DesktopApp() {
   function back() {
     if (exporting || batchWorking) return;
     previewRequest.current++;
+    cancel();
+    setExportNotice("");
     void api.cancelPreview().catch(() => {});
     busyRef.current = false;
     setBusy(false);
@@ -171,6 +178,7 @@ export default function DesktopApp() {
     }
     setBatchFolder(null);
     busyRef.current = true;
+    setExportNotice("");
     const request = ++previewRequest.current;
     setBusy(true);
     setError("");
@@ -182,7 +190,7 @@ export default function DesktopApp() {
       setSaved("");
     }
     try {
-      const next = await api.preview(entry.path);
+      const next = await api.preview(entry.path, begin());
       if (request !== previewRequest.current) {
         void api.discard(next.id);
         return;
@@ -228,8 +236,9 @@ export default function DesktopApp() {
         if (!active) return;
         const request = ++previewRequest.current;
         busyRef.current = true;
+        setExportNotice("");
         try {
-          const next = await api.preview(file.path);
+          const next = await api.preview(file.path, begin());
           if (active && request === previewRequest.current) {
             previewId.current = next.id;
             setPreview(next);
@@ -247,15 +256,19 @@ export default function DesktopApp() {
     return () => {
       active = false;
     };
-  }, [currentLayoutKey, stalePreview, busy, file, batchFolder]);
+  }, [currentLayoutKey, stalePreview, busy, file, batchFolder, begin]);
 
   async function exportPdf() {
     if (!preview || exporting || busy || stalePreview || !pages) return;
     setExporting(true);
+    setExportNotice("");
     setError("");
     try {
       const target = await api.exportPdf(preview.id);
-      if (target) setSaved(target);
+      if (target) {
+        setSaved(target);
+        setExportNotice(target.split(/[\\/]/).pop());
+      }
     } catch (e) {
       setError(getErrorMessage(e));
     } finally {
@@ -417,36 +430,52 @@ export default function DesktopApp() {
                   {t(exporting ? "exporting" : "export")}
                 </button>
               </div>
-              <div className="preview-content" aria-busy={busy || stalePreview}>
-                {(busy || stalePreview) && (
-                  <div
-                    className={preview ? "render-indicator" : "loading-state"}
-                  >
-                    <span className="spinner" />
-                    {t("rendering")}
-                  </div>
-                )}
-                {preview && (
-                  <PdfPreview
-                    data={preview.data}
-                    internalLinkLabel={t("previewJumpLink")}
-                    externalLinkLabel={t("previewOpenLink")}
-                    unavailableLinkLabel={t("previewLinkUnavailable")}
-                    onReady={setPages}
-                    onError={setError}
+              <div className="preview-stage">
+                {exportNotice && (
+                  <ExportNotice
+                    detail={exportNotice}
+                    t={t}
+                    onDismiss={() => setExportNotice("")}
                   />
                 )}
-                {!busy && !preview && (
-                  <div className="loading-state">
-                    <span>{t("previewFailed")}</span>
-                    <button
-                      className="text-button"
-                      onClick={() => openPreview(file)}
-                    >
-                      {t("retry")}
-                    </button>
-                  </div>
-                )}
+                <div
+                  className="preview-content"
+                  aria-busy={
+                    !error &&
+                    (busy || stalePreview || Boolean(preview && !pages))
+                  }
+                >
+                  {!error &&
+                    (busy || stalePreview || Boolean(preview && !pages)) && (
+                      <PreviewProgress
+                        progress={progress}
+                        t={t}
+                        compact={Boolean(preview)}
+                      />
+                    )}
+                  {preview && (
+                    <PdfPreview
+                      data={preview.data}
+                      internalLinkLabel={t("previewJumpLink")}
+                      externalLinkLabel={t("previewOpenLink")}
+                      unavailableLinkLabel={t("previewLinkUnavailable")}
+                      onReady={setPages}
+                      onProgress={onPages}
+                      onError={setError}
+                    />
+                  )}
+                  {!busy && !preview && (
+                    <div className="loading-state">
+                      <span>{t("previewFailed")}</span>
+                      <button
+                        className="text-button"
+                        onClick={() => openPreview(file)}
+                      >
+                        {t("retry")}
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
               <DocumentWarnings preview={preview} t={t} />
               {saved && (

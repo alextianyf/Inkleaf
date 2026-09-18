@@ -133,7 +133,7 @@ const path = require("node:path");
     const settings = await opened;
     settings.setDefaultTimeout(20000);
     await settings.getByRole("button", { name: "Layout", exact: true }).click();
-    await expect(settings.locator("#theme option")).toHaveCount(2);
+    await expect(settings.locator("#theme option")).toHaveCount(3);
     await settings.locator("#author").fill("Alex Tian");
     await settings.locator(".advanced-layout summary").click();
     await settings.locator("#headerEnabled").check();
@@ -141,11 +141,18 @@ const path = require("node:path");
     await settings.locator("#footerEnabled").check();
     await settings.locator("#footerText").fill("TEACHING FOOTER");
     async function highlighted(action) {
+      await expect(settings.locator(".preview-content")).toHaveAttribute(
+        "aria-busy",
+        "false",
+        { timeout: 30000 },
+      );
       await settings.evaluate(() =>
         document.querySelector(".pdf-change-highlight")?.remove(),
       );
       await action();
-      await expect(settings.locator(".pdf-change-highlight")).toBeVisible();
+      await expect(settings.locator(".pdf-change-highlight")).toBeVisible({
+        timeout: 30000,
+      });
       const position = await settings
         .locator(".pdf-change-highlight")
         .evaluate((el) => ({

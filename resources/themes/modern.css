@@ -1,0 +1,719 @@
+/* Modern: Classic's layered hierarchy, rebuilt in one blue family and set in
+   Inter (bundled, Latin only; CJK falls back to the system face). Classic and
+   Minimal stay untouched. Heading colour, size and spacing stay on bare
+   element selectors so the Appearance controls keep overriding them. */
+
+@page {
+  size: A4;
+  margin: 20mm 20mm 25mm;
+}
+
+body {
+  font-family:
+    "Inter", "SF Pro Text", "Segoe UI Variable Text", "Segoe UI", "PingFang SC",
+    "Noto Sans SC", "Microsoft YaHei", Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.6;
+  color: #1d2227;
+  max-width: 100%;
+}
+
+/* One blue family from near-navy to a quiet slate-blue. The ladder is built
+   from lightness, not hue, so it survives grayscale printing. */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  text-wrap: balance;
+}
+
+h1 {
+  font-size: 23pt;
+  line-height: 1.2;
+  letter-spacing: -0.4px;
+  color: #002652;
+  border-bottom: 3px solid #002652;
+  padding-bottom: 10px;
+  margin: 0 0 16px;
+}
+
+/* The rule starts in the heading colour and fades out, so the page opens with
+   one deliberate accent instead of a full-width bar. Everything is mixed from
+   currentColor, so a custom heading colour carries the whole rule. */
+.inkleaf-modern h1 {
+  border-image: linear-gradient(
+      90deg,
+      currentColor 0 78px,
+      color-mix(in srgb, currentColor 20%, transparent) 78px
+    )
+    1;
+}
+
+h2 {
+  font-size: 15.5pt;
+  line-height: 1.4;
+  letter-spacing: -0.15px;
+  color: #003872;
+  border-left: 4px solid #004d9a;
+  background: linear-gradient(
+    90deg,
+    color-mix(in srgb, currentColor 11%, transparent) 0%,
+    color-mix(in srgb, currentColor 11%, transparent) 58%,
+    transparent 100%
+  );
+  padding: 7px 12px 7px 11px;
+  margin: 40px 0 5px;
+}
+
+h3 {
+  font-size: 13pt;
+  line-height: 1.4;
+  letter-spacing: -0.1px;
+  color: #004d9a;
+  border-bottom: 1px solid #e2e9f5;
+  padding-bottom: 5px;
+  margin: 28px 0 4px;
+}
+
+/* Keep the hairline a tint of the heading colour even when it is customised,
+   which a bare border-color would otherwise set to full strength. */
+.inkleaf-modern h3 {
+  border-bottom-color: color-mix(in srgb, currentColor 22%, transparent);
+}
+
+h4 {
+  font-size: 11.5pt;
+  line-height: 1.45;
+  color: #0063c1;
+  margin: 20px 0 4px;
+}
+
+/* Every level owns a different shape, not only a different blue: a rule, a
+   band, a hairline, a dot, then two label rows. */
+.inkleaf-modern h4::before {
+  content: "";
+  display: inline-block;
+  width: 3px;
+  height: 0.82em;
+  margin-right: 8px;
+  border-radius: 1px;
+  background: currentColor;
+  vertical-align: -0.1em;
+}
+
+/* The last two levels read as labels rather than as shrunken headings. */
+h5 {
+  font-size: 9.5pt;
+  line-height: 1.5;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #57708a;
+  margin: 16px 0 3px;
+}
+
+/* h5 and h6 sit too close in gray for colour to separate them, so the last
+   level drops a weight instead. */
+h6 {
+  font-size: 9pt;
+  line-height: 1.5;
+  font-weight: 400;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #5d7690;
+  margin: 14px 0 3px;
+}
+
+p {
+  margin: 12px 0;
+  text-wrap: pretty;
+}
+
+strong {
+  font-weight: 700;
+  color: #003872;
+}
+
+h1 strong,
+h2 strong,
+h3 strong,
+h4 strong,
+h5 strong,
+h6 strong,
+th strong,
+blockquote strong {
+  color: inherit;
+}
+
+.inkleaf-modern a {
+  color: #004d9a;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, currentColor 40%, transparent);
+  text-decoration-thickness: 0.5px;
+  text-underline-offset: 2px;
+}
+
+/* Task boxes follow the accent instead of the browser default. */
+.inkleaf-modern input[type="checkbox"] {
+  width: 0.9em;
+  height: 0.9em;
+  border: 1.5px solid #b5d6f9;
+  border-radius: 3px;
+  margin-right: 0.5em;
+  vertical-align: -0.06em;
+}
+
+.inkleaf-modern input[type="checkbox"]:checked {
+  background: #0076d3;
+  border-color: #0076d3;
+  box-shadow: none;
+}
+
+.inkleaf-modern input[type="checkbox"]:checked::before {
+  content: "";
+  display: block;
+  width: 0.24em;
+  height: 0.46em;
+  margin: 0.04em auto 0;
+  border: solid #fff;
+  border-width: 0 1.5px 1.5px 0;
+  transform: rotate(45deg);
+}
+
+/* Editorial standfirst: the paragraph opening a document carries the summary,
+   so it is set a step larger and quieter than the body. */
+.inkleaf-modern
+  h1
+  + p:not([align], [style*="text-align" i], [class*="aldus-layout"]) {
+  font-size: 1.1em;
+  line-height: 1.5;
+  color: #4d565f;
+  margin-bottom: 12px;
+}
+
+/* A paragraph that is nothing but italics reads as a figure caption. */
+.inkleaf-modern p > em:only-child {
+  font-size: 0.92em;
+  color: #6b727a;
+}
+
+/* A paragraph holding a single image is a figure: it centres, and the
+   caption directly under it centres with it and stays close. */
+.inkleaf-modern p:has(> img:only-child) {
+  text-align: center;
+  padding-left: 0;
+}
+
+.inkleaf-modern p:has(> img:only-child):has(+ p > em:only-child) {
+  margin-bottom: 6px;
+}
+
+.inkleaf-modern p:has(> img:only-child) + p:has(> em:only-child) {
+  text-align: center;
+  padding-left: 0;
+  margin-top: 6px;
+}
+
+/* Chinese has no italic; a slanted Han character is a browser fake. Keep
+   the real Inter italic for Latin and let CJK stay upright, marked by ink. */
+em {
+  font-synthesis-style: none;
+  color: #33404f;
+}
+
+/* Headings anchor the left margin; the text they own steps in by one small
+   unit. Tables and figures stay flush, the way a plate breaks the column. */
+.inkleaf-modern
+  > p:not([align], [style*="text-align" i], [class*="aldus-layout"]) {
+  padding-left: 16px;
+}
+
+.inkleaf-modern
+  > ul:not([align], [style*="text-align" i], [class*="aldus-layout"]) {
+  padding-left: 40px;
+}
+
+.inkleaf-modern
+  > ol:not([align], [style*="text-align" i], [class*="aldus-layout"]) {
+  padding-left: 42px;
+}
+
+.inkleaf-modern
+  > :is(blockquote, pre, details, .toc):not(
+    [align],
+    [style*="text-align" i],
+    [class*="aldus-layout"]
+  ) {
+  margin-left: 16px;
+}
+
+del {
+  color: #6b727a;
+}
+
+hr {
+  border: 0;
+  border-top: 1px solid #deedfe;
+  margin: 18px 0;
+}
+
+/* Lists: markers pick up the section accent, wrapped lines align to the text. */
+/* Proximity: a sentence that introduces a block belongs to it, so the gap
+   below it is smaller than the gap between two ordinary paragraphs. */
+.inkleaf-modern p:has(+ ul),
+.inkleaf-modern p:has(+ ol),
+.inkleaf-modern p:has(+ pre),
+.inkleaf-modern p:has(+ table),
+.inkleaf-modern p:has(+ blockquote) {
+  margin-bottom: 4px;
+}
+
+ul,
+ol {
+  margin: 4px 0 14px;
+  padding-left: 24px;
+}
+
+ol {
+  padding-left: 26px;
+}
+
+li {
+  margin-bottom: 4px;
+  text-wrap: pretty;
+}
+
+li > ul,
+li > ol {
+  margin: 3px 0 4px;
+}
+
+li::marker {
+  color: #0076d3;
+  font-weight: 600;
+}
+
+li li::marker {
+  color: #82b6ec;
+}
+
+/* Quotations stay the loudest block on the page: warm ground against the blue
+   headings, with the note itself in a dark amber ink. */
+blockquote {
+  border-left: 4px solid #e0a013;
+  background: #fff8e2;
+  padding: 8px 16px;
+  margin: 12px 0 16px;
+  color: #453712;
+}
+
+li > strong:first-child {
+  color: #002652;
+}
+
+blockquote strong {
+  color: #7a3b00;
+}
+
+/* A callout is a unit: keep it whole rather than splitting it across pages. */
+blockquote,
+.toc {
+  break-inside: avoid;
+}
+
+blockquote > :first-child {
+  margin-top: 0;
+}
+
+blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+blockquote blockquote {
+  background: rgba(255, 255, 255, 0.6);
+  border-left-color: #c98a12;
+  margin: 8px 0;
+}
+
+/* Tables drop the vertical grid: a solid header, hairline rows and lining
+   figures carry the structure. */
+/* Callouts. The label is a solid chip: on a tinted ground, a filled shape
+   separates far better than coloured text ever can. */
+.inkleaf-modern .aldus-callout-label {
+  display: inline-block;
+  margin: 0 0 6px;
+  padding: 1px 7px 2px;
+  border-radius: 3px;
+  color: #fff;
+  background: #7a3b00;
+  font-size: 8.5pt;
+  font-weight: 700;
+  line-height: 1.4;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.inkleaf-modern .aldus-callout-note {
+  border-left-color: #0076d3;
+  background: #f2f8ff;
+  color: #1d2227;
+}
+
+.inkleaf-modern .aldus-callout-note .aldus-callout-label {
+  background: #00559b;
+}
+
+.inkleaf-modern .aldus-callout-tip {
+  border-left-color: #7a4fc0;
+  background: #f7f3ff;
+  color: #1d2227;
+}
+
+.inkleaf-modern .aldus-callout-tip .aldus-callout-label {
+  background: #5c2f9e;
+}
+
+.inkleaf-modern .aldus-callout-important {
+  border-left-color: #e0a013;
+  background: #fff8e2;
+  color: #453712;
+}
+
+.inkleaf-modern .aldus-callout-important .aldus-callout-label {
+  background: #8a5a00;
+}
+
+.inkleaf-modern .aldus-callout-warning {
+  border-left-color: #d4620a;
+  background: #fff4ea;
+  color: #3a2a1c;
+}
+
+.inkleaf-modern .aldus-callout-warning .aldus-callout-label {
+  background: #9a4405;
+}
+
+.inkleaf-modern .aldus-callout-caution {
+  border-left-color: #c81e3a;
+  background: #fdf1f3;
+  color: #3a1a20;
+}
+
+.inkleaf-modern .aldus-callout-caution .aldus-callout-label {
+  background: #a3162e;
+}
+
+/* The label owns the line above; the text that follows stays tight to it. */
+.inkleaf-modern .aldus-callout-label + * {
+  margin-top: 4px;
+}
+
+/* Bold inside a callout takes the type's dark tone, not the amber default. */
+.inkleaf-modern .aldus-callout-note strong {
+  color: #00559b;
+}
+
+.inkleaf-modern .aldus-callout-tip strong {
+  color: #5c2f9e;
+}
+
+.inkleaf-modern .aldus-callout-warning strong {
+  color: #9a4405;
+}
+
+.inkleaf-modern .aldus-callout-caution strong {
+  color: #a3162e;
+}
+
+/* Task boxes sit where a bullet would, so their text lines up with the
+   text of every other list. */
+.inkleaf-modern .task-list-item > input[type="checkbox"]:first-child {
+  margin-left: -1.45em;
+  margin-right: 0.55em;
+}
+
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 12px 0 16px;
+  font-size: 9.8pt;
+  line-height: 1.5;
+  font-variant-numeric: tabular-nums;
+}
+
+th {
+  background: #003872;
+  color: #fff;
+  font-weight: 600;
+  padding: 7px 10px;
+  text-align: left;
+  border: 0;
+}
+
+td {
+  padding: 7px 10px;
+  border: 0;
+  border-bottom: 1px solid #deedfe;
+  vertical-align: top;
+}
+
+tr:nth-child(even) td {
+  background: #f7fafe;
+}
+
+/* Inline code is a high-contrast token: deep red on a warm chip, so a file
+   name or an identifier is findable at a glance. */
+code {
+  font-family:
+    "JetBrains Mono", "SF Mono", "Cascadia Code", "Consolas", monospace;
+  font-variant-ligatures: none;
+  font-size: 0.86em;
+  color: #a81b2d;
+  background: #fcf2f3;
+  border: 1px solid #f0d8dc;
+  border-radius: 3px;
+  padding: 0.5px 4px;
+}
+
+/* Inside a heading or a table header the code face alone marks the token; a
+   red chip there fights the heading colour. */
+:is(h1, h2, h3, h4, h5, h6, th) code {
+  color: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+}
+
+/* On a tinted callout the chip turns white, so the token still separates
+   from the ground instead of blending into it. */
+blockquote code {
+  background: rgba(255, 255, 255, 0.75);
+  border-color: rgba(0, 0, 0, 0.08);
+}
+
+/* Code blocks are their own object, not another rail-marked callout: a soft
+   rounded card with the language named above the first line. */
+.inkleaf-modern pre:has(> code) {
+  background: #f2f3f5;
+  border: 0;
+  border-radius: 8px;
+  padding: 12px 18px 14px;
+  tab-size: 4;
+}
+
+.inkleaf-modern .aldus-code-lang {
+  display: block;
+  margin-bottom: 8px;
+  font-family: "Inter", "Segoe UI Variable Text", "Segoe UI", Arial, sans-serif;
+  font-size: 7.5pt;
+  font-weight: 600;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: #8a929d;
+}
+
+pre {
+  font-family:
+    "JetBrains Mono", "SF Mono", "Cascadia Code", "Consolas", monospace;
+  font-variant-ligatures: none;
+  font-size: 8.6pt;
+  line-height: 1.55;
+  margin: 12px 0 16px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.inkleaf-modern pre code {
+  font-size: inherit;
+  background: none;
+  border: 0;
+  padding: 0;
+  color: #1d2227;
+}
+
+/* A green-free editor palette for Modern. Only diff additions stay green,
+   where the colour carries meaning. */
+.inkleaf-modern pre code .hljs-comment,
+.inkleaf-modern pre code .hljs-quote {
+  color: #5e6a78;
+}
+
+.inkleaf-modern pre code .hljs-keyword,
+.inkleaf-modern pre code .hljs-selector-tag,
+.inkleaf-modern pre code .hljs-literal {
+  color: #0b3fcb;
+}
+
+.inkleaf-modern pre code .hljs-string,
+.inkleaf-modern pre code .hljs-regexp,
+.inkleaf-modern pre code .hljs-template-tag {
+  color: #a81b2d;
+}
+
+.inkleaf-modern pre code .hljs-number,
+.inkleaf-modern pre code .hljs-symbol,
+.inkleaf-modern pre code .hljs-bullet {
+  color: #8250df;
+}
+
+.inkleaf-modern pre code .hljs-title,
+.inkleaf-modern pre code .hljs-section {
+  color: #8a5b00;
+}
+
+.inkleaf-modern pre code .hljs-type,
+.inkleaf-modern pre code .hljs-built_in,
+.inkleaf-modern pre code .hljs-title.class_ {
+  color: #0a6fa8;
+}
+
+.inkleaf-modern pre code .hljs-attr,
+.inkleaf-modern pre code .hljs-attribute,
+.inkleaf-modern pre code .hljs-variable {
+  color: #004d9a;
+}
+
+.inkleaf-modern pre code .hljs-meta {
+  color: #8250df;
+}
+
+.inkleaf-modern pre code .hljs-tag,
+.inkleaf-modern pre code .hljs-name,
+.inkleaf-modern pre code .hljs-selector-class,
+.inkleaf-modern pre code .hljs-selector-id {
+  color: #7e2a2a;
+}
+
+/* Numbered code. The gutter is absolutely placed, so a wrapped line keeps
+   hanging under the first character rather than under the number. */
+.inkleaf-modern pre.aldus-numbered code {
+  counter-reset: aldus-line;
+}
+
+.inkleaf-modern .aldus-code-line {
+  position: relative;
+  padding-left: 2.9em;
+  counter-increment: aldus-line;
+}
+
+.inkleaf-modern .aldus-code-line::before {
+  content: counter(aldus-line);
+  position: absolute;
+  left: 0;
+  width: 1.9em;
+  text-align: right;
+  color: #b0b6bf;
+}
+
+kbd {
+  font-family:
+    "JetBrains Mono", "SF Mono", "Cascadia Code", "Consolas", monospace;
+  font-size: 0.8em;
+  color: #27303f;
+  background: #f7fafe;
+  border: 1px solid #b5d6f9;
+  border-bottom-width: 2px;
+  border-radius: 4px;
+  padding: 1px 5px;
+}
+
+.inkleaf-modern details {
+  break-inside: avoid;
+  border: 1px solid #deedfe;
+  border-radius: 6px;
+  background: #f7fafe;
+  padding: 7px 12px;
+  margin: 10px 0 12px;
+}
+
+.inkleaf-modern summary {
+  color: #003872;
+  font-weight: 600;
+}
+
+/* A box-shadow frames the image without changing its measured size, which
+   authored width and height attributes depend on. */
+.inkleaf-modern img {
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 0 0 1px #deedfe;
+}
+
+.katex-display {
+  margin: 14px 0;
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+/* Preserve explicit HTML alignment and the existing ASCII logo convention. */
+table.aldus-banner {
+  width: auto;
+  margin: 0 auto;
+  border: 0;
+}
+
+table.aldus-banner td {
+  border: 0;
+  padding: 0;
+  background: none;
+  text-align: center;
+}
+
+.inkleaf-modern table.aldus-banner pre:has(> code),
+table.aldus-banner pre {
+  display: inline-block;
+  text-align: left;
+  border: 0;
+  background: none;
+  padding: 0;
+}
+
+.toc {
+  background: #f7fafe;
+  border: 1px solid #deedfe;
+  border-left: 3px solid #0076d3;
+  border-radius: 0 6px 6px 0;
+  padding: 10px 18px;
+  margin: 14px 0 18px;
+  display: inline-block;
+  min-width: 230px;
+}
+
+.toc ul,
+.toc ol {
+  margin: 2px 0;
+  padding-left: 18px;
+}
+
+.toc li {
+  display: list-item;
+  margin-bottom: 2px;
+}
+
+.inkleaf-modern .toc a {
+  color: #003872;
+  text-decoration: none;
+}
+
+/* markdown-it-footnote already prints its own separator rule. */
+hr.footnotes-sep {
+  margin: 24px 0 10px;
+}
+
+.inkleaf-modern .footnotes {
+  font-size: 0.9em;
+  color: #4d565f;
+}
+
+.aldus-footer {
+  text-align: center;
+  color: #6b727a;
+  font-size: 8.5pt;
+  margin-top: 34px;
+  border-top: 1px solid #deedfe;
+  padding-top: 9px;
+}

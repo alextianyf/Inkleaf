@@ -9,7 +9,12 @@ const sanitize = require("sanitize-html");
 const { resolveImages } = require("./images.cjs");
 const { layoutHints, layoutAllowedAttributes } = require("./html-layout.cjs");
 const { checkMarkdown } = require("./diagnostics/index.cjs");
-const { highlightCode } = require("./code-highlight.cjs");
+const {
+  highlightCode,
+  codeLines,
+  languageLabel,
+} = require("./code-highlight.cjs");
+const { callouts, calloutTypes } = require("./callouts.cjs");
 
 const escape = (value) =>
   String(value).replace(
@@ -22,6 +27,7 @@ const escape = (value) =>
 const { layoutCss } = require("./layout.cjs");
 const { layout: layoutDefaults } = require("../shared/preferences.json");
 const { mathCss } = require("./math-fonts.cjs");
+const { themeFonts } = require("./theme-fonts.cjs");
 const documentCss = fs.readFileSync(
   path.join(__dirname, "../../resources/styles/document.css"),
   "utf8",
@@ -32,6 +38,9 @@ const codeCss = fs.readFileSync(
 );
 
 async function buildDocument(file, options = {}) {
+  const theme = ["default", "modern", "minimal"].includes(options.theme)
+    ? options.theme
+    : layoutDefaults.theme;
   const strings = require("../shared/strings.json")[options.language || "zh"];
   if (fs.statSync(file).size > 10 * 1024 * 1024)
     throw new Error(strings.fileTooLarge);
@@ -49,6 +58,15 @@ async function buildDocument(file, options = {}) {
   })
     .use(footnote)
     .use(taskLists)
+    .use(
+      callouts,
+      Object.fromEntries(
+        calloutTypes.map((type) => [
+          type,
+          strings[`callout${type[0].toUpperCase()}${type.slice(1)}`],
+        ]),
+      ),
+    )
     .use(texmath, {
       engine: katex,
       delimiters: "dollars",
@@ -59,6 +77,40 @@ async function buildDocument(file, options = {}) {
         maxExpand: 1000,
       },
     });
+  // Numbered code: a handout needs to be able to say "look at line 7". Blocks
+  // of five lines or more are numbered; `numbers` or `nonumbers` after the
+  // language in the fence overrides that.
+  if (theme === "modern")
+    md.renderer.rules.fence = (tokens, index) => {
+      const token = tokens[index];
+      const info = token.info ? md.utils.unescapeAll(token.info).trim() : "";
+      const [language = "", ...words] = info.split(/\s+/);
+      const flags = words.map((word) => word.toLowerCase());
+      const source = token.content.replace(/\n$/, "");
+      const highlighted =
+        highlightCode(source, language) || md.utils.escapeHtml(source);
+      const count = source === "" ? 0 : source.split("\n").length;
+      const numbered = flags.includes("numbers")
+        ? true
+        : flags.includes("nonumbers")
+          ? false
+          : count >= 5;
+      const body = numbered
+        ? codeLines(highlighted)
+            .map((line) => `<span class="aldus-code-line">${line}</span>`)
+            .join("")
+        : highlighted;
+      const codeClass = language
+        ? ` class="language-${escape(md.utils.unescapeAll(language))}"`
+        : "";
+      // The language name travels as content; each theme decides whether to
+      // show it (Classic and Minimal hide it).
+      const label = languageLabel(language);
+      const caption = label
+        ? `<span class="aldus-code-lang">${escape(label)}</span>`
+        : "";
+      return `<pre${numbered ? ' class="aldus-numbered"' : ""}>${caption}<code${codeClass}>${body}</code></pre>\n`;
+    };
   const slugs = new Set();
   const originalHeading = md.renderer.rules.heading_open;
   md.renderer.rules.table_open = (tokens, index, opts, env, self) => {
@@ -259,9 +311,6 @@ async function buildDocument(file, options = {}) {
   });
   if (fragments.some((fragment) => fragment && !targets.has(fragment)))
     warnLayout("brokenAnchor");
-  const theme = ["default", "minimal"].includes(options.theme)
-    ? options.theme
-    : layoutDefaults.theme;
   const css = fs.readFileSync(
     path.join(__dirname, "../../resources/themes", `${theme}.css`),
     "utf8",
@@ -295,6 +344,7 @@ async function buildDocument(file, options = {}) {
   <style>
     @layer aldus-defaults, aldus-hints;
     ${mathCss}
+    ${themeFonts[theme] || ""}
     @layer aldus-defaults {
       ${css}
       a { color: ${linkColor}; }
@@ -305,7 +355,7 @@ async function buildDocument(file, options = {}) {
     @layer aldus-hints { ${hintRules.join("\n")} }
   </style>
 </head>
-<body>${body}${footer}</body>
+<body${theme === "modern" ? ' class="inkleaf-modern"' : ""}>${body}${footer}</body>
 </html>`,
   };
 }

@@ -45,6 +45,12 @@ export function Icon({ name, size = 20 }) {
     ),
     back: <path d="m14 6-6 6 6 6" />,
     close: <path d="m6 6 12 12M6 18 18 6" />,
+    check: (
+      <>
+        <circle cx="12" cy="12" r="9" />
+        <path d="m7.5 12 3 3 6-6" />
+      </>
+    ),
     arrow: <path d="M7 17 17 7M7 7h10v10" />,
     download: (
       <>

@@ -12,6 +12,7 @@ const ignore = () => {};
 export function PdfPreview({
   data,
   onReady = ignore,
+  onProgress = ignore,
   onError = ignore,
   internalLinkLabel,
   externalLinkLabel,
@@ -46,6 +47,8 @@ export function PdfPreview({
     host.replaceChildren();
     (async () => {
       const pdf = await loading.promise;
+      if (cancelled) return;
+      onProgress(0, pdf.numPages);
       async function navigate(destination) {
         const location = await destinationLocation(pdf, destination);
         await rendered;
@@ -126,6 +129,7 @@ export function PdfPreview({
         } catch (error) {
           if (!cancelled) onError(getErrorMessage(error));
         }
+        if (!cancelled) onProgress(number, pdf.numPages);
       }
       finishRendering();
       focusTarget.current = async () => {
@@ -193,6 +197,7 @@ export function PdfPreview({
   }, [
     data,
     onReady,
+    onProgress,
     onError,
     internalLinkLabel,
     externalLinkLabel,

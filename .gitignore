@@ -5,6 +5,7 @@ node_modules/
 dist/
 release/
 artifacts/
+output/
 
 # Local OS and temporary files
 .DS_Store

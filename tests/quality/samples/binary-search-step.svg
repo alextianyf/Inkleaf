@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="560" height="140" viewBox="0 0 560 140" font-family="Inter, Segoe UI, Arial, sans-serif">
+  <rect width="560" height="140" fill="#ffffff"/>
+  <rect x="34" y="58" width="52" height="44" rx="6" fill="#f2f3f5" stroke="#dfe2e6"/>
+  <text x="60" y="86" text-anchor="middle" font-size="16" font-weight="600" fill="#9aa1ab">3</text>
+  <text x="60" y="120" text-anchor="middle" font-size="11" fill="#8a929d">0</text>
+  <rect x="90" y="58" width="52" height="44" rx="6" fill="#f2f3f5" stroke="#dfe2e6"/>
+  <text x="116" y="86" text-anchor="middle" font-size="16" font-weight="600" fill="#9aa1ab">8</text>
+  <text x="116" y="120" text-anchor="middle" font-size="11" fill="#8a929d">1</text>
+  <rect x="146" y="58" width="52" height="44" rx="6" fill="#f2f3f5" stroke="#dfe2e6"/>
+  <text x="172" y="86" text-anchor="middle" font-size="16" font-weight="600" fill="#9aa1ab">12</text>
+  <text x="172" y="120" text-anchor="middle" font-size="11" fill="#8a929d">2</text>
+  <rect x="202" y="58" width="52" height="44" rx="6" fill="#f2f3f5" stroke="#dfe2e6"/>
+  <text x="228" y="86" text-anchor="middle" font-size="16" font-weight="600" fill="#9aa1ab">17</text>
+  <text x="228" y="120" text-anchor="middle" font-size="11" fill="#8a929d">3</text>
+  <rect x="258" y="58" width="52" height="44" rx="6" fill="#0076d3" stroke="#0076d3"/>
+  <text x="284" y="86" text-anchor="middle" font-size="16" font-weight="600" fill="#ffffff">21</text>
+  <text x="284" y="120" text-anchor="middle" font-size="11" fill="#8a929d">4</text>
+  <rect x="314" y="58" width="52" height="44" rx="6" fill="#eef5fe" stroke="#82b6ec"/>
+  <text x="340" y="86" text-anchor="middle" font-size="16" font-weight="600" fill="#002652">26</text>
+  <text x="340" y="120" text-anchor="middle" font-size="11" fill="#8a929d">5</text>
+  <rect x="370" y="58" width="52" height="44" rx="6" fill="#eef5fe" stroke="#82b6ec"/>
+  <text x="396" y="86" text-anchor="middle" font-size="16" font-weight="600" fill="#002652">30</text>
+  <text x="396" y="120" text-anchor="middle" font-size="11" fill="#8a929d">6</text>
+  <rect x="426" y="58" width="52" height="44" rx="6" fill="#eef5fe" stroke="#82b6ec"/>
+  <text x="452" y="86" text-anchor="middle" font-size="16" font-weight="600" fill="#002652">35</text>
+  <text x="452" y="120" text-anchor="middle" font-size="11" fill="#8a929d">7</text>
+  <rect x="482" y="58" width="52" height="44" rx="6" fill="#eef5fe" stroke="#82b6ec"/>
+  <text x="508" y="86" text-anchor="middle" font-size="16" font-weight="600" fill="#002652">41</text>
+  <text x="508" y="120" text-anchor="middle" font-size="11" fill="#8a929d">8</text>
+  <text x="60" y="30" text-anchor="middle" font-size="12" font-weight="700" fill="#57708a">lo</text>
+  <path d="M55 38 L65 38 L60 46 Z" fill="#57708a"/>
+  <text x="284" y="30" text-anchor="middle" font-size="12" font-weight="700" fill="#0076d3">mid</text>
+  <path d="M279 38 L289 38 L284 46 Z" fill="#0076d3"/>
+  <text x="508" y="30" text-anchor="middle" font-size="12" font-weight="700" fill="#57708a">hi</text>
+  <path d="M503 38 L513 38 L508 46 Z" fill="#57708a"/>
+  <line x1="34" y1="80" x2="254" y2="80" stroke="#b0b6bf" stroke-width="1.5"/>
+</svg>
