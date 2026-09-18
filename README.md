@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/alextianyf/Inkleaf/releases/download/v0.5.1/Inkleaf-Setup-0.5.1.exe"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/download-en-dark.svg"><img src="docs/media/badges/download-en.svg" width="218" height="44" alt="Download for Windows"></picture></a>&nbsp;&nbsp;<a href="#quick-start"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/quick-start-en-dark.svg"><img src="docs/media/badges/quick-start-en.svg" width="122" height="44" alt="Quick start"></picture></a>
+  <a href="https://github.com/alextianyf/Inkleaf/releases/download/v0.6.0/Inkleaf-Setup-0.6.0.exe"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/download-en-dark.svg"><img src="docs/media/badges/download-en.svg" width="218" height="44" alt="Download for Windows"></picture></a>&nbsp;&nbsp;<a href="#quick-start"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/quick-start-en-dark.svg"><img src="docs/media/badges/quick-start-en.svg" width="122" height="44" alt="Quick start"></picture></a>
 </p>
 
 <p align="center">
@@ -32,10 +32,10 @@ Inkleaf is a Windows desktop tool for turning Markdown notes, project READMEs an
 | Task                    | How it works                                                                                                                                                 |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Find a document**     | Search part of a filename or path. Results distinguish Markdown files from folders containing Markdown.                                                      |
-| **Check before saving** | Preview the generated PDF, including page breaks and clickable contents. Export uses those same PDF bytes.                                                   |
-| **Keep the details**    | Render mathematics, tables, images, aligned badges, task lists and footnotes. Missing resources and some unsupported content produce notices.                |
+| **Check before saving** | Follow preview progress, inspect page breaks and clickable contents, then export the same PDF bytes with a clear success confirmation.                                                   |
+| **Keep the details**    | Render mathematics, tables, images, aligned badges, callouts, task lists and footnotes. Missing resources and some unsupported content produce notices.                |
 | **Convert a folder**    | Select Markdown files for batch export and inspect them individually. Preserve subfolders; automatic output adds numbers to avoid overwriting existing PDFs. |
-| **Choose the layout**   | Classic (default) and Minimal themes, A4 or Letter, typography, heading styles, pagination, headers, footers and copyright.                                  |
+| **Choose the layout**   | Modern (default), Classic and Minimal themes, A4 or Letter, typography, heading styles, pagination, headers, footers and copyright.                                  |
 | **Set app appearance**  | Choose Light, Dark or System in General. App appearance stays independent of your PDF theme.                                                                 |
 | **Keep it local**       | Convert without changing the Markdown source. Save to Downloads, beside the source, or in a folder you choose.                                               |
 
@@ -60,7 +60,7 @@ All six heading levels, **bold**, _italic_, strikethrough, bilingual text and a 
 
 ### Code and mathematics
 
-Code preserves its text and indentation, with language-specific syntax highlighting. KaTeX renders inline formulas, integrals and fractions.
+Code preserves its text and indentation, with language-specific syntax highlighting. Modern also adds bundled code fonts, language labels and optional line numbers. KaTeX renders inline formulas, integrals and fractions.
 
 [![Markdown and actual PDF: JavaScript code, inline math, a Gaussian integral and the quadratic formula](docs/media/examples/code-math.png)](docs/media/examples/code-math.png)
 
@@ -82,15 +82,17 @@ A local image and SVG badge follow their paragraph's center alignment. The PDF i
 
 [Markdown source and local images](docs/demo/examples/) · [Actual PDF](docs/media/examples/images-links.pdf)
 
+A reusable [quality template](tests/quality/template/quality.md) covers headings, emphasis, lists, quotes, callouts, code, math, tables, images, HTML and footnotes. Developers can run the [PDF and grayscale checks](tests/quality/README.md) across all three themes.
+
 These are examples of supported content, not a promise of every Markdown dialect. See the [compatibility guide](docs/engine.md) for unsupported extensions and layout limits.
 
 ## Get Inkleaf
 
-**[Download for Windows (x64)](https://github.com/alextianyf/Inkleaf/releases/download/v0.5.1/Inkleaf-Setup-0.5.1.exe)** · [Release notes](https://github.com/alextianyf/Inkleaf/releases/tag/v0.5.1)
+**[Download for Windows (x64)](https://github.com/alextianyf/Inkleaf/releases/download/v0.6.0/Inkleaf-Setup-0.6.0.exe)** · [Release notes](https://github.com/alextianyf/Inkleaf/releases/tag/v0.6.0)
 
-The current stable release is **0.5.1**. Download the `.exe` installer above, or [run from source](#development). The `.blockmap` and `latest.yml` files on the release page are used by the updater; manual installation only needs the `.exe`.
+The current stable release is **0.6.0**. Download the `.exe` installer above, or [run from source](#development). The `.blockmap` and `latest.yml` files on the release page are used by the updater; manual installation only needs the `.exe`.
 
-The installer bundles the runtime, so Node.js and Python are not needed. macOS and Linux builds are not currently offered, and Windows builds are unsigned. Version 0.5.1 offers Classic (default) and Minimal, advanced layout settings, code highlighting and Light/Dark/System appearance. Saved Folio preferences fall back to Classic.
+The installer bundles the runtime, so Node.js and Python are not needed. macOS and Linux builds are not currently offered, and Windows builds are unsigned. Version 0.6.0 adds Modern as the default PDF theme, with bundled Inter and JetBrains Mono Latin fonts, layered headings and code cards. Classic and Minimal remain available, and existing saved choices are preserved. Preview progress and export confirmation are included; Light/Dark/System app appearance is independent of the PDF theme.
 
 Installed Windows builds check for new stable versions. You choose **Download**, then **Restart and update** when ready. Inkleaf waits for active conversion or export tasks; quitting normally does not install an update. [Update and release details](docs/updates.md).
 

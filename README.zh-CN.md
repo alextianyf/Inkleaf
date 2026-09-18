@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/alextianyf/Inkleaf/releases/download/v0.5.1/Inkleaf-Setup-0.5.1.exe"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/download-zh-dark.svg"><img src="docs/media/badges/download-zh.svg" width="218" height="44" alt="下载 Windows 版"></picture></a>&nbsp;&nbsp;<a href="#quick-start"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/quick-start-zh-dark.svg"><img src="docs/media/badges/quick-start-zh.svg" width="122" height="44" alt="开始使用"></picture></a>
+  <a href="https://github.com/alextianyf/Inkleaf/releases/download/v0.6.0/Inkleaf-Setup-0.6.0.exe"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/download-zh-dark.svg"><img src="docs/media/badges/download-zh.svg" width="218" height="44" alt="下载 Windows 版"></picture></a>&nbsp;&nbsp;<a href="#quick-start"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/quick-start-zh-dark.svg"><img src="docs/media/badges/quick-start-zh.svg" width="122" height="44" alt="开始使用"></picture></a>
 </p>
 
 <p align="center">
@@ -32,10 +32,10 @@
 | 需求         | 使用体验                                                                                         |
 | ------------ | ------------------------------------------------------------------------------------------------ |
 | **找到文档** | 输入部分文件名或路径即可搜索，结果会区分 Markdown 文件和包含 Markdown 的文件夹。                 |
-| **先看成品** | 预览实际生成的 PDF，检查分页、点击目录跳转。导出使用的就是这份 PDF 数据。                        |
-| **保留细节** | 渲染公式、表格、图片、对齐的徽章、任务列表与脚注。缺失资源及部分不支持的内容会显示提示。         |
+| **先看成品** | 查看预览进度，检查分页、点击目录跳转；导出使用同一份 PDF 数据，保存后显示明确的成功提示。                        |
+| **保留细节** | 渲染公式、表格、图片、对齐的徽章、标注块、任务列表与脚注。缺失资源及部分不支持的内容会显示提示。         |
 | **整批转换** | 选择文件夹中的 Markdown，逐份检查并批量导出。可保留子目录，自动保存时为同名 PDF 编号，避免覆盖。 |
-| **调整排版** | Classic（默认）与 Minimal 两套主题，支持纸张、标题样式、分页、页眉页脚与署名版权设置。           |
+| **调整排版** | Modern（默认）、Classic 与 Minimal 三套主题，支持纸张、标题样式、分页、页眉页脚与署名版权设置。           |
 | **切换外观** | 在通用设置选择浅色、深色或跟随系统，App 外观独立于 PDF 主题。                                    |
 | **留在本机** | 转换不改写 Markdown 原文件。PDF 可保存到下载文件夹、原文件旁，或你指定的位置。                   |
 
@@ -60,7 +60,7 @@
 
 ### 代码与公式
 
-代码保留文字与缩进，并按语言为关键字、字符串、注释等着色。KaTeX 渲染行内公式、积分与分式。
+代码保留文字与缩进，并按语言为关键字、字符串、注释等着色。Modern 还提供内置代码字体、语言标签和可选行号。KaTeX 渲染行内公式、积分与分式。
 
 [![Markdown 与真实 PDF 对照：JavaScript 代码、行内公式、高斯积分与求根公式](docs/media/examples/code-math.png)](docs/media/examples/code-math.png)
 
@@ -82,15 +82,17 @@
 
 [Markdown 原文及本地图片](docs/demo/examples/) · [实际 PDF](docs/media/examples/images-links.pdf)
 
+可重复使用的[质量模板](tests/quality/template/quality.md)覆盖标题、强调、列表、引用、标注块、代码、公式、表格、图片、HTML 和脚注；开发时可运行三套主题的 [PDF 与灰度检查](tests/quality/README.md)。
+
 这些示例展示已支持的内容，并不代表兼容所有 Markdown 方言。尚未支持的扩展与排版限制见[兼容性说明](docs/engine.md)。
 
 ## 获取印页
 
-**[下载 Windows 安装包（x64）](https://github.com/alextianyf/Inkleaf/releases/download/v0.5.1/Inkleaf-Setup-0.5.1.exe)** · [发布说明](https://github.com/alextianyf/Inkleaf/releases/tag/v0.5.1)
+**[下载 Windows 安装包（x64）](https://github.com/alextianyf/Inkleaf/releases/download/v0.6.0/Inkleaf-Setup-0.6.0.exe)** · [发布说明](https://github.com/alextianyf/Inkleaf/releases/tag/v0.6.0)
 
-当前正式版本为 **0.5.1**。点击上方链接下载 `.exe` 安装包，也可以[从源码运行](#development)。发布页中的 `.blockmap` 与 `latest.yml` 供更新器使用，手动安装只需下载 `.exe`。
+当前正式版本为 **0.6.0**。点击上方链接下载 `.exe` 安装包，也可以[从源码运行](#development)。发布页中的 `.blockmap` 与 `latest.yml` 供更新器使用，手动安装只需下载 `.exe`。
 
-安装包自带运行环境，无需另外安装 Node.js 或 Python。目前不提供 macOS 和 Linux 版本，Windows 构建尚未进行代码签名。0.5.1 提供 Classic（默认）与 Minimal、高级排版设置、代码高亮及浅色／深色／跟随系统外观；旧 Folio 设置会回退到 Classic。
+安装包自带运行环境，无需另外安装 Node.js 或 Python。目前不提供 macOS 和 Linux 版本，Windows 构建尚未进行代码签名。0.6.0 新增默认 Modern 主题，内置 Inter 与 JetBrains Mono 英文字体，提供分层标题与代码卡片。Classic、Minimal 继续保留，已有主题偏好不变；同时加入预览进度与导出成功提示。App 的浅色／深色／跟随系统外观独立于 PDF 主题。
 
 安装版会检查新的稳定版本。发现更新后，点击**下载**，准备好后再选择**重启并更新**。有转换或导出任务时会等待完成；普通退出不会自动安装。[更新与发布说明](docs/updates.md)。
 

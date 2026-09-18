@@ -90,3 +90,13 @@ Windows x64 安装包、对应 blockmap 与 `latest.yml` 来自同一次构建�
 安装包、blockmap 和 latest.yml 来自同一次 Windows x64 构建，输出位于 artifacts/publish-0.5.1。安装包大小 114855363 字节，SHA-256：11844fd4d92dba6b163c005aa94e61178265a48480288cd6d1c27f69963dd14f。test:all 覆盖的各项检查及打包后的桌面检查均通过；修正两处测试预期／环境问题后，失败项与剩余项分别补跑通过，包内 70 个源码与资源文件核对一致，确认不再包含 Folio 与自动标题编号模块。
 
 使用打包的 0.5.0 和隔离配置连接 GitHub，实际检测并下载 0.5.1，下载文件的 SHA-512 与本地构建一致；0.5.1 自身正确报告没有更新。本次未执行正式安装器、未覆盖用户安装。报告在忽略目录 artifacts/release-checks-0.5.1.log、artifacts/release-final-checks-0.5.1.log、artifacts/release-appearance-check-0.5.1.log、artifacts/release-packaged-check-0.5.1.log、artifacts/package-manifest-0.5.1.json 和 artifacts/public-update-check-0.5.1.json。
+
+## 正式 Release：0.6.0
+
+2026-09-18，已发布 [Inkleaf 0.6.0](https://github.com/alextianyf/Inkleaf/releases/tag/v0.6.0)，为正式版并设为 Latest。[完整更新说明](releases/0.6.0.md)涵盖 Modern 默认主题、内置英文字体、代码卡片与标注块、预览进度和导出成功提示。已有 Classic、Minimal 偏好保留。标签 v0.6.0 对应打包提交 62be1e45e61d46cb8dc68e23d03090b1aaba6197。
+
+安装包、blockmap 和 latest.yml 来自同一次 Windows x64 构建，输出位于 artifacts/publish-0.6.0。安装包大小 115032827 字节，SHA-256：12da587b9ad1bd1f6158c23a30ccfc38ecad02c2db4d26fdbaa828299ca76aaf。包内 82 个源码与资源文件核对一致，包含三套主题、7 个字体文件及字体许可；不包含 Folio 与自动标题编号模块。
+
+57 项单元测试、lint、test:all 覆盖的应用检查及打包后桌面检查通过。布局反馈测试更新了三主题预期，并在完整页面渲染后再检查高亮；失败项与剩余项补跑通过。质量模板通过 Modern、Classic、Minimal × 中英文界面的 6 组实际 PDF 检查，共 78 页；英文讲义样本与独立灰度命令也通过，并抽查实际页面。灰度仅为屏幕近似，白底文字对比度检查不代表所有背景和打印设备的完整验证。
+
+使用真实打包的 0.5.1 和隔离配置连接 GitHub，检测并下载 0.6.0，下载文件 SHA-512 与本地构建一致；0.6.0 自身正确报告没有更新。本次没有运行安装器或覆盖用户安装。验证报告位于忽略目录 artifacts/release-checks-0.6.0.log、artifacts/release-remaining-0.6.0.log、artifacts/release-unit-final-0.6.0.log、artifacts/release-packaged-check-0.6.0.log、artifacts/package-manifest-0.6.0.json、artifacts/public-update-check-0.6.0.json，以及 output/quality/ 与 output/grayscale/。
