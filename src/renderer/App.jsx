@@ -1,6 +1,7 @@
 import IconButton from "./components/IconButton.jsx";
 import Brand from "./components/Brand.jsx";
 import SearchResults from "./components/SearchResults.jsx";
+import PreviewIssues from "./components/PreviewIssues.jsx";
 import DocumentWarnings from "./components/DocumentWarnings.jsx";
 import { useEffect, useRef, useState } from "react";
 import { PdfPreview } from "./components/PdfPreview.jsx";
@@ -45,6 +46,7 @@ export default function DesktopApp() {
   const busyRef = useRef(false);
   const uiRef = useRef({ mode });
   const previewId = useRef(null);
+  const warningDetails = useRef(null);
   const previewRequest = useRef(0);
   const previewQueue = useRef(Promise.resolve());
   const language =
@@ -431,13 +433,21 @@ export default function DesktopApp() {
                 </button>
               </div>
               <div className="preview-stage">
-                {exportNotice && (
-                  <ExportNotice
-                    detail={exportNotice}
+                <div className="preview-notices">
+                  <PreviewIssues
+                    preview={!busy && !stalePreview ? preview : null}
+                    error={error}
+                    detailsRef={warningDetails}
                     t={t}
-                    onDismiss={() => setExportNotice("")}
                   />
-                )}
+                  {exportNotice && (
+                    <ExportNotice
+                      detail={exportNotice}
+                      t={t}
+                      onDismiss={() => setExportNotice("")}
+                    />
+                  )}
+                </div>
                 <div
                   className="preview-content"
                   aria-busy={
@@ -477,7 +487,12 @@ export default function DesktopApp() {
                   )}
                 </div>
               </div>
-              <DocumentWarnings preview={preview} t={t} />
+              <DocumentWarnings
+                key={preview?.id}
+                preview={preview}
+                t={t}
+                detailsRef={warningDetails}
+              />
               {saved && (
                 <div className="saved-row">
                   <span title={saved}>
@@ -498,7 +513,7 @@ export default function DesktopApp() {
               )}
             </>
           )}
-          {error && (
+          {error && (mode === "search" || batchFolder) && (
             <div className="error-message" role="alert">
               {error}
             </div>

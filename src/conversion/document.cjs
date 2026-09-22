@@ -27,7 +27,7 @@ const escape = (value) =>
 const { layoutCss } = require("./layout.cjs");
 const { layout: layoutDefaults } = require("../shared/preferences.json");
 const { mathCss } = require("./math-fonts.cjs");
-const { themeFonts } = require("./theme-fonts.cjs");
+const { documentFonts } = require("./theme-fonts.cjs");
 const documentCss = fs.readFileSync(
   path.join(__dirname, "../../resources/styles/document.css"),
   "utf8",
@@ -174,7 +174,13 @@ async function buildDocument(file, options = {}) {
       },
     },
   });
-  const images = await resolveImages(sources, base, options.remoteLoader);
+  const imageWarnings = [];
+  const images = await resolveImages(
+    sources,
+    base,
+    options.remoteLoader,
+    imageWarnings,
+  );
   const inspectCss = (css) => {
     if (/@import\b/i.test(css)) warnLayout("externalStyles");
     for (const match of css.matchAll(
@@ -334,6 +340,7 @@ async function buildDocument(file, options = {}) {
     title,
     sourceDiagnostics: checked.diagnostics,
     warnings: [...new Set(warnings)],
+    imageWarnings,
     layoutWarnings,
     html: `<!doctype html>
 <html>
@@ -344,7 +351,7 @@ async function buildDocument(file, options = {}) {
   <style>
     @layer aldus-defaults, aldus-hints;
     ${mathCss}
-    ${themeFonts[theme] || ""}
+    ${documentFonts(theme, md.utils.unescapeAll(body + footer))}
     @layer aldus-defaults {
       ${css}
       a { color: ${linkColor}; }

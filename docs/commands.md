@@ -23,12 +23,12 @@ npm.cmd ci
 
 ## 发布新版本
 
-以下以 **0.6.0** 为例，实际发布时换成高于已发布版本的新版本号。
+以下以 **0.6.1** 为例，实际发布时换成高于已发布版本的新版本号。
 
 1. 在开发分支改好代码，更新版本号：
 
    ```powershell
-   npm.cmd version 0.6.0 --no-git-tag-version
+   npm.cmd version 0.6.1 --no-git-tag-version
    ```
 
    这会同时修改 `package.json` 和 `package-lock.json`，不会自动提交或创建标签。
@@ -51,9 +51,9 @@ npm.cmd ci
 
    文件在 `release/`。这条命令**只打包，不会上传或发布**。
 
-5. 打开 [GitHub Releases](https://github.com/alextianyf/Inkleaf/releases)，新建 Release：标签 `v0.6.0`，目标 `main`，标题 `Inkleaf 0.6.0`，填写更新说明。上传本次构建的三个文件：
-   - `Inkleaf-Setup-0.6.0.exe`
-   - `Inkleaf-Setup-0.6.0.exe.blockmap`
+5. 打开 [GitHub Releases](https://github.com/alextianyf/Inkleaf/releases)，新建 Release：标签 `v0.6.1`，目标 `main`，标题 `Inkleaf 0.6.1`，填写更新说明。上传本次构建的三个文件：
+   - `Inkleaf-Setup-0.6.1.exe`
+   - `Inkleaf-Setup-0.6.1.exe.blockmap`
    - `latest.yml`
 
    三个文件必须来自同一次构建，保留原文件名；不上传 `win-unpacked`、调试文件或旧安装包。标签对应的代码必须与打包时一致。

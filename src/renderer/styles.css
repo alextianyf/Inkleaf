@@ -574,8 +574,8 @@ kbd {
   padding: 8px 23px;
   color: var(--text-warning);
   background: var(--warning-surface);
-  font-size: 10px;
-  max-height: 100px;
+  font-size: 12px;
+  max-height: 170px;
   overflow: auto;
   flex-shrink: 0;
 }
@@ -914,6 +914,62 @@ kbd {
 .export-notice button {
   flex-shrink: 0;
   color: inherit;
+}
+.preview-notices {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 4;
+  width: min(360px, calc(100% - 32px));
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  pointer-events: none;
+}
+.preview-notices > * {
+  pointer-events: auto;
+}
+.preview-notices .export-notice {
+  position: static;
+  width: 100%;
+}
+.preview-issue-notice {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 14px;
+  border: 1px solid color-mix(in srgb, var(--text-warning) 30%, transparent);
+  border-radius: 10px;
+  background: var(--warning-surface);
+  color: var(--text-warning);
+  box-shadow: 0 6px 24px #00000018;
+  font-size: 12px;
+}
+.preview-issue-notice > svg,
+.preview-issue-notice > button {
+  flex-shrink: 0;
+}
+.preview-issue-notice > div {
+  min-width: 0;
+  flex: 1;
+}
+.preview-issue-notice strong {
+  font-size: 14px;
+  font-weight: 600;
+}
+.preview-issue-notice p {
+  margin: 6px 0;
+  overflow-wrap: anywhere;
+  line-height: 1.5;
+}
+.preview-issue-notice button {
+  color: inherit;
+}
+.preview-issue-notice.error-message {
+  max-height: 180px;
+  color: var(--error-text);
+  background: var(--error-surface);
+  border-color: color-mix(in srgb, var(--error-text) 30%, transparent);
 }
 @media (prefers-reduced-motion: reduce) {
   .preview-progress progress::-webkit-progress-value {

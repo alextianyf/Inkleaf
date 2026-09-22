@@ -1,7 +1,7 @@
 {
   "name": "inkleaf-desktop",
   "productName": "Inkleaf",
-  "version": "0.6.0",
+  "version": "0.6.1",
   "description": "A quiet, local Markdown to PDF companion",
   "author": "Alex Tian",
   "license": "SEE LICENSE IN LICENSE",
@@ -22,7 +22,8 @@
     "test:links": "node tests/integration/links-smoke.cjs",
     "test:compat": "node tests/integration/compatibility-smoke.cjs",
     "test:diagnostics": "node tests/integration/diagnostics-smoke.cjs",
-    "test:engine": "npm test && npm run test:layout && npm run test:links && npm run test:headings && npm run test:compat && npm run test:diagnostics && npm run test:math",
+    "test:engine": "npm test && npm run test:cjk && npm run test:image-notices && npm run test:layout && npm run test:links && npm run test:headings && npm run test:compat && npm run test:diagnostics && npm run test:math",
+    "test:cjk": "node tests/integration/bundled-cjk-smoke.cjs",
     "test:math": "node tests/integration/math-delimiters-smoke.cjs",
     "test:all": "npm run lint && npm run build:ui && npm run test:engine && npm run test:desktop && npm run test:position && npm run test:batch && npm run test:updates && npm run test:settings && npm run test:feedback && npm run test:navigation && npm run test:advanced && npm run test:layout-feedback && npm run test:runtime && npm run test:appearance",
     "benchmark": "node tests/performance/search.cjs",
@@ -38,7 +39,8 @@
     "test:runtime": "node tests/integration/runtime-smoke.cjs",
     "test:appearance": "node tests/integration/appearance-smoke.cjs",
     "test:headings": "node tests/integration/heading-pagination-smoke.cjs",
-    "test:feedback": "node tests/integration/preview-feedback-smoke.cjs"
+    "test:feedback": "node tests/integration/preview-feedback-smoke.cjs",
+    "test:image-notices": "node tests/integration/image-notices-smoke.cjs"
   },
   "build": {
     "appId": "com.alextian.aldus",
@@ -51,7 +53,7 @@
       "src/conversion/**/*.cjs",
       "src/shared/*.json",
       "resources/themes/*.css",
-      "resources/fonts/*",
+      "resources/fonts/**/*",
       "dist/renderer/**/*",
       "package.json",
       "LICENSE",

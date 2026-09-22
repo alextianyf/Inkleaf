@@ -23,6 +23,8 @@
 | 目录扫描共用规则                       | `src/search/library.cjs`                                                                                |
 | Markdown 渲染与 HTML 安全处理          | `src/conversion/document.cjs`                                                                           |
 | HTML 居中、宽高、表格等布局属性        | `src/conversion/html-layout.cjs`                                                                        |
+| 中文字体切片、离线嵌入 | `src/conversion/cjk-fonts.cjs`、`theme-fonts.cjs`、`resources/fonts/noto-sans-sc/` |
+| 预览错误提醒与文档详情 | `src/renderer/components/PreviewIssues.jsx`、`DocumentWarnings.jsx` |
 | 图片和 badge 加载、缓存                | `src/conversion/images.cjs`                                                                             |
 | Markdown 格式检测与内存修复            | `src/conversion/diagnostics/`                                                                           |
 | 打印 PDF、等待字体图片、预览缓存       | `src/main/pdf-service.cjs`                                                                              |

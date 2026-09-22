@@ -10,11 +10,17 @@ const os = require("node:os");
   const notes = path.join(sandbox, "notes");
   const artifacts = path.join(__dirname, "../../artifacts/tests");
   await fs.mkdir(notes);
+  await fs.mkdir(path.join(sandbox, ".git"));
+  await fs.mkdir(path.join(sandbox, "shared"));
   await fs.mkdir(artifacts, { recursive: true });
   const file = path.join(notes, "layout-fixture.md");
   await fs.writeFile(
     path.join(notes, "badge.svg"),
     '<svg xmlns="http://www.w3.org/2000/svg" width="80" height="20"><rect width="80" height="20" rx="3" fill="#66788a"/><text x="40" y="14" fill="white" font-family="Arial" font-size="11" text-anchor="middle">Aldus PDF</text></svg>',
+  );
+  await fs.copyFile(
+    path.join(notes, "badge.svg"),
+    path.join(sandbox, "shared", "badge.svg"),
   );
   await fs.writeFile(
     file,
@@ -27,7 +33,7 @@ const os = require("node:os");
 .layout-box { padding: 8px; border: 1px solid #bbb; }
 </style>
 <h1 id="custom-title" class="custom-title">HTML layout</h1>
-<p align="center" id="badge-row"><a href="https://example.com"><img id="badge-one" class="custom-image" width="75" height="18" src="badge.svg"></a> <img id="badge-two" class="custom-image" src="badge.svg"></p>
+<p align="center" id="badge-row"><a href="https://example.com"><img id="badge-one" class="custom-image" width="75" height="18" src="../shared/badge.svg"></a> <img id="badge-two" class="custom-image" src="badge.svg"></p>
 <p align="right" id="right-paragraph">Right aligned paragraph</p>
 <div align="center"><p id="inherited">Container alignment</p></div>
 <p id="inline-center" style="text-align:center">Inline CSS alignment</p>

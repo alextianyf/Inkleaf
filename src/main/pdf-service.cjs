@@ -83,6 +83,9 @@ class PdfService {
         ),
       );
       document.warnings.push(...missing.filter(Boolean));
+      for (const source of missing.filter(Boolean)) {
+        document.imageWarnings.push({ source, key: "imageDecodeFailed" });
+      }
       onProgress("previewPrinting");
       const data = await wait(
         printer.webContents.printToPDF({
@@ -98,6 +101,7 @@ class PdfService {
         data,
         created: Date.now(),
         warnings: document.warnings,
+        imageWarnings: document.imageWarnings,
         layoutWarnings: document.layoutWarnings,
         sourceDiagnostics: document.sourceDiagnostics,
         theme: options.theme,

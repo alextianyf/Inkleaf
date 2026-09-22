@@ -1,4 +1,5 @@
 import preferenceDefaults from "../../shared/preferences.json";
+import PreviewIssues from "./PreviewIssues.jsx";
 import DocumentWarnings from "./DocumentWarnings.jsx";
 import PreviewProgress from "./PreviewProgress.jsx";
 import ExportNotice from "./ExportNotice.jsx";
@@ -26,6 +27,7 @@ export default function BatchPreview({ folder, config, t, onBack, onWorking }) {
   const [error, setError] = useState("");
   const [finishedKey, setFinishedKey] = useState("");
   const previewId = useRef(null);
+  const warningDetails = useRef(null);
   const { progress, begin, cancel, onPages } = usePreviewProgress();
   const renderKey = JSON.stringify([
     current?.path,
@@ -276,22 +278,32 @@ export default function BatchPreview({ folder, config, t, onBack, onWorking }) {
             )}
           </div>
           <div className="preview-stage">
-            {job &&
-              job.id !== dismissedExport &&
-              !job.running &&
-              !job.cancelled &&
-              !job.failed &&
-              job.completed === job.total &&
-              job.total > 0 && (
-                <ExportNotice
-                  detail={t("batchExportSuccess").replace(
-                    "{count}",
-                    job.completed,
-                  )}
-                  t={t}
-                  onDismiss={() => setDismissedExport(job.id)}
-                />
-              )}
+            <div className="preview-notices">
+              <PreviewIssues
+                preview={
+                  !loading && !rendering && !previewPending ? preview : null
+                }
+                error={error}
+                detailsRef={warningDetails}
+                t={t}
+              />
+              {job &&
+                job.id !== dismissedExport &&
+                !job.running &&
+                !job.cancelled &&
+                !job.failed &&
+                job.completed === job.total &&
+                job.total > 0 && (
+                  <ExportNotice
+                    detail={t("batchExportSuccess").replace(
+                      "{count}",
+                      job.completed,
+                    )}
+                    t={t}
+                    onDismiss={() => setDismissedExport(job.id)}
+                  />
+                )}
+            </div>
             <div
               className="preview-content"
               aria-busy={
@@ -336,14 +348,14 @@ export default function BatchPreview({ folder, config, t, onBack, onWorking }) {
               )}
             </div>
           </div>
-          <DocumentWarnings preview={preview} t={t} />
+          <DocumentWarnings
+            key={preview?.id}
+            preview={preview}
+            t={t}
+            detailsRef={warningDetails}
+          />
         </div>
       </div>
-      {error && (
-        <div className="error-message" role="alert">
-          {error}
-        </div>
-      )}
       <footer className="batch-footer">
         <div className="batch-summary" role="status">
           {job ? (

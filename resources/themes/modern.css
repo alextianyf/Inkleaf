@@ -1,5 +1,5 @@
 /* Modern: Classic's layered hierarchy, rebuilt in one blue family and set in
-   Inter (bundled, Latin only; CJK falls back to the system face). Classic and
+   Inter and Noto Sans SC (bundled for Chinese). Classic and
    Minimal stay untouched. Heading colour, size and spacing stay on bare
    element selectors so the Appearance controls keep overriding them. */
 
@@ -10,8 +10,8 @@
 
 body {
   font-family:
-    "Inter", "SF Pro Text", "Segoe UI Variable Text", "Segoe UI", "PingFang SC",
-    "Noto Sans SC", "Microsoft YaHei", Arial, sans-serif;
+    "Inter", "Inkleaf CJK", "SF Pro Text", "Segoe UI Variable Text", "Segoe UI",
+    "PingFang SC", "Noto Sans SC", "Microsoft YaHei", Arial, sans-serif;
   font-size: 10.5pt;
   line-height: 1.6;
   color: #1d2227;
@@ -468,7 +468,8 @@ tr:nth-child(even) td {
    name or an identifier is findable at a glance. */
 code {
   font-family:
-    "JetBrains Mono", "SF Mono", "Cascadia Code", "Consolas", monospace;
+    "JetBrains Mono", "Inkleaf CJK", "SF Mono", "Cascadia Code", "Consolas",
+    monospace;
   font-variant-ligatures: none;
   font-size: 0.86em;
   color: #a81b2d;
@@ -518,7 +519,8 @@ blockquote code {
 
 pre {
   font-family:
-    "JetBrains Mono", "SF Mono", "Cascadia Code", "Consolas", monospace;
+    "JetBrains Mono", "Inkleaf CJK", "SF Mono", "Cascadia Code", "Consolas",
+    monospace;
   font-variant-ligatures: none;
   font-size: 8.6pt;
   line-height: 1.55;
@@ -611,7 +613,8 @@ pre {
 
 kbd {
   font-family:
-    "JetBrains Mono", "SF Mono", "Cascadia Code", "Consolas", monospace;
+    "JetBrains Mono", "Inkleaf CJK", "SF Mono", "Cascadia Code", "Consolas",
+    monospace;
   font-size: 0.8em;
   color: #27303f;
   background: #f7fafe;

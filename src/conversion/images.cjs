@@ -267,11 +267,18 @@ function embedImage(buffer, depth = 0) {
   };
 }
 
-async function resolveImages(sources, base, loader = remoteImage) {
+async function resolveImages(sources, base, loader = remoteImage, issues = []) {
   const result = new Map();
+  base = await fs.realpath(base);
+  const root = await imageRoot(base);
   let position = 0;
   // Bound work per document and keep networking off the renderer.
-  const unique = [...new Set(sources)].slice(0, 100);
+  const all = [...new Set(sources)];
+  const unique = all.slice(0, 100);
+  for (const src of all.slice(100)) {
+    result.set(src, null);
+    issues.push({ source: src, key: "imageLimitExceeded" });
+  }
   await Promise.all(
     Array.from({ length: 4 }, async () => {
       while (position < unique.length) {
@@ -289,24 +296,65 @@ async function resolveImages(sources, base, loader = remoteImage) {
             const local = await fs.realpath(
               path.resolve(base, decodeURIComponent(src)),
             );
-            const relative = path.relative(base, local);
+            const relative = path.relative(root, local);
             if (
               relative === ".." ||
               relative.startsWith(`..${path.sep}`) ||
               path.isAbsolute(relative)
             )
-              throw new Error("Outside document folder");
+              throw new Error("Outside document project");
             if ((await fs.stat(local)).size > MAX_BYTES)
               throw new Error("Image too large");
             data = await fs.readFile(local);
           }
           result.set(src, embedImage(data));
-        } catch {
+        } catch (error) {
           result.set(src, null);
+          issues.push({ source: src, key: imageErrorKey(error) });
         }
       }
     }),
   );
   return result;
+}
+
+function imageErrorKey(error) {
+  const reasons = {
+    "Outside document project": "imageOutsideProject",
+    "Unsupported URL": "imageUnsupportedUrl",
+    "Only public HTTPS images are supported": "imageUnsupportedUrl",
+    "Private image address": "imagePrivateAddress",
+    "Unsupported image": "imageUnsupportedFormat",
+    "Image too large": "imageTooLarge",
+    "Image unavailable or too large": "imageRemoteUnavailable",
+    "Too many redirects": "imageRemoteUnavailable",
+    ENOENT: "imageNotFound",
+    ENOTDIR: "imageNotFound",
+    EACCES: "imageAccessDenied",
+    EPERM: "imageAccessDenied",
+    ABORT_ERR: "imageTimeout",
+    ETIMEDOUT: "imageTimeout",
+  };
+  if (error.name === "TimeoutError" || error.name === "AbortError")
+    return "imageTimeout";
+  return reasons[error.code] || reasons[error.message] || "imageLoadFailed";
+}
+
+// Lessons often share ../assets rather than keeping a copy beside every file.
+// Use the nearest Git project as the boundary (including worktrees with a .git
+// file). Without a project marker, keep the document-folder boundary.
+async function imageRoot(base) {
+  let folder = base;
+  while (true) {
+    try {
+      const marker = await fs.lstat(path.join(folder, ".git"));
+      if (marker.isDirectory() || marker.isFile()) return folder;
+    } catch (error) {
+      if (error.code !== "ENOENT" && error.code !== "ENOTDIR") return base;
+    }
+    const parent = path.dirname(folder);
+    if (parent === folder) return base;
+    folder = parent;
+  }
 }
 module.exports = { resolveImages, embedImage, remoteImage };

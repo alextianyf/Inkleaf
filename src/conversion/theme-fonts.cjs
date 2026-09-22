@@ -1,8 +1,9 @@
 const fs = require("node:fs");
 const path = require("node:path");
+const { cjkFonts } = require("./cjk-fonts.cjs");
 
 // Modern ships its own text and code faces so the exported PDF reads the same
-// on a machine without them. Latin only: CJK still falls back to the system.
+// on a machine without them. Chinese subsets are selected per document.
 const folder = path.join(__dirname, "../../resources/fonts");
 const modern = [
   ["Inter", "normal", 400, "inter-latin-400-normal.woff2"],
@@ -21,4 +22,9 @@ const face = ([family, style, weight, file]) =>
 
 const themeFonts = { modern: modern.map(face).join("\n") };
 
-module.exports = { themeFonts };
+function documentFonts(theme, text) {
+  if (theme !== "modern") return "";
+  return themeFonts.modern + "\n" + cjkFonts(text);
+}
+
+module.exports = { documentFonts };

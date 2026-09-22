@@ -55,7 +55,7 @@ src/
 resources/
   themes/         PDF 的 Modern（默认）/ Classic / Minimal 主题
   styles/         PDF 通用排版规则
-  fonts/          Modern 内置英文字体与第三方许可
+  fonts/          Modern 内置中英文字体与第三方许可
 tests/
   unit/           规则和业务逻辑测试
   integration/    真实 Electron 窗口及 PDF 回归测试
