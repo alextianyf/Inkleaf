@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/alextianyf/Inkleaf/releases/download/v0.6.0/Inkleaf-Setup-0.6.0.exe"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/download-en-dark.svg"><img src="docs/media/badges/download-en.svg" width="218" height="44" alt="Download for Windows"></picture></a>&nbsp;&nbsp;<a href="#quick-start"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/quick-start-en-dark.svg"><img src="docs/media/badges/quick-start-en.svg" width="122" height="44" alt="Quick start"></picture></a>
+  <a href="https://github.com/alextianyf/Inkleaf/releases/download/v0.6.1/Inkleaf-Setup-0.6.1.exe"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/download-en-dark.svg"><img src="docs/media/badges/download-en.svg" width="218" height="44" alt="Download for Windows"></picture></a>&nbsp;&nbsp;<a href="#quick-start"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/quick-start-en-dark.svg"><img src="docs/media/badges/quick-start-en.svg" width="122" height="44" alt="Quick start"></picture></a>
 </p>
 
 <p align="center">
@@ -33,7 +33,7 @@ Inkleaf is a Windows desktop tool for turning Markdown notes, project READMEs an
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
 | **Find a document**     | Search part of a filename or path. Results distinguish Markdown files from folders containing Markdown.                                                      |
 | **Check before saving** | Follow preview progress, inspect page breaks and clickable contents, then export the same PDF bytes with a clear success confirmation.                                                   |
-| **Keep the details**    | Render mathematics, tables, images, aligned badges, callouts, task lists and footnotes. Missing resources and some unsupported content produce notices.                |
+| **Keep the details**    | Render mathematics, tables, images, aligned badges, callouts, task lists and footnotes. Missing resources and some unsupported content show a visible preview notification with expandable reasons and references.                |
 | **Convert a folder**    | Select Markdown files for batch export and inspect them individually. Preserve subfolders; automatic output adds numbers to avoid overwriting existing PDFs. |
 | **Choose the layout**   | Modern (default), Classic and Minimal themes, A4 or Letter, typography, heading styles, pagination, headers, footers and copyright.                                  |
 | **Set app appearance**  | Choose Light, Dark or System in General. App appearance stays independent of your PDF theme.                                                                 |
@@ -42,7 +42,7 @@ Inkleaf is a Windows desktop tool for turning Markdown notes, project READMEs an
 ## Why Inkleaf?
 
 - **Free for personal, noncommercial use.** No subscription, conversion credits or account required for that use. Business and other commercial use require separate written permission; fees are negotiated separately. [License](LICENSE).
-- **Nothing leaves your computer.** Conversion runs locally and leaves the Markdown source unchanged. Local resources and bundled mathematics work offline; only remote images and update checks need a connection.
+- **Documents stay on your computer.** Conversion runs locally and leaves the Markdown source unchanged. Local resources, bundled mathematics and Modern’s bundled fonts work offline; only remote images and update checks need a connection.
 - **Fast filename search.** A recorded Windows benchmark measured about **23 ms median query time for 100,000 indexed Markdown files**. Initial scanning, startup and displaying results are separate. [Measurements and limits](docs/search.md).
 - **A small interface, a short workflow.** Bring up the search bar, choose a file and preview. Inkleaf stays in the system tray between uses.
 
@@ -76,7 +76,7 @@ Left-, center- and right-aligned table columns, checked and unchecked tasks, num
 
 ### Images, badges and links
 
-A local image and SVG badge follow their paragraph's center alignment. The PDF includes an internal jump, an external link, and a footnote with a return link.
+Local images and SVG badges follow their paragraph's alignment. Relative references may use shared assets within the nearest Git project; outside local paths are blocked. Standalone Markdown files use their containing folder as the boundary. Missing images show a notice with the reason and reference. The example PDF includes an internal jump, an external link, and a footnote with a return link.
 
 [![Markdown and actual PDF: centered image and badge, internal and external links, and a footnote](docs/media/examples/images-links.png)](docs/media/examples/images-links.png)
 
@@ -88,11 +88,11 @@ These are examples of supported content, not a promise of every Markdown dialect
 
 ## Get Inkleaf
 
-**[Download for Windows (x64)](https://github.com/alextianyf/Inkleaf/releases/download/v0.6.0/Inkleaf-Setup-0.6.0.exe)** · [Release notes](https://github.com/alextianyf/Inkleaf/releases/tag/v0.6.0)
+**[Download for Windows (x64)](https://github.com/alextianyf/Inkleaf/releases/download/v0.6.1/Inkleaf-Setup-0.6.1.exe)** · [Release notes](https://github.com/alextianyf/Inkleaf/releases/tag/v0.6.1)
 
-The current stable release is **0.6.0**. Download the `.exe` installer above, or [run from source](#development). The `.blockmap` and `latest.yml` files on the release page are used by the updater; manual installation only needs the `.exe`.
+The current stable release is **0.6.1**. Download the `.exe` installer above, or [run from source](#development). The `.blockmap` and `latest.yml` files on the release page are used by the updater; manual installation only needs the `.exe`.
 
-The installer bundles the runtime, so Node.js and Python are not needed. macOS and Linux builds are not currently offered, and Windows builds are unsigned. Version 0.6.0 adds Modern as the default PDF theme, with bundled Inter and JetBrains Mono Latin fonts, layered headings and code cards. Classic and Minimal remain available, and existing saved choices are preserved. Preview progress and export confirmation are included; Light/Dark/System app appearance is independent of the PDF theme.
+The installer bundles the runtime, so Node.js and Python are not needed. macOS and Linux builds are not currently offered, and Windows builds are unsigned. Version 0.6.1 fixes shared project images, adds visible rendering-error notifications, and bundles Noto Sans SC for Chinese text in Modern. Only required font subsets are embedded; Inter and JetBrains Mono remain the Latin and code fonts. Printed page headers/footers and characters outside the bundled repertoire still use system fonts. Modern remains the default; Classic, Minimal and existing theme preferences are preserved.
 
 Installed Windows builds check for new stable versions. You choose **Download**, then **Restart and update** when ready. Inkleaf waits for active conversion or export tasks; quitting normally does not install an update. [Update and release details](docs/updates.md).
 
@@ -120,7 +120,7 @@ Local Markdown filenames and paths, plus folders containing indexed Markdown. Th
 <details>
 <summary><strong>Does conversion work offline?</strong></summary>
 
-Yes, for documents using local resources. Mathematics and fonts needed for formulas are bundled. Remote images and badges need a connection when fetched, and update checks contact GitHub. The document itself is not uploaded for conversion.
+Yes, for documents using local resources. Mathematics and its fonts are bundled. Modern also bundles its Latin, code and Chinese document fonts; conversion does not download them. Remote images and badges need a connection when fetched, and update checks contact GitHub. The document itself is not uploaded for conversion.
 
 </details>
 
@@ -146,7 +146,7 @@ Inspired by traditional Chinese printing, **印页** brings together the act of 
 
 ## Still taking shape
 
-The conversion workflow is implemented; the desktop experience is still being refined. Version 0.5.0 includes symmetric resizing, a larger layout preview and clear save/change feedback. Further PDF styling, search, conversion speed and code-maintenance improvements are on the [roadmap](docs/todo.md).
+The conversion workflow is implemented; the desktop experience is still being refined. The app includes symmetric resizing, a larger layout preview and clear save/change feedback. Further PDF styling, search, conversion speed and code-maintenance improvements are on the [roadmap](docs/todo.md).
 
 If something renders incorrectly, [open an issue](https://github.com/alextianyf/Inkleaf/issues) with the app version, Windows version, a small Markdown example and the expected result. Remove private information before sharing a sample.
 

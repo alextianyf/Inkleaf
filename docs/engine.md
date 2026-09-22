@@ -44,7 +44,7 @@ npm run build:ui
 npm run test:engine
 ```
 
-`test:engine` runs unit tests plus the HTML layout, PDF link and compatibility Electron tests in sequence. The compatibility fixture checks all three themes, every code line and table row in extracted PDF text, text within printable margins, actual link destinations, and footnote navigation in the preview. Existing layout tests check computed geometry; existing link tests include batch preview and resizing. Artifact PDFs, screenshots and a JSON result summary are written to the ignored `artifacts/tests/` directory.
+`test:engine` runs unit tests and Electron checks for bundled Chinese fonts, image notices, HTML layout, PDF links, heading pagination, compatibility, source diagnostics and math repairs in sequence. The compatibility fixture checks all three themes, every code line and table row in extracted PDF text, text within printable margins, actual link destinations, and footnote navigation in the preview. Existing layout tests check computed geometry; existing link tests include batch preview and resizing. Artifact PDFs, screenshots and a JSON result summary are written to the ignored `artifacts/tests/` directory.
 
 For visual review, `npm run check:quality` renders `tests/quality/template/quality.md`, which covers the supported feature categories, in all three themes with English and Chinese labels. It fails on missing resources, layout notices, text printed off the paper, missing declared text markers, or declared heading/body text below the 4.5:1 white-background contrast baseline, and writes page images plus colour and grayscale overviews to `output/quality/`. `npm run check:grayscale` renders any document in black and white. See [tests/quality](../tests/quality/README.md).
 

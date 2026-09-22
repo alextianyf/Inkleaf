@@ -100,3 +100,12 @@ Windows x64 安装包、对应 blockmap 与 `latest.yml` 来自同一次构建�
 57 项单元测试、lint、test:all 覆盖的应用检查及打包后桌面检查通过。布局反馈测试更新了三主题预期，并在完整页面渲染后再检查高亮；失败项与剩余项补跑通过。质量模板通过 Modern、Classic、Minimal × 中英文界面的 6 组实际 PDF 检查，共 78 页；英文讲义样本与独立灰度命令也通过，并抽查实际页面。灰度仅为屏幕近似，白底文字对比度检查不代表所有背景和打印设备的完整验证。
 
 使用真实打包的 0.5.1 和隔离配置连接 GitHub，检测并下载 0.6.0，下载文件 SHA-512 与本地构建一致；0.6.0 自身正确报告没有更新。本次没有运行安装器或覆盖用户安装。验证报告位于忽略目录 artifacts/release-checks-0.6.0.log、artifacts/release-remaining-0.6.0.log、artifacts/release-unit-final-0.6.0.log、artifacts/release-packaged-check-0.6.0.log、artifacts/package-manifest-0.6.0.json、artifacts/public-update-check-0.6.0.json，以及 output/quality/ 与 output/grayscale/。
+
+
+## 正式 Release：0.6.1
+
+2026-09-21，已发布 [Inkleaf 0.6.1](https://github.com/alextianyf/Inkleaf/releases/tag/v0.6.1)，为正式版并设为 Latest。[完整更新说明](releases/0.6.1.md)涵盖项目内共享图片修复、预览错误提醒和 Modern 内置中文黑体。标签对应打包提交 c2c359923d9a3c079d1025906e3ed3693301ce0a。
+
+安装包、blockmap 和 latest.yml 来自同一次 Windows x64 构建，输出位于 artifacts/publish-0.6.1。安装包大小 119587694 字节，SHA-256：9e72e988b582abbaa7327bbbb811d0369631bfa3cc96007bf0110f71081fd7e9。核对 187 个包内源码与资源文件，包含 101 个中文 WOFF2 切片、字体清单及许可。
+
+源码回归各项通过（脚注预览和桌面交互检查首次因窗口关闭中断，独立复跑通过）、三主题中英文质量模板、灰度检查及打包程序的中文离线字体和图片提醒检查通过。使用真实 0.6.0 打包程序和隔离配置连接 GitHub，检测并下载 0.6.1，SHA-512 与本地构建一致；0.6.1 自身正确报告无更新。本次不运行安装器，不覆盖用户现有安装。报告保存在忽略目录 artifacts/release-checks-0.6.1.log、artifacts/release-compat-retry-0.6.1.log、artifacts/release-remaining-0.6.1.log、artifacts/release-remaining-retry-0.6.1.log、artifacts/release-packaged-check-0.6.1.log、artifacts/package-manifest-0.6.1.json 和 artifacts/public-update-check-0.6.1.json。

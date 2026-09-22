@@ -6,7 +6,7 @@
 </p>
 
 <p align="center">
-  <a href="https://github.com/alextianyf/Inkleaf/releases/download/v0.6.0/Inkleaf-Setup-0.6.0.exe"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/download-zh-dark.svg"><img src="docs/media/badges/download-zh.svg" width="218" height="44" alt="下载 Windows 版"></picture></a>&nbsp;&nbsp;<a href="#quick-start"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/quick-start-zh-dark.svg"><img src="docs/media/badges/quick-start-zh.svg" width="122" height="44" alt="开始使用"></picture></a>
+  <a href="https://github.com/alextianyf/Inkleaf/releases/download/v0.6.1/Inkleaf-Setup-0.6.1.exe"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/download-zh-dark.svg"><img src="docs/media/badges/download-zh.svg" width="218" height="44" alt="下载 Windows 版"></picture></a>&nbsp;&nbsp;<a href="#quick-start"><picture><source media="(prefers-color-scheme: dark)" srcset="docs/media/badges/quick-start-zh-dark.svg"><img src="docs/media/badges/quick-start-zh.svg" width="122" height="44" alt="开始使用"></picture></a>
 </p>
 
 <p align="center">
@@ -33,7 +33,7 @@
 | ------------ | ------------------------------------------------------------------------------------------------ |
 | **找到文档** | 输入部分文件名或路径即可搜索，结果会区分 Markdown 文件和包含 Markdown 的文件夹。                 |
 | **先看成品** | 查看预览进度，检查分页、点击目录跳转；导出使用同一份 PDF 数据，保存后显示明确的成功提示。                        |
-| **保留细节** | 渲染公式、表格、图片、对齐的徽章、标注块、任务列表与脚注。缺失资源及部分不支持的内容会显示提示。         |
+| **保留细节** | 渲染公式、表格、图片、对齐的徽章、标注块、任务列表与脚注。缺失资源及部分不支持的内容会在预览上明显提醒，可展开原因和引用路径。         |
 | **整批转换** | 选择文件夹中的 Markdown，逐份检查并批量导出。可保留子目录，自动保存时为同名 PDF 编号，避免覆盖。 |
 | **调整排版** | Modern（默认）、Classic 与 Minimal 三套主题，支持纸张、标题样式、分页、页眉页脚与署名版权设置。           |
 | **切换外观** | 在通用设置选择浅色、深色或跟随系统，App 外观独立于 PDF 主题。                                    |
@@ -42,7 +42,7 @@
 ## 为什么选择印页？
 
 - **个人非商业使用免费。** 此类使用无需订阅、购买转换额度或注册账号。公司及其他商业用途需另行书面授权，费用另议。[许可说明](docs/license.zh-CN.md)。
-- **文档不离开本机。** 本地转换，不改写 Markdown 原文件；使用本地资源的文档与公式可离线处理，只有远程图片和更新检查需要联网。
+- **文档不离开本机。** 本地转换，不改写 Markdown 原文件；使用本地资源的文档、公式与 Modern 内置字体可离线处理，只有远程图片和更新检查需要联网。
 - **快速查找文件。** 已有 Windows 基准测试中，查询 **10 万个已索引 Markdown 文件，中位耗时约 23 ms**。首次扫描、启动和界面显示另计。[测试数据与限制](docs/search.md)。
 - **界面简单，步骤少。** 唤起搜索栏、选择文件、查看预览；不用时收在系统托盘里。
 
@@ -76,7 +76,7 @@
 
 ### 图片、徽章与链接
 
-本地图片和 SVG 徽章遵循父段落的居中设置。PDF 包含文内跳转、外部链接，以及带返回链接的脚注。
+本地图片和 SVG 徽章遵循父段落的对齐设置。相对路径可引用最近 Git 项目内的共享资源，项目外本地路径会被拦截；独立 Markdown 文件以所在文件夹为边界。图片加载失败时，会显示原因和引用路径。示例 PDF 包含文内跳转、外部链接，以及带返回链接的脚注。
 
 [![Markdown 与真实 PDF 对照：居中图片与徽章、内部及外部链接、脚注](docs/media/examples/images-links.png)](docs/media/examples/images-links.png)
 
@@ -88,11 +88,11 @@
 
 ## 获取印页
 
-**[下载 Windows 安装包（x64）](https://github.com/alextianyf/Inkleaf/releases/download/v0.6.0/Inkleaf-Setup-0.6.0.exe)** · [发布说明](https://github.com/alextianyf/Inkleaf/releases/tag/v0.6.0)
+**[下载 Windows 安装包（x64）](https://github.com/alextianyf/Inkleaf/releases/download/v0.6.1/Inkleaf-Setup-0.6.1.exe)** · [发布说明](https://github.com/alextianyf/Inkleaf/releases/tag/v0.6.1)
 
-当前正式版本为 **0.6.0**。点击上方链接下载 `.exe` 安装包，也可以[从源码运行](#development)。发布页中的 `.blockmap` 与 `latest.yml` 供更新器使用，手动安装只需下载 `.exe`。
+当前正式版本为 **0.6.1**。点击上方链接下载 `.exe` 安装包，也可以[从源码运行](#development)。发布页中的 `.blockmap` 与 `latest.yml` 供更新器使用，手动安装只需下载 `.exe`。
 
-安装包自带运行环境，无需另外安装 Node.js 或 Python。目前不提供 macOS 和 Linux 版本，Windows 构建尚未进行代码签名。0.6.0 新增默认 Modern 主题，内置 Inter 与 JetBrains Mono 英文字体，提供分层标题与代码卡片。Classic、Minimal 继续保留，已有主题偏好不变；同时加入预览进度与导出成功提示。App 的浅色／深色／跟随系统外观独立于 PDF 主题。
+安装包自带运行环境，无需另外安装 Node.js 或 Python。目前不提供 macOS 和 Linux 版本，Windows 构建尚未进行代码签名。0.6.1 修复项目内共享图片，新增明显的渲染错误提醒，并为 Modern 内置 Noto Sans SC 中文黑体。字体按文档需要选择离线切片；Inter 英文与 JetBrains Mono 代码字体继续保留。打印页眉页脚和内置字体未覆盖的字符仍使用系统字体。Modern 仍为默认主题，Classic、Minimal 与已有主题偏好保留。
 
 安装版会检查新的稳定版本。发现更新后，点击**下载**，准备好后再选择**重启并更新**。有转换或导出任务时会等待完成；普通退出不会自动安装。[更新与发布说明](docs/updates.md)。
 
@@ -120,7 +120,7 @@
 <details>
 <summary><strong>断网可以用吗？</strong></summary>
 
-使用本地资源的文档可以离线转换，公式渲染及其字体已随应用提供。远程图片和徽章在获取时需要联网，更新检查会连接 GitHub。文档本身不会上传到服务器进行转换。
+使用本地资源的文档可以离线转换，公式渲染及其字体已随应用提供；Modern 的英文、代码和中文字体也已内置，转换时无需下载字体。远程图片和徽章在获取时需要联网，更新检查会连接 GitHub。文档本身不会上传到服务器进行转换。
 
 </details>
 
@@ -146,7 +146,7 @@
 
 ## 还在打磨的地方
 
-转换流程已经实现，桌面体验仍在完善。0.5.0 已加入对称尺寸调整、大幅排版预览与明确的保存、更改反馈。后续会继续打磨 PDF 美观性、搜索、转换速度和代码可维护性，详见[后续计划](docs/todo.md)。
+转换流程已经实现，桌面体验仍在完善。已支持对称尺寸调整、大幅排版预览与明确的保存、更改反馈。后续会继续打磨 PDF 美观性、搜索、转换速度和代码可维护性，详见[后续计划](docs/todo.md)。
 
 如果遇到渲染问题，欢迎[提交反馈](https://github.com/alextianyf/Inkleaf/issues)，附上应用版本、Windows 版本、最小 Markdown 示例和预期效果。分享前请移除私人信息。
 
